@@ -115,7 +115,7 @@
 				<Variable Class="PlainVariable">
 					<Id>1731509241466</Id>
 					<Name><![CDATA[idLKW]]></Name>
-					<X>-980</X><Y>290</Y>
+					<X>-190</X><Y>330</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -209,6 +209,22 @@
 
 				</Variable>
 			</Variables>
+			<DynamicEvents>
+				<DynamicEventClass>
+					<Id>1731516284799</Id>
+					<Name><![CDATA[evtNewDay]]></Name>
+					<X>-980</X><Y>250</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[orderPerDay]]></Name>
+						<Type><![CDATA[AbstractOrderPerDay]]></Type>
+					</Parameter>
+					<Action><![CDATA[startNewDay(orderPerDay);]]></Action>
+				</DynamicEventClass>
+			</DynamicEvents>
 			<Functions>
 				<Function AccessType="private" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
@@ -234,12 +250,11 @@ setupOrders();]]></Body>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[for (Client client : data.getListClient()) {
+					<Body><![CDATA[for (AbstractClient client : data.getListClient()) {
 	Address address = client.address;
 	if (address.hasCoordinates()) {
-		Client newClient = add_popClient(client.id, client.name, address);
+		Client newClient = add_popClient(client.id, client.name, address, this);
 		mapClient.put(newClient.id, newClient);
-		newClient.store.setVisible(false);
 		//test.jumpTo(address.getLongitude(), address.getLangitude());
 	}
 }]]></Body>
@@ -254,7 +269,7 @@ setupOrders();]]></Body>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[for (Werk werk : data.getListWerk()) {
+					<Body><![CDATA[for (AbstractWerk werk : data.getListWerk()) {
 	Address address = werk.address;
 	if (address.hasCoordinates()) {
 		Werk newWerk = add_popWerk(werk.id, werk.name, werk.address, werk.segment, this);
@@ -276,8 +291,7 @@ setupOrders();]]></Body>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[for (AbstractOrderPerDay orderPerDay : data.getListOrderPerDay()) {
-	OrderPerDay newOrderPerDay = add_popOrderPerDay().copy(this, orderPerDay);
-	
+	create_evtNewDay(dateToTime(orderPerDay.deliveryDate), orderPerDay);
 }]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
@@ -358,28 +372,23 @@ return null;]]></Body>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[return new ArrayList<>(mapWerk.values());]]></Body>
 				</Function>
-				<Function AccessType="public" StaticFunction="false">
+				<Function AccessType="private" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1731494119612</Id>
-					<Name><![CDATA[resetOldDay]]></Name>
+					<Id>1731494133607</Id>
+					<Name><![CDATA[startNewDay]]></Name>
 					<X>-700</X><Y>250</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-				</Function>
-				<Function AccessType="public" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1731494133607</Id>
-					<Name><![CDATA[startNewDay]]></Name>
-					<X>-700</X><Y>270</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[for (Scheduler scheduler : mapScheduler.values()) {
+					<Parameter>
+						<Name><![CDATA[orderPerDay]]></Name>
+						<Type><![CDATA[AbstractOrderPerDay]]></Type>
+					</Parameter>
+					<Body><![CDATA[OrderPerDay newOrderPerDay = add_popOrderPerDay().copy(this, orderPerDay);
+
+for (Scheduler scheduler : mapScheduler.values()) {
 	scheduler.startRouting();
 }]]></Body>
 				</Function>
@@ -388,7 +397,7 @@ return null;]]></Body>
 					<ReturnType><![CDATA[LKW]]></ReturnType>
 					<Id>1731494419788</Id>
 					<Name><![CDATA[addNewLKW]]></Name>
-					<X>-700</X><Y>290</Y>
+					<X>-200</X><Y>310</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -426,7 +435,7 @@ return null;]]></Body>
 				<EmbeddedObject>
 					<Id>1731431357422</Id>
 					<Name><![CDATA[popClient]]></Name>
-					<X>-480</X><Y>120</Y>
+					<X>-480</X><Y>270</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -452,6 +461,9 @@ return null;]]></Body>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[address]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[mainAgent]]></Name>
 						</Parameter>
 					</Parameters>
 					<ReplicationFlag>true</ReplicationFlag>
@@ -492,7 +504,7 @@ return null;]]></Body>
 				<EmbeddedObject>
 					<Id>1731479107656</Id>
 					<Name><![CDATA[popWerk]]></Name>
-					<X>-480</X><Y>140</Y>
+					<X>-480</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -560,11 +572,12 @@ return null;]]></Body>
 				<EmbeddedObject>
 					<Id>1731479187616</Id>
 					<Name><![CDATA[popLKW]]></Name>
-					<X>-480</X><Y>160</Y>
+					<X>-480</X><Y>310</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
+					<PresentationId>1731517436996</PresentationId>
 					<ActiveObjectClass>
 						<PackageName><![CDATA[da_tourplanning]]></PackageName>
 						<ClassName><![CDATA[LKW]]></ClassName>
@@ -597,7 +610,7 @@ return null;]]></Body>
 					<CollectionType>ARRAY_LIST_BASED</CollectionType>
 					<InEnvironment>true</InEnvironment>	
 					<InitialSpeedCode Class="CodeUnitValue">
-						<Code><![CDATA[60]]></Code>
+						<Code><![CDATA[10]]></Code>
 						<Unit Class="SpeedUnits"><![CDATA[KPH]]></Unit>
 					</InitialSpeedCode>
 					<InitialLocationType>XYZ</InitialLocationType>
@@ -628,7 +641,7 @@ return null;]]></Body>
 				<EmbeddedObject>
 					<Id>1731489770390</Id>
 					<Name><![CDATA[popOrderPerDay]]></Name>
-					<X>-480</X><Y>180</Y>
+					<X>-480</X><Y>330</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -681,7 +694,7 @@ return null;]]></Body>
 				<EmbeddedObject>
 					<Id>1731509370748</Id>
 					<Name><![CDATA[logger]]></Name>
-					<X>-480</X><Y>100</Y>
+					<X>-480</X><Y>250</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1034,6 +1047,85 @@ return null;]]></Body>
 			</Presentation>
 
 				</Group>
+				<Group>
+					<Id>1731517168466</Id>
+					<Name><![CDATA[group3]]></Name>
+					<X>-230</X><Y>260</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731517168468</Id>
+					<Name><![CDATA[roundRectangle17]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731517168470</Id>
+					<Name><![CDATA[text20]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Agents]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<EmbeddedObjectPresentation>
+					<Id>1731517436996</Id>
+					<Name><![CDATA[popLKW_presentation]]></Name>
+					<X>0</X><Y>0</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<ScaleType>AUTOMATICALLY_CALCULATED</ScaleType>
+					<GISScaleForRealEmbeddedObjectPresentationSize>1000</GISScaleForRealEmbeddedObjectPresentationSize>
+					<GISScaleForFixedEmbeddedObjectPresentationSize>1000000000</GISScaleForFixedEmbeddedObjectPresentationSize>
+					<Latitude>47.0</Latitude>
+					<Longitude>8.0</Longitude>
+				</EmbeddedObjectPresentation>
 			</Presentation>
 
 				</Level>
@@ -1058,7 +1150,11 @@ return null;]]></Body>
 				<Parameter>
 					<Name><![CDATA[address]]></Name>
 				</Parameter>
+				<Parameter>
+					<Name><![CDATA[mainAgent]]></Name>
+				</Parameter>
 			</Parameters>
+			<StartupCode><![CDATA[setup();]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1731431168951</Id>
@@ -1148,6 +1244,110 @@ return null;]]></Body>
 			</ScaleRuler>
 			<CurrentLevel>1731431168952</CurrentLevel>
 			<ConnectionsId>1731431168946</ConnectionsId>
+			<Variables>
+				<Variable Class="PlainVariable">
+					<Id>1731519228480</Id>
+					<Name><![CDATA[werk]]></Name>
+					<X>-520</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="private" StaticVariable="false">
+						<Type><![CDATA[Werk]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1731519476764</Id>
+					<Name><![CDATA[mainAgent]]></Name>
+					<X>-1020</X><Y>150</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[Main]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1731519476762</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+			</Variables>
+			<Functions>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[Werk]]></ReturnType>
+					<Id>1731519228476</Id>
+					<Name><![CDATA[getWerk]]></Name>
+					<X>-250</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return werk;]]></Body>
+				</Function>
+				<Function AccessType="private" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731519228478</Id>
+					<Name><![CDATA[setWerk]]></Name>
+					<X>-250</X><Y>510</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[if (werk == null) {
+	werk = (Werk) getClosestLocByGIS(mainAgent.map, getListWerk());
+}]]></Body>
+				</Function>
+				<Function AccessType="private" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731519636695</Id>
+					<Name><![CDATA[setup]]></Name>
+					<X>-250</X><Y>90</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[setWerk();
+setVisible(false);]]></Body>
+				</Function>
+				<Function AccessType="private" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[ArrayList<AbstractLocation>]]></ReturnType>
+					<Id>1731519683788</Id>
+					<Name><![CDATA[getListWerk]]></Name>
+					<X>-240</X><Y>530</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return new ArrayList<>(mainAgent.getMapWerk().values());]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731520270643</Id>
+					<Name><![CDATA[setVisible]]></Name>
+					<X>-250.333</X><Y>350.667</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[visible]]></Name>
+						<Type><![CDATA[boolean]]></Type>
+					</Parameter>
+					<Body><![CDATA[store.setVisible(visible);]]></Body>
+				</Function>
+			</Functions>
 			<AgentLinks>
 				<AgentLink>
 					<Id>1731431168946</Id>
@@ -1174,6 +1374,7 @@ return null;]]></Body>
 				<ContainerLink>
 					<Id>1731431358925</Id>
 					<Name><![CDATA[main]]></Name>
+					<ExcludeFromBuild>true</ExcludeFromBuild>
 					<X>50</X><Y>-100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -1204,11 +1405,12 @@ return null;]]></Body>
 					<Id>1731484950748</Id>
 					<Name><![CDATA[store]]></Name>
 					<X>0</X><Y>0</Y>
-					<Label><X>10</X><Y>0</Y></Label>
+					<Label><X>5.313</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<OnClickCode><![CDATA[viewArea.navigateTo();]]></OnClickCode>
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
@@ -1217,7 +1419,7 @@ return null;]]></Body>
 				<Polyline>
 					<Id>1731484950750</Id>
 					<Name><![CDATA[_ps268]]></Name>
-					<X>0</X><Y>12</Y>
+					<X>0</X><Y>6.462</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1238,16 +1440,16 @@ return null;]]></Body>
 					<FillMaterial>null</FillMaterial>
 					<Points>
 					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
-					   <Point><X>4</X><Y>2</Y><Z>0</Z></Point>
-					   <Point><X>16</X><Y>-4</Y><Z>0</Z></Point>
-					   <Point><X>12</X><Y>-6</Y><Z>0</Z></Point>
+					   <Point><X>2.125</X><Y>1.077</Y><Z>0</Z></Point>
+					   <Point><X>8.5</X><Y>-2.154</Y><Z>0</Z></Point>
+					   <Point><X>6.375</X><Y>-3.231</Y><Z>0</Z></Point>
 					</Points>
 					<Closed>true</Closed>
 				</Polyline>
 				<Polyline>
 					<Id>1731484950752</Id>
 					<Name><![CDATA[_ps269]]></Name>
-					<X>0</X><Y>4</Y>
+					<X>0</X><Y>2.154</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1268,16 +1470,16 @@ return null;]]></Body>
 					<FillMaterial>null</FillMaterial>
 					<Points>
 					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
-					   <Point><X>12</X><Y>-6</Y><Z>0</Z></Point>
-					   <Point><X>0</X><Y>-12</Y><Z>0</Z></Point>
-					   <Point><X>-12</X><Y>-6</Y><Z>0</Z></Point>
+					   <Point><X>6.375</X><Y>-3.231</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>-6.462</Y><Z>0</Z></Point>
+					   <Point><X>-6.375</X><Y>-3.231</Y><Z>0</Z></Point>
 					</Points>
 					<Closed>true</Closed>
 				</Polyline>
 				<Polyline>
 					<Id>1731484950754</Id>
 					<Name><![CDATA[_ps270]]></Name>
-					<X>-12</X><Y>6</Y>
+					<X>-6.375</X><Y>3.231</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1298,16 +1500,16 @@ return null;]]></Body>
 					<FillMaterial>null</FillMaterial>
 					<Points>
 					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
-					   <Point><X>0</X><Y>-8</Y><Z>0</Z></Point>
-					   <Point><X>12</X><Y>-2</Y><Z>0</Z></Point>
-					   <Point><X>12</X><Y>6</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>-4.308</Y><Z>0</Z></Point>
+					   <Point><X>6.375</X><Y>-1.077</Y><Z>0</Z></Point>
+					   <Point><X>6.375</X><Y>3.231</Y><Z>0</Z></Point>
 					</Points>
 					<Closed>true</Closed>
 				</Polyline>
 				<Polyline>
 					<Id>1731484950756</Id>
 					<Name><![CDATA[_ps271]]></Name>
-					<X>0</X><Y>12</Y>
+					<X>0</X><Y>6.462</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1328,16 +1530,16 @@ return null;]]></Body>
 					<FillMaterial>null</FillMaterial>
 					<Points>
 					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
-					   <Point><X>12</X><Y>-6</Y><Z>0</Z></Point>
-					   <Point><X>12</X><Y>-14</Y><Z>0</Z></Point>
-					   <Point><X>0</X><Y>-8</Y><Z>0</Z></Point>
+					   <Point><X>6.375</X><Y>-3.231</Y><Z>0</Z></Point>
+					   <Point><X>6.375</X><Y>-7.538</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>-4.308</Y><Z>0</Z></Point>
 					</Points>
 					<Closed>true</Closed>
 				</Polyline>
 				<Polyline>
 					<Id>1731484950758</Id>
 					<Name><![CDATA[_ps272]]></Name>
-					<X>-10</X><Y>7</Y>
+					<X>-5.312</X><Y>3.769</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1358,18 +1560,18 @@ return null;]]></Body>
 					<FillMaterial>null</FillMaterial>
 					<Points>
 					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
-					   <Point><X>10</X><Y>5</Y><Z>0</Z></Point>
-					   <Point><X>20</X><Y>0</Y><Z>0</Z></Point>
-					   <Point><X>20</X><Y>-5</Y><Z>0</Z></Point>
-					   <Point><X>10</X><Y>0</Y><Z>0</Z></Point>
-					   <Point><X>0</X><Y>-5</Y><Z>0</Z></Point>
+					   <Point><X>5.313</X><Y>2.692</Y><Z>0</Z></Point>
+					   <Point><X>10.625</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>10.625</X><Y>-2.692</Y><Z>0</Z></Point>
+					   <Point><X>5.313</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>-2.692</Y><Z>0</Z></Point>
 					</Points>
 					<Closed>true</Closed>
 				</Polyline>
 				<Line>
 					<Id>1731484950760</Id>
 					<Name><![CDATA[_ps273]]></Name>
-					<X>2</X><Y>11</Y>
+					<X>1.063</X><Y>5.923</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1387,13 +1589,13 @@ return null;]]></Body>
 					<EndArrowSize>1</EndArrowSize>
 					<EndArrowStyle>0</EndArrowStyle>
 					<Dx>0</Dx>
-					<Dy>-6</Dy>
+					<Dy>-4</Dy>
 					<Dz>0</Dz>
 				</Line>
 				<Line>
 					<Id>1731484950762</Id>
 					<Name><![CDATA[_ps274]]></Name>
-					<X>-2</X><Y>11</Y>
+					<X>-1.062</X><Y>5.923</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1411,13 +1613,13 @@ return null;]]></Body>
 					<EndArrowSize>1</EndArrowSize>
 					<EndArrowStyle>0</EndArrowStyle>
 					<Dx>0</Dx>
-					<Dy>-6</Dy>
+					<Dy>-4</Dy>
 					<Dz>0</Dz>
 				</Line>
 				<Polyline>
 					<Id>1731484950764</Id>
 					<Name><![CDATA[_ps275]]></Name>
-					<X>0</X><Y>12</Y>
+					<X>0</X><Y>6.462</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1438,11 +1640,11 @@ return null;]]></Body>
 					<FillMaterial>null</FillMaterial>
 					<Points>
 					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
-					   <Point><X>12</X><Y>-6</Y><Z>0</Z></Point>
-					   <Point><X>12</X><Y>-14</Y><Z>0</Z></Point>
-					   <Point><X>0</X><Y>-20</Y><Z>0</Z></Point>
-					   <Point><X>-12</X><Y>-14</Y><Z>0</Z></Point>
-					   <Point><X>-12</X><Y>-6</Y><Z>0</Z></Point>
+					   <Point><X>6.375</X><Y>-3.231</Y><Z>0</Z></Point>
+					   <Point><X>6.375</X><Y>-7.538</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>-10.769</Y><Z>0</Z></Point>
+					   <Point><X>-6.375</X><Y>-7.538</Y><Z>0</Z></Point>
+					   <Point><X>-6.375</X><Y>-3.231</Y><Z>0</Z></Point>
 					</Points>
 					<Closed>true</Closed>
 				</Polyline>
@@ -1476,11 +1678,8 @@ return null;]]></Body>
 				<Parameter>
 					<Name><![CDATA[segment]]></Name>
 				</Parameter>
-				<Parameter>
-					<Name><![CDATA[mainAgent]]></Name>
-				</Parameter>
 			</Parameters>
-			<StartupCode><![CDATA[traceln(String.format("%s - | %s", address.getLatitude(), address.getLongitude()));]]></StartupCode>
+			<StartupCode><![CDATA[setup();]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1731431181264</Id>
@@ -1607,21 +1806,6 @@ return null;]]></Body>
 					</Properties>
 
 				</Variable>
-				<Variable Class="CollectionVariable">
-					<Id>1731500246816</Id>
-					<Name><![CDATA[listLKW]]></Name>
-					<X>-1020</X><Y>290</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" AccessType="private" StaticVariable="false">
-						<CollectionClass><![CDATA[ArrayList]]></CollectionClass>
-						<ElementClass><![CDATA[LKW]]></ElementClass>
-						<ValueElementClass><![CDATA[String]]></ValueElementClass>
-					</Properties>
-
-				</Variable>
 			</Variables>
 			<Functions>
 				<Function AccessType="public" StaticFunction="false">
@@ -1687,6 +1871,34 @@ return this;]]></Body>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[return mapOrderPos;]]></Body>
 				</Function>
+				<Function AccessType="private" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731519583795</Id>
+					<Name><![CDATA[setup]]></Name>
+					<X>-250</X><Y>110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[setVisible(false);]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731520306004</Id>
+					<Name><![CDATA[setVisible]]></Name>
+					<X>-250</X><Y>350</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[visible]]></Name>
+						<Type><![CDATA[boolean]]></Type>
+					</Parameter>
+					<Body><![CDATA[warehouse.setVisible(visible);]]></Body>
+				</Function>
 			</Functions>
 			<AgentLinks>
 				<AgentLink>
@@ -1714,6 +1926,7 @@ return this;]]></Body>
 				<ContainerLink>
 					<Id>1731479109695</Id>
 					<Name><![CDATA[main]]></Name>
+					<ExcludeFromBuild>true</ExcludeFromBuild>
 					<X>50</X><Y>-100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -1744,12 +1957,12 @@ return this;]]></Body>
 					<Id>1731484960677</Id>
 					<Name><![CDATA[warehouse]]></Name>
 					<X>0</X><Y>0</Y>
-					<Label><X>10</X><Y>0</Y></Label>
+					<Label><X>6.667</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<OnClickCode><![CDATA[paramArea.navigateTo();]]></OnClickCode>
+					<OnClickCode><![CDATA[viewArea.navigateTo();]]></OnClickCode>
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
@@ -1758,7 +1971,7 @@ return this;]]></Body>
 				<Polyline>
 					<Id>1731484960679</Id>
 					<Name><![CDATA[_ps278]]></Name>
-					<X>-3</X><Y>12</Y>
+					<X>-2</X><Y>7.714</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1779,16 +1992,16 @@ return this;]]></Body>
 					<FillMaterial>null</FillMaterial>
 					<Points>
 					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
-					   <Point><X>4</X><Y>2</Y><Z>0</Z></Point>
-					   <Point><X>20</X><Y>-6</Y><Z>0</Z></Point>
-					   <Point><X>16</X><Y>-8</Y><Z>0</Z></Point>
+					   <Point><X>2.667</X><Y>1.286</Y><Z>0</Z></Point>
+					   <Point><X>13.333</X><Y>-3.857</Y><Z>0</Z></Point>
+					   <Point><X>10.667</X><Y>-5.143</Y><Z>0</Z></Point>
 					</Points>
 					<Closed>true</Closed>
 				</Polyline>
 				<Polyline>
 					<Id>1731484960681</Id>
 					<Name><![CDATA[_ps279]]></Name>
-					<X>-15</X><Y>6</Y>
+					<X>-10</X><Y>3.857</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1809,17 +2022,17 @@ return this;]]></Body>
 					<FillMaterial>null</FillMaterial>
 					<Points>
 					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
-					   <Point><X>0</X><Y>-7</Y><Z>0</Z></Point>
-					   <Point><X>6</X><Y>-8</Y><Z>0</Z></Point>
-					   <Point><X>12</X><Y>-1</Y><Z>0</Z></Point>
-					   <Point><X>12</X><Y>6</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>-4.5</Y><Z>0</Z></Point>
+					   <Point><X>4</X><Y>-5.143</Y><Z>0</Z></Point>
+					   <Point><X>8</X><Y>-0.643</Y><Z>0</Z></Point>
+					   <Point><X>8</X><Y>3.857</Y><Z>0</Z></Point>
 					</Points>
 					<Closed>true</Closed>
 				</Polyline>
 				<Polyline>
 					<Id>1731484960683</Id>
 					<Name><![CDATA[_ps280]]></Name>
-					<X>-13</X><Y>7</Y>
+					<X>-8.667</X><Y>4.5</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1840,16 +2053,16 @@ return this;]]></Body>
 					<FillMaterial>null</FillMaterial>
 					<Points>
 					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
-					   <Point><X>8</X><Y>4</Y><Z>0</Z></Point>
-					   <Point><X>8</X><Y>-1</Y><Z>0</Z></Point>
-					   <Point><X>0</X><Y>-5</Y><Z>0</Z></Point>
+					   <Point><X>5.333</X><Y>2.571</Y><Z>0</Z></Point>
+					   <Point><X>5.333</X><Y>-0.643</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>-3.214</Y><Z>0</Z></Point>
 					</Points>
 					<Closed>true</Closed>
 				</Polyline>
 				<Polyline>
 					<Id>1731484960685</Id>
 					<Name><![CDATA[_ps281]]></Name>
-					<X>-3</X><Y>12</Y>
+					<X>-2</X><Y>7.714</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1870,16 +2083,16 @@ return this;]]></Body>
 					<FillMaterial>null</FillMaterial>
 					<Points>
 					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
-					   <Point><X>16</X><Y>-8</Y><Z>0</Z></Point>
-					   <Point><X>16</X><Y>-15</Y><Z>0</Z></Point>
-					   <Point><X>0</X><Y>-7</Y><Z>0</Z></Point>
+					   <Point><X>10.667</X><Y>-5.143</Y><Z>0</Z></Point>
+					   <Point><X>10.667</X><Y>-9.643</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>-4.5</Y><Z>0</Z></Point>
 					</Points>
 					<Closed>true</Closed>
 				</Polyline>
 				<Polyline>
 					<Id>1731484960687</Id>
 					<Name><![CDATA[_ps282]]></Name>
-					<X>-3</X><Y>5</Y>
+					<X>-2</X><Y>3.214</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1900,16 +2113,16 @@ return this;]]></Body>
 					<FillMaterial>null</FillMaterial>
 					<Points>
 					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
-					   <Point><X>16</X><Y>-8</Y><Z>0</Z></Point>
-					   <Point><X>10</X><Y>-15</Y><Z>0</Z></Point>
-					   <Point><X>-6</X><Y>-7</Y><Z>0</Z></Point>
+					   <Point><X>10.667</X><Y>-5.143</Y><Z>0</Z></Point>
+					   <Point><X>6.667</X><Y>-9.643</Y><Z>0</Z></Point>
+					   <Point><X>-4</X><Y>-4.5</Y><Z>0</Z></Point>
 					</Points>
 					<Closed>true</Closed>
 				</Polyline>
 				<Polyline>
 					<Id>1731484960689</Id>
 					<Name><![CDATA[_ps283]]></Name>
-					<X>-9</X><Y>-2</Y>
+					<X>-6</X><Y>-1.286</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1930,16 +2143,16 @@ return this;]]></Body>
 					<FillMaterial>null</FillMaterial>
 					<Points>
 					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
-					   <Point><X>16</X><Y>-8</Y><Z>0</Z></Point>
-					   <Point><X>10</X><Y>-7</Y><Z>0</Z></Point>
-					   <Point><X>-6</X><Y>1</Y><Z>0</Z></Point>
+					   <Point><X>10.667</X><Y>-5.143</Y><Z>0</Z></Point>
+					   <Point><X>6.667</X><Y>-4.5</Y><Z>0</Z></Point>
+					   <Point><X>-4</X><Y>0.643</Y><Z>0</Z></Point>
 					</Points>
 					<Closed>true</Closed>
 				</Polyline>
 				<Polyline>
 					<Id>1731484960691</Id>
 					<Name><![CDATA[_ps284]]></Name>
-					<X>-3</X><Y>12</Y>
+					<X>-2</X><Y>7.714</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1960,12 +2173,12 @@ return this;]]></Body>
 					<FillMaterial>null</FillMaterial>
 					<Points>
 					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
-					   <Point><X>16</X><Y>-8</Y><Z>0</Z></Point>
-					   <Point><X>16</X><Y>-15</Y><Z>0</Z></Point>
-					   <Point><X>10</X><Y>-22</Y><Z>0</Z></Point>
-					   <Point><X>4</X><Y>-21</Y><Z>0</Z></Point>
-					   <Point><X>-12</X><Y>-13</Y><Z>0</Z></Point>
-					   <Point><X>-12</X><Y>-6</Y><Z>0</Z></Point>
+					   <Point><X>10.667</X><Y>-5.143</Y><Z>0</Z></Point>
+					   <Point><X>10.667</X><Y>-9.643</Y><Z>0</Z></Point>
+					   <Point><X>6.667</X><Y>-14.143</Y><Z>0</Z></Point>
+					   <Point><X>2.667</X><Y>-13.5</Y><Z>0</Z></Point>
+					   <Point><X>-8</X><Y>-8.357</Y><Z>0</Z></Point>
+					   <Point><X>-8</X><Y>-3.857</Y><Z>0</Z></Point>
 					</Points>
 					<Closed>true</Closed>
 				</Polyline>
@@ -1976,20 +2189,6 @@ return this;]]></Body>
 
 				</Level>
 			</Presentation>
-			<Areas>
-				<Area>
-					<Id>1731498842257</Id>
-					<Name><![CDATA[paramArea]]></Name>
-					<X>-1050</X><Y>0</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<Title><![CDATA[]]></Title>
-					<Width>1000</Width>
-					<Height>600</Height>
-				</Area>
-			</Areas>
 
 		</ActiveObjectClass>
 		<!--   =========   Active Object Class   ========  -->
@@ -2009,9 +2208,6 @@ return this;]]></Body>
 				</Parameter>
 				<Parameter>
 					<Name><![CDATA[capacityInKg]]></Name>
-				</Parameter>
-				<Parameter>
-					<Name><![CDATA[mainAgent]]></Name>
 				</Parameter>
 			</Parameters>
 			<Generic>false</Generic>
@@ -2193,7 +2389,7 @@ currentScheduleLoc = orderPos.getClient();]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731494630669</Id>
 					<Name><![CDATA[startRouting]]></Name>
-					<X>-750</X><Y>280</Y>
+					<X>-750</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2206,7 +2402,7 @@ setNextOrderPos();]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731494730987</Id>
 					<Name><![CDATA[setNextOrderPos]]></Name>
-					<X>-740</X><Y>300</Y>
+					<X>-740</X><Y>310</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2254,7 +2450,7 @@ currentScheduleLoc = initLocation;]]></Body>
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1731505717828</Id>
 					<Name><![CDATA[canTakeOrderPos]]></Name>
-					<X>-750</X><Y>320</Y>
+					<X>-750</X><Y>330</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2304,6 +2500,7 @@ currentScheduleLoc = initLocation;]]></Body>
 				<ContainerLink>
 					<Id>1731479189949</Id>
 					<Name><![CDATA[main]]></Name>
+					<ExcludeFromBuild>true</ExcludeFromBuild>
 					<X>50</X><Y>-100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -2329,6 +2526,289 @@ currentScheduleLoc = initLocation;]]></Body>
 					<Z>0</Z>
 					<LevelVisibility>DIM_NON_CURRENT</LevelVisibility>
 
+			<Presentation>
+				<Group>
+					<Id>1731517599954</Id>
+					<Name><![CDATA[lorry]]></Name>
+					<X>0</X><Y>0</Y>
+					<Label><X>4.111</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<Rectangle>
+					<Id>1731517599956</Id>
+					<Name><![CDATA[_ps86]]></Name>
+					<X>5.344</X><Y>-3.185</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor/>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>0.822</Width>
+					<Height>6.768</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-12566464</FillColor>
+					<FillMaterial>null</FillMaterial>
+				</Rectangle>
+				<Curve ControlPoints="true">
+					<Id>1731517599958</Id>
+					<Name><![CDATA[_ps87]]></Name>
+					<X>10.688</X><Y>-3.583</Y>
+					<Label><X>-20</X><Y>40</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor/>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<BeginArrowSize>1</BeginArrowSize>
+					<BeginArrowStyle>0</BeginArrowStyle>
+					<EndArrowSize>1</EndArrowSize>
+					<EndArrowStyle>0</EndArrowStyle>
+					<FillColor>-13284514</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<Points>
+					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>0.411</X><Y>0.796</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>1.194</Y><Z>0</Z></Point>
+					   <Point><X>-0.411</X><Y>0.398</Y><Z>0</Z></Point>
+					   <Point><X>-0.822</X><Y>-0.398</Y><Z>0</Z></Point>
+					   <Point><X>-0.411</X><Y>-0.796</Y><Z>0</Z></Point>
+					</Points>
+					<Closed>true</Closed>
+				</Curve>
+				<Curve ControlPoints="true">
+					<Id>1731517599960</Id>
+					<Name><![CDATA[_ps88]]></Name>
+					<X>10.688</X><Y>3.981</Y>
+					<Label><X>-20</X><Y>40</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor/>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<BeginArrowSize>1</BeginArrowSize>
+					<BeginArrowStyle>0</BeginArrowStyle>
+					<EndArrowSize>1</EndArrowSize>
+					<EndArrowStyle>0</EndArrowStyle>
+					<FillColor>-13284514</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<Points>
+					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>-0.411</X><Y>0.796</Y><Z>0</Z></Point>
+					   <Point><X>-0.822</X><Y>0.398</Y><Z>0</Z></Point>
+					   <Point><X>-0.411</X><Y>-0.398</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>-1.194</Y><Z>0</Z></Point>
+					   <Point><X>0.411</X><Y>-0.796</Y><Z>0</Z></Point>
+					</Points>
+					<Closed>true</Closed>
+				</Curve>
+				<Curve ControlPoints="true">
+					<Id>1731517599962</Id>
+					<Name><![CDATA[_ps89]]></Name>
+					<X>6.166</X><Y>-3.185</Y>
+					<Label><X>-20</X><Y>40</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-13284514</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<BeginArrowSize>1</BeginArrowSize>
+					<BeginArrowStyle>0</BeginArrowStyle>
+					<EndArrowSize>1</EndArrowSize>
+					<EndArrowStyle>0</EndArrowStyle>
+					<FillColor>-12156236</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<Points>
+					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>6.768</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>6.768</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>6.768</Y><Z>0</Z></Point>
+					   <Point><X>4.111</X><Y>6.768</Y><Z>0</Z></Point>
+					   <Point><X>4.111</X><Y>6.768</Y><Z>0</Z></Point>
+					   <Point><X>4.111</X><Y>6.768</Y><Z>0</Z></Point>
+					   <Point><X>4.933</X><Y>6.768</Y><Z>0</Z></Point>
+					   <Point><X>5.344</X><Y>6.37</Y><Z>0</Z></Point>
+					   <Point><X>6.166</X><Y>5.573</Y><Z>0</Z></Point>
+					   <Point><X>6.166</X><Y>1.194</Y><Z>0</Z></Point>
+					   <Point><X>5.344</X><Y>0.398</Y><Z>0</Z></Point>
+					   <Point><X>4.933</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>4.111</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>4.111</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>4.111</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
+					</Points>
+					<Closed>true</Closed>
+				</Curve>
+				<RoundedRectangle>
+					<Id>1731517599964</Id>
+					<Name><![CDATA[_ps90]]></Name>
+					<X>6.578</X><Y>-2.389</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor/>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>3.7</Width>
+					<Height>5.175</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-9066808</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>1</ArcRadius>
+				</RoundedRectangle>
+				<Rectangle>
+					<Id>1731517599966</Id>
+					<Name><![CDATA[_ps91]]></Name>
+					<X>-11.921</X><Y>-3.185</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor/>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>0.822</Width>
+					<Height>6.768</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-12566464</FillColor>
+					<FillMaterial>null</FillMaterial>
+				</Rectangle>
+				<Rectangle>
+					<Id>1731517599968</Id>
+					<Name><![CDATA[_ps92]]></Name>
+					<X>-11.099</X><Y>-3.583</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>16.854</Width>
+					<Height>7.564</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-4144960</FillColor>
+					<FillMaterial>null</FillMaterial>
+				</Rectangle>
+				<RoundedRectangle>
+					<Id>1731517599970</Id>
+					<Name><![CDATA[_ps93]]></Name>
+					<X>-10.688</X><Y>-2.787</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor/>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>16.032</Width>
+					<Height>5.971</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>1</ArcRadius>
+				</RoundedRectangle>
+				<Curve ControlPoints="true">
+					<Id>1731517599972</Id>
+					<Name><![CDATA[_ps94]]></Name>
+					<X>10.277</X><Y>3.185</Y>
+					<Label><X>-20</X><Y>40</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor/>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<BeginArrowSize>1</BeginArrowSize>
+					<BeginArrowStyle>0</BeginArrowStyle>
+					<EndArrowSize>1</EndArrowSize>
+					<EndArrowStyle>0</EndArrowStyle>
+					<FillColor>-13421226</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<Points>
+					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>0.411</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>0.822</X><Y>-0.796</Y><Z>0</Z></Point>
+					   <Point><X>0.822</X><Y>-0.796</Y><Z>0</Z></Point>
+					   <Point><X>1.233</X><Y>-1.194</Y><Z>0</Z></Point>
+					   <Point><X>1.233</X><Y>-2.787</Y><Z>0</Z></Point>
+					   <Point><X>1.233</X><Y>-4.379</Y><Z>0</Z></Point>
+					   <Point><X>0.822</X><Y>-5.175</Y><Z>0</Z></Point>
+					   <Point><X>0.822</X><Y>-5.175</Y><Z>0</Z></Point>
+					   <Point><X>0.411</X><Y>-5.971</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>-5.971</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>-5.971</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>-5.971</Y><Z>0</Z></Point>
+					   <Point><X>0.411</X><Y>-4.379</Y><Z>0</Z></Point>
+					   <Point><X>0.411</X><Y>-2.787</Y><Z>0</Z></Point>
+					   <Point><X>0.411</X><Y>-1.194</Y><Z>0</Z></Point>
+					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
+					</Points>
+					<Closed>true</Closed>
+				</Curve>
+			</Presentation>
+
+				</Group>
+			</Presentation>
 
 				</Level>
 			</Presentation>
@@ -2345,9 +2825,6 @@ currentScheduleLoc = initLocation;]]></Body>
 			<Parameters>
 				<Parameter>
 					<Name><![CDATA[deliveryDate]]></Name>
-				</Parameter>
-				<Parameter>
-					<Name><![CDATA[mainAgent]]></Name>
 				</Parameter>
 			</Parameters>
 			<Generic>false</Generic>
@@ -2465,7 +2942,7 @@ currentScheduleLoc = initLocation;]]></Body>
 			<Events>
 				<Event>
 					<Id>1731489905341</Id>
-					<Name><![CDATA[evtStartDay]]></Name>
+					<Name><![CDATA[evtEndDay]]></Name>
 					<X>-1020</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -2492,7 +2969,6 @@ currentScheduleLoc = initLocation;]]></Body>
 						</RecurrenceCode>
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
-					<Action><![CDATA[setWerkToOrder();]]></Action>
 				</Event>
 			</Events>
 			<Functions>
@@ -2525,32 +3001,44 @@ for (OrderPosition orderPos : orderPerDay.getListOrderPos()) {
 	}
 }
 
-evtStartDay.restartTo(this.deliveryDate);
-
+setup();
 return this;]]></Body>
 				</Function>
-				<Function AccessType="public" StaticFunction="false">
+				<Function AccessType="private" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731491192043</Id>
-					<Name><![CDATA[setWerkToOrder]]></Name>
+					<Name><![CDATA[setup]]></Name>
+					<X>-240</X><Y>150</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[for (OrderPosition orderPos : getListOrderPos()) {
+	
+	Client client = (Client) orderPos.getClient();
+	Werk werk = client.getWerk();
+	orderPos.setWerk(werk);
+	werk.addOrderPos(orderPos);
+	addLocation(client);
+	addLocation(werk);
+}
+
+evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
+				</Function>
+				<Function AccessType="private" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731518857185</Id>
+					<Name><![CDATA[endDay]]></Name>
 					<X>-750</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[mainAgent.resetOldDay();
-
-for (OrderPosition orderPos : getListOrderPos()) {
-	
-	Client client = (Client) orderPos.getClient();
-	//Werk werk = (Werk) client.getClosestLocByRoute(mainAgent.map, new ArrayList<>(mainAgent.getMapWerk().values()));
-	Werk werk = (Werk) client.getClosestLocByGIS(mainAgent.map, new ArrayList<>(mainAgent.getMapWerk().values()));
-	orderPos.setWerk(werk);
-	werk.addOrderPos(orderPos);
-}
-
-mainAgent.startNewDay();]]></Body>
+					<Body><![CDATA[for (AbstractLocation location : mapLocation.values()) {
+	location.endDay();
+}]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -3216,7 +3704,7 @@ closed = true;]]></Body>
 	String path = "C:\\Users\\TimoHarlacher\\Developer\\AnyLogic\\DA-Logistik\\Data\\DataIn\\241112_InputData_OneDay.xlsx";	
 	data.readDataAdditionalInfo(path);
 	
-	path = "C:\\Users\\TimoHarlacher\\Developer\\AnyLogic\\DA-Logistik\\Data\\DataIn\\241111_Lieferpositionen_OneDay.xlsx";
+	path = "C:\\Users\\TimoHarlacher\\Developer\\AnyLogic\\DA-Logistik\\Data\\DataIn\\241111_Lieferpositionen_OneDay_100.xlsx";
 	data.readDataOrder(path);
 	
 	getEngine().setStartDate( data.getStartDate() );
@@ -3820,7 +4308,7 @@ public class DataWerk_Row extends DataRow {
 	
 	private Address address;
 	private Segment segment;
-	private Werk werk;
+	private AbstractWerk werk;
 	
 /*  Constructor
 ***********************************************************************************************************************/		
@@ -4103,8 +4591,8 @@ public class InputData {
 	private HashMap<String, PositionType> mapPositionType;
 	private HashMap<String, Route> mapRoute;
 	private HashMap<String, Material> mapMaterial;
-	private HashMap<String, Werk> mapWerk;
-	private HashMap<String, Client> mapClient;
+	private HashMap<String, AbstractWerk> mapWerk;
+	private HashMap<String, AbstractClient> mapClient;
 	private HashMap<String, Segment> mapSegment;
 	private HashMap<Date, AbstractOrderPerDay> mapOrderPerDay;
 	private HashMap<String, OrderPosition> mapOrderPosition;
@@ -4158,8 +4646,8 @@ public class InputData {
 	
 	public ArrayList<AbstractOrderPerDay> getListOrderPerDay() { return new ArrayList<>(mapOrderPerDay.values()); }
 	public ArrayList<Address> getListAddress() { return new ArrayList<>(mapAddressKeyID.values()); }
-	public ArrayList<Werk> getListWerk() { return new ArrayList<>(mapWerk.values()); }
-	public ArrayList<Client> getListClient() { return new ArrayList<>(mapClient.values()); }
+	public ArrayList<AbstractWerk> getListWerk() { return new ArrayList<>(mapWerk.values()); }
+	public ArrayList<AbstractClient> getListClient() { return new ArrayList<>(mapClient.values()); }
 	
 	public Lieferart setLieferart(String id) {
 		if(mapLieferart.containsKey(id)) {
@@ -4206,16 +4694,16 @@ public class InputData {
 		return segment;
 	}
 	
-	public Werk setWerk(String id, String name, Address address, Segment segment) {
+	public AbstractWerk setWerk(String id, String name, Address address, Segment segment) {
 		if(mapWerk.containsKey(id)) {
 			return mapWerk.get(id);
 		}
-		Werk werk = new Werk(id, "-", address, segment, null);
+		AbstractWerk werk = new AbstractWerk(id, "-", address, segment);
 		mapWerk.put(id, werk);
 		return werk;
 	}
 	
-	public Werk getWerk(String id) {
+	public AbstractWerk getWerk(String id) {
 		if(mapWerk.containsKey(id)) {
 			return mapWerk.get(id);
 		}
@@ -4223,11 +4711,11 @@ public class InputData {
 		//throw new RuntimeException(String.format("Werk [%s] not defined", id));
 	}
 	
-	public Client setClient(String id, String name, Address address) {
+	public AbstractClient setClient(String id, String name, Address address) {
 		if(mapClient.containsKey(id)) {
 			return mapClient.get(id);
 		}
-		Client client = new Client(id, name, address);
+		AbstractClient client = new AbstractClient(id, name, address);
 		mapClient.put(id, client);
 		return client;
 	}
