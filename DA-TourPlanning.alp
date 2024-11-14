@@ -150,7 +150,7 @@
 				</Variable>
 				<Variable Class="CollectionVariable">
 					<Id>1731481804984</Id>
-					<Name><![CDATA[mapClient]]></Name>
+					<Name><![CDATA[mapCustomer]]></Name>
 					<X>-980</X><Y>70</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -159,13 +159,13 @@
 					<Properties SaveInSnapshot="true" AccessType="private" StaticVariable="false">
 						<CollectionClass><![CDATA[LinkedHashMap]]></CollectionClass>
 						<ElementClass><![CDATA[String]]></ElementClass>
-						<ValueElementClass><![CDATA[Client]]></ValueElementClass>
+						<ValueElementClass><![CDATA[Customer]]></ValueElementClass>
 					</Properties>
 
 				</Variable>
 				<Variable Class="CollectionVariable">
 					<Id>1731481824861</Id>
-					<Name><![CDATA[mapWerk]]></Name>
+					<Name><![CDATA[mapLager]]></Name>
 					<X>-980</X><Y>120</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -174,13 +174,13 @@
 					<Properties SaveInSnapshot="true" AccessType="private" StaticVariable="false">
 						<CollectionClass><![CDATA[LinkedHashMap]]></CollectionClass>
 						<ElementClass><![CDATA[String]]></ElementClass>
-						<ValueElementClass><![CDATA[Werk]]></ValueElementClass>
+						<ValueElementClass><![CDATA[Lager]]></ValueElementClass>
 					</Properties>
 
 				</Variable>
 				<Variable Class="CollectionVariable">
 					<Id>1731486932465</Id>
-					<Name><![CDATA[mapOrderPosition]]></Name>
+					<Name><![CDATA[mapOrder]]></Name>
 					<X>-980</X><Y>140</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -189,7 +189,7 @@
 					<Properties SaveInSnapshot="true" AccessType="private" StaticVariable="false">
 						<CollectionClass><![CDATA[LinkedHashMap]]></CollectionClass>
 						<ElementClass><![CDATA[String]]></ElementClass>
-						<ValueElementClass><![CDATA[Werk]]></ValueElementClass>
+						<ValueElementClass><![CDATA[Order]]></ValueElementClass>
 					</Properties>
 
 				</Variable>
@@ -203,8 +203,8 @@
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" AccessType="private" StaticVariable="false">
 						<CollectionClass><![CDATA[LinkedHashMap]]></CollectionClass>
-						<ElementClass><![CDATA[Werk]]></ElementClass>
-						<ValueElementClass><![CDATA[Scheduler]]></ValueElementClass>
+						<ElementClass><![CDATA[Lager]]></ElementClass>
+						<ValueElementClass><![CDATA[AlgScheduler]]></ValueElementClass>
 					</Properties>
 
 				</Variable>
@@ -212,17 +212,17 @@
 			<DynamicEvents>
 				<DynamicEventClass>
 					<Id>1731516284799</Id>
-					<Name><![CDATA[evtNewDay]]></Name>
+					<Name><![CDATA[evtDeliveryDay]]></Name>
 					<X>-980</X><Y>250</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Parameter>
-						<Name><![CDATA[orderPerDay]]></Name>
-						<Type><![CDATA[AbstractOrderPerDay]]></Type>
+						<Name><![CDATA[deliveryDay]]></Name>
+						<Type><![CDATA[DeliveryDay]]></Type>
 					</Parameter>
-					<Action><![CDATA[startNewDay(orderPerDay);]]></Action>
+					<Action><![CDATA[startNewDay(deliveryDay);]]></Action>
 				</DynamicEventClass>
 			</DynamicEvents>
 			<Functions>
@@ -236,26 +236,25 @@
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[setupWerke();
-setupClients();
-setupOrders();]]></Body>
+					<Body><![CDATA[setupLager();
+setupCustomer();
+setupOrder();]]></Body>
 				</Function>
 				<Function AccessType="private" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731413591561</Id>
-					<Name><![CDATA[setupClients]]></Name>
+					<Name><![CDATA[setupCustomer]]></Name>
 					<X>-190</X><Y>70</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[for (AbstractClient client : data.getListClient()) {
-	Address address = client.address;
+					<Body><![CDATA[for (Customer c : data.getListCustomer()) {
+	Address address = c.address;
 	if (address.hasCoordinates()) {
-		Client newClient = add_popClient(client.id, client.name, address, this);
-		mapClient.put(newClient.id, newClient);
-		//test.jumpTo(address.getLongitude(), address.getLangitude());
+		Customer customer = add_popCustomer(c.id, c.name, address, this);
+		mapCustomer.put(customer.id, customer);
 	}
 }]]></Body>
 				</Function>
@@ -263,20 +262,18 @@ setupOrders();]]></Body>
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731479248489</Id>
-					<Name><![CDATA[setupWerke]]></Name>
+					<Name><![CDATA[setupLager]]></Name>
 					<X>-190</X><Y>90</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[for (AbstractWerk werk : data.getListWerk()) {
-	Address address = werk.address;
+					<Body><![CDATA[for (Lager l : data.getListLager()) {
+	Address address = l.address;
 	if (address.hasCoordinates()) {
-		Werk newWerk = add_popWerk(werk.id, werk.name, werk.address, werk.segment, this);
-		//Werk newWerk = add_popWerk().copy(werk);
-		mapWerk.put(newWerk.id, newWerk);
-		//test.jumpTo(address.getLongitude(), address.getLangitude());
-		mapScheduler.put(newWerk, new NearestNeighbour(this, newWerk));
+		Lager lager = add_popLager(l.id, l.name, l.address, this);
+		mapLager.put(lager.id, lager);
+		mapScheduler.put(lager, new AlgNearestNeighbour(this, lager));
 	}
 }]]></Body>
 				</Function>
@@ -284,33 +281,33 @@ setupOrders();]]></Body>
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731489821433</Id>
-					<Name><![CDATA[setupOrders]]></Name>
+					<Name><![CDATA[setupOrder]]></Name>
 					<X>-190</X><Y>110</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[for (AbstractOrderPerDay orderPerDay : data.getListOrderPerDay()) {
-	create_evtNewDay(dateToTime(orderPerDay.deliveryDate), orderPerDay);
+					<Body><![CDATA[for (DeliveryDay d : data.getListDeliveryDay()) {
+	create_evtDeliveryDay(dateToTime(d.deliveryDate), d);
 }]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[LinkedHashMap<String, Client>]]></ReturnType>
+					<ReturnType><![CDATA[LinkedHashMap<String, Customer>]]></ReturnType>
 					<Id>1731490721252</Id>
-					<Name><![CDATA[getMapClient]]></Name>
+					<Name><![CDATA[getMapCustomer]]></Name>
 					<X>-700</X><Y>70</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return mapClient;]]></Body>
+					<Body><![CDATA[return mapCustomer;]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[Client]]></ReturnType>
+					<ReturnType><![CDATA[Customer]]></ReturnType>
 					<Id>1731490763252</Id>
-					<Name><![CDATA[getClient]]></Name>
+					<Name><![CDATA[getCustomer]]></Name>
 					<X>-690</X><Y>90</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -320,30 +317,30 @@ setupOrders();]]></Body>
 						<Name><![CDATA[id]]></Name>
 						<Type><![CDATA[String]]></Type>
 					</Parameter>
-					<Body><![CDATA[if (mapClient.containsKey(id)) {
-	return mapClient.get(id);
+					<Body><![CDATA[if (mapCustomer.containsKey(id)) {
+	return mapCustomer.get(id);
 }
 
-traceln(String.format("No Client with ID [%s] found", id));
+traceln(String.format("No Customer with ID [%s] found", id));
 return null;]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[LinkedHashMap<String, Werk>]]></ReturnType>
+					<ReturnType><![CDATA[LinkedHashMap<String, Lager>]]></ReturnType>
 					<Id>1731491386717</Id>
-					<Name><![CDATA[getMapWerk]]></Name>
+					<Name><![CDATA[getMapLager]]></Name>
 					<X>-700</X><Y>120</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return mapWerk;]]></Body>
+					<Body><![CDATA[return mapLager;]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[Werk]]></ReturnType>
+					<ReturnType><![CDATA[Lager]]></ReturnType>
 					<Id>1731491386721</Id>
-					<Name><![CDATA[getWerk]]></Name>
+					<Name><![CDATA[getLager]]></Name>
 					<X>-690</X><Y>160</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -353,24 +350,24 @@ return null;]]></Body>
 						<Name><![CDATA[id]]></Name>
 						<Type><![CDATA[String]]></Type>
 					</Parameter>
-					<Body><![CDATA[if (mapWerk.containsKey(id)) {
-	return mapWerk.get(id);
+					<Body><![CDATA[if (mapLager.containsKey(id)) {
+	return mapLager.get(id);
 }
 
-error(String.format("No Werk with ID [%s] found", id));
+error(String.format("No Lager with ID [%s] found", id));
 return null;]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[ArrayList<Werk>]]></ReturnType>
+					<ReturnType><![CDATA[ArrayList<Lager>]]></ReturnType>
 					<Id>1731491423473</Id>
-					<Name><![CDATA[getListWerk]]></Name>
+					<Name><![CDATA[getListLager]]></Name>
 					<X>-700</X><Y>140</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return new ArrayList<>(mapWerk.values());]]></Body>
+					<Body><![CDATA[return new ArrayList<>(mapLager.values());]]></Body>
 				</Function>
 				<Function AccessType="private" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
@@ -383,12 +380,12 @@ return null;]]></Body>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Parameter>
-						<Name><![CDATA[orderPerDay]]></Name>
-						<Type><![CDATA[AbstractOrderPerDay]]></Type>
+						<Name><![CDATA[d]]></Name>
+						<Type><![CDATA[DeliveryDay]]></Type>
 					</Parameter>
-					<Body><![CDATA[OrderPerDay newOrderPerDay = add_popOrderPerDay().copy(this, orderPerDay);
+					<Body><![CDATA[DeliveryDay deliveryDay = add_popDeliveryDay().copy(this, d);
 
-for (Scheduler scheduler : mapScheduler.values()) {
+for (AlgScheduler scheduler : mapScheduler.values()) {
 	scheduler.startRouting();
 }]]></Body>
 				</Function>
@@ -407,6 +404,18 @@ for (Scheduler scheduler : mapScheduler.values()) {
 						<Type><![CDATA[AbstractLocation]]></Type>
 					</Parameter>
 					<Body><![CDATA[return add_popLKW(idLKW++, location, 100, this);]]></Body>
+				</Function>
+				<Function AccessType="private" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[ArrayList<AbstractLocation>]]></ReturnType>
+					<Id>1731596660230</Id>
+					<Name><![CDATA[getListWerk]]></Name>
+					<X>-400</X><Y>540</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return new ArrayList<>(root.getMapWerk().values());]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -434,7 +443,7 @@ for (Scheduler scheduler : mapScheduler.values()) {
 			<EmbeddedObjects>
 				<EmbeddedObject>
 					<Id>1731431357422</Id>
-					<Name><![CDATA[popClient]]></Name>
+					<Name><![CDATA[popCustomer]]></Name>
 					<X>-480</X><Y>270</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -443,12 +452,12 @@ for (Scheduler scheduler : mapScheduler.values()) {
 					<PresentationId>1731431358917</PresentationId>
 					<ActiveObjectClass>
 						<PackageName><![CDATA[da_tourplanning]]></PackageName>
-						<ClassName><![CDATA[Client]]></ClassName>
+						<ClassName><![CDATA[Customer]]></ClassName>
 					</ActiveObjectClass>
 					<GenericParameterSubstitute>
 						<GenericParameterSubstituteReference>
 							<PackageName><![CDATA[da_tourplanning]]></PackageName>
-							<ClassName><![CDATA[Client]]></ClassName>
+							<ClassName><![CDATA[Customer]]></ClassName>
 							<ItemName><![CDATA[1731431168951]]></ItemName>
 						</GenericParameterSubstituteReference>
 					</GenericParameterSubstitute>
@@ -463,7 +472,7 @@ for (Scheduler scheduler : mapScheduler.values()) {
 							<Name><![CDATA[address]]></Name>
 						</Parameter>
 						<Parameter>
-							<Name><![CDATA[mainAgent]]></Name>
+							<Name><![CDATA[root]]></Name>
 						</Parameter>
 					</Parameters>
 					<ReplicationFlag>true</ReplicationFlag>
@@ -503,7 +512,7 @@ for (Scheduler scheduler : mapScheduler.values()) {
 				</EmbeddedObject>
 				<EmbeddedObject>
 					<Id>1731479107656</Id>
-					<Name><![CDATA[popWerk]]></Name>
+					<Name><![CDATA[popLager]]></Name>
 					<X>-480</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -512,19 +521,16 @@ for (Scheduler scheduler : mapScheduler.values()) {
 					<PresentationId>1731479109689</PresentationId>
 					<ActiveObjectClass>
 						<PackageName><![CDATA[da_tourplanning]]></PackageName>
-						<ClassName><![CDATA[Werk]]></ClassName>
+						<ClassName><![CDATA[Lager]]></ClassName>
 					</ActiveObjectClass>
 					<GenericParameterSubstitute>
 						<GenericParameterSubstituteReference>
 							<PackageName><![CDATA[da_tourplanning]]></PackageName>
-							<ClassName><![CDATA[Werk]]></ClassName>
+							<ClassName><![CDATA[Lager]]></ClassName>
 							<ItemName><![CDATA[1731431181264]]></ItemName>
 						</GenericParameterSubstituteReference>
 					</GenericParameterSubstitute>
 					<Parameters>
-						<Parameter>
-							<Name><![CDATA[segment]]></Name>
-						</Parameter>
 						<Parameter>
 							<Name><![CDATA[id]]></Name>
 						</Parameter>
@@ -535,7 +541,7 @@ for (Scheduler scheduler : mapScheduler.values()) {
 							<Name><![CDATA[address]]></Name>
 						</Parameter>
 						<Parameter>
-							<Name><![CDATA[mainAgent]]></Name>
+							<Name><![CDATA[root]]></Name>
 						</Parameter>
 					</Parameters>
 					<ReplicationFlag>true</ReplicationFlag>
@@ -600,7 +606,7 @@ for (Scheduler scheduler : mapScheduler.values()) {
 							<Name><![CDATA[capacityInKg]]></Name>
 						</Parameter>
 						<Parameter>
-							<Name><![CDATA[mainAgent]]></Name>
+							<Name><![CDATA[root]]></Name>
 						</Parameter>
 					</Parameters>
 					<ReplicationFlag>true</ReplicationFlag>
@@ -640,7 +646,7 @@ for (Scheduler scheduler : mapScheduler.values()) {
 				</EmbeddedObject>
 				<EmbeddedObject>
 					<Id>1731489770390</Id>
-					<Name><![CDATA[popOrderPerDay]]></Name>
+					<Name><![CDATA[popDeliveryDay]]></Name>
 					<X>-480</X><Y>330</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -649,13 +655,13 @@ for (Scheduler scheduler : mapScheduler.values()) {
 					<PresentationId>1731489772375</PresentationId>
 					<ActiveObjectClass>
 						<PackageName><![CDATA[da_tourplanning]]></PackageName>
-						<ClassName><![CDATA[OrderPerDay]]></ClassName>
+						<ClassName><![CDATA[DeliveryDay]]></ClassName>
 					</ActiveObjectClass>
 					<GenericParameterSubstitute>
 						<GenericParameterSubstituteReference>
 							<PackageName><![CDATA[da_tourplanning]]></PackageName>
-							<ClassName><![CDATA[OrderPerDay]]></ClassName>
-							<ItemName><![CDATA[1731489739429]]></ItemName>
+							<ClassName><![CDATA[DeliveryDay]]></ClassName>
+							<ItemName><![CDATA[1731594031432]]></ItemName>
 						</GenericParameterSubstituteReference>
 					</GenericParameterSubstitute>
 					<Parameters>
@@ -663,7 +669,7 @@ for (Scheduler scheduler : mapScheduler.values()) {
 							<Name><![CDATA[deliveryDate]]></Name>
 						</Parameter>
 						<Parameter>
-							<Name><![CDATA[mainAgent]]></Name>
+							<Name><![CDATA[root]]></Name>
 						</Parameter>
 					</Parameters>
 					<ReplicationFlag>true</ReplicationFlag>
@@ -718,7 +724,7 @@ for (Scheduler scheduler : mapScheduler.values()) {
 							</Value>
 						</Parameter>
 						<Parameter>
-							<Name><![CDATA[mainAgent]]></Name>
+							<Name><![CDATA[root]]></Name>
 							<Value Class="CodeValue">
 								<Code><![CDATA[this]]></Code>
 							</Value>
@@ -873,7 +879,7 @@ for (Scheduler scheduler : mapScheduler.values()) {
 				</Group>
 				<EmbeddedObjectPresentation>
 					<Id>1731431358917</Id>
-					<Name><![CDATA[popClient_presentation]]></Name>
+					<Name><![CDATA[popCustomer_presentation]]></Name>
 					<X>0</X><Y>0</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
@@ -891,7 +897,7 @@ for (Scheduler scheduler : mapScheduler.values()) {
 				</EmbeddedObjectPresentation>
 				<EmbeddedObjectPresentation>
 					<Id>1731479109689</Id>
-					<Name><![CDATA[popWerk_presentation]]></Name>
+					<Name><![CDATA[popLager_presentation]]></Name>
 					<X>0</X><Y>0</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
@@ -970,7 +976,7 @@ for (Scheduler scheduler : mapScheduler.values()) {
 				</Group>
 				<EmbeddedObjectPresentation>
 					<Id>1731489772375</Id>
-					<Name><![CDATA[popOrderPerDay_presentation]]></Name>
+					<Name><![CDATA[popDeliveryDay_presentation]]></Name>
 					<X>0</X><Y>0</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
@@ -1135,10 +1141,10 @@ for (Scheduler scheduler : mapScheduler.values()) {
 		<!--   =========   Active Object Class   ========  -->
 		<ActiveObjectClass>
 			<Id>1731431168945</Id>
-			<Name><![CDATA[Client]]></Name>
+			<Name><![CDATA[Customer]]></Name>
 			<ExtendsReference>
-				<PackageName><![CDATA[da_lib]]></PackageName>
-				<ClassName><![CDATA[AbstractClient]]></ClassName>
+				<PackageName><![CDATA[da_tourplanning]]></PackageName>
+				<ClassName><![CDATA[AbstractLocation]]></ClassName>
 			</ExtendsReference>
 			<Parameters>
 				<Parameter>
@@ -1151,7 +1157,7 @@ for (Scheduler scheduler : mapScheduler.values()) {
 					<Name><![CDATA[address]]></Name>
 				</Parameter>
 				<Parameter>
-					<Name><![CDATA[mainAgent]]></Name>
+					<Name><![CDATA[root]]></Name>
 				</Parameter>
 			</Parameters>
 			<StartupCode><![CDATA[setup();]]></StartupCode>
@@ -1247,63 +1253,42 @@ for (Scheduler scheduler : mapScheduler.values()) {
 			<Variables>
 				<Variable Class="PlainVariable">
 					<Id>1731519228480</Id>
-					<Name><![CDATA[werk]]></Name>
+					<Name><![CDATA[lager]]></Name>
 					<X>-520</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="private" StaticVariable="false">
-						<Type><![CDATA[Werk]]></Type>        
+						<Type><![CDATA[Lager]]></Type>        
 					</Properties>
-				</Variable>
-				<Variable Class="Parameter">
-					<Id>1731519476764</Id>
-					<Name><![CDATA[mainAgent]]></Name>
-					<X>-1020</X><Y>150</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[Main]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<ParameterEditor>
-							<Id>1731519476762</Id>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
 				</Variable>
 			</Variables>
 			<Functions>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[Werk]]></ReturnType>
+					<ReturnType><![CDATA[Lager]]></ReturnType>
 					<Id>1731519228476</Id>
-					<Name><![CDATA[getWerk]]></Name>
+					<Name><![CDATA[getLager]]></Name>
 					<X>-250</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return werk;]]></Body>
+					<Body><![CDATA[return lager;]]></Body>
 				</Function>
 				<Function AccessType="private" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731519228478</Id>
-					<Name><![CDATA[setWerk]]></Name>
-					<X>-250</X><Y>510</Y>
+					<Name><![CDATA[setLager]]></Name>
+					<X>-240</X><Y>110</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[if (werk == null) {
-	werk = (Werk) getClosestLocByGIS(mainAgent.map, getListWerk());
+					<Body><![CDATA[if (lager == null) {
+	lager = (Lager) getClosestLocByGIS(root.getListLager());
 }]]></Body>
 				</Function>
 				<Function AccessType="private" StaticFunction="false">
@@ -1316,20 +1301,8 @@ for (Scheduler scheduler : mapScheduler.values()) {
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[setWerk();
+					<Body><![CDATA[setLager();
 setVisible(false);]]></Body>
-				</Function>
-				<Function AccessType="private" StaticFunction="false">
-					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[ArrayList<AbstractLocation>]]></ReturnType>
-					<Id>1731519683788</Id>
-					<Name><![CDATA[getListWerk]]></Name>
-					<X>-240</X><Y>530</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return new ArrayList<>(mainAgent.getMapWerk().values());]]></Body>
 				</Function>
 				<Function AccessType="protected" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
@@ -1660,10 +1633,10 @@ setVisible(false);]]></Body>
 		<!--   =========   Active Object Class   ========  -->
 		<ActiveObjectClass>
 			<Id>1731431181258</Id>
-			<Name><![CDATA[Werk]]></Name>
+			<Name><![CDATA[Lager]]></Name>
 			<ExtendsReference>
-				<PackageName><![CDATA[da_lib]]></PackageName>
-				<ClassName><![CDATA[AbstractWerk]]></ClassName>
+				<PackageName><![CDATA[da_tourplanning]]></PackageName>
+				<ClassName><![CDATA[AbstractLocation]]></ClassName>
 			</ExtendsReference>
 			<Parameters>
 				<Parameter>
@@ -1676,7 +1649,7 @@ setVisible(false);]]></Body>
 					<Name><![CDATA[address]]></Name>
 				</Parameter>
 				<Parameter>
-					<Name><![CDATA[segment]]></Name>
+					<Name><![CDATA[root]]></Name>
 				</Parameter>
 			</Parameters>
 			<StartupCode><![CDATA[setup();]]></StartupCode>
@@ -1770,30 +1743,9 @@ setVisible(false);]]></Body>
 			<CurrentLevel>1731431181265</CurrentLevel>
 			<ConnectionsId>1731431181259</ConnectionsId>
 			<Variables>
-				<Variable Class="Parameter">
-					<Id>1731493822999</Id>
-					<Name><![CDATA[mainAgent]]></Name>
-					<X>-1020</X><Y>170</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[Main]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<ParameterEditor>
-							<Id>1731493822997</Id>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
-				</Variable>
 				<Variable Class="CollectionVariable">
 					<Id>1731492770389</Id>
-					<Name><![CDATA[mapOrderPos]]></Name>
+					<Name><![CDATA[mapOrder]]></Name>
 					<X>-1020</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -1802,7 +1754,7 @@ setVisible(false);]]></Body>
 					<Properties SaveInSnapshot="true" AccessType="protected" StaticVariable="false">
 						<CollectionClass><![CDATA[LinkedHashMap]]></CollectionClass>
 						<ElementClass><![CDATA[String]]></ElementClass>
-						<ValueElementClass><![CDATA[OrderPosition]]></ValueElementClass>
+						<ValueElementClass><![CDATA[Order]]></ValueElementClass>
 					</Properties>
 
 				</Variable>
@@ -1810,9 +1762,10 @@ setVisible(false);]]></Body>
 			<Functions>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[Werk]]></ReturnType>
+					<ReturnType><![CDATA[Lager]]></ReturnType>
 					<Id>1731486629804</Id>
 					<Name><![CDATA[copy]]></Name>
+					<ExcludeFromBuild>true</ExcludeFromBuild>
 					<X>-250</X><Y>90</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -1833,43 +1786,43 @@ return this;]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
+					<ReturnType><![CDATA[ArrayList<Order>]]></ReturnType>
 					<Id>1731492770391</Id>
-					<Name><![CDATA[getListOrderPos]]></Name>
+					<Name><![CDATA[getListOrder]]></Name>
 					<X>-750</X><Y>510</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return new ArrayList<>(mapOrderPos.values());]]></Body>
+					<Body><![CDATA[return new ArrayList<>(mapOrder.values());]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
 					<Id>1731492770393</Id>
-					<Name><![CDATA[addOrderPos]]></Name>
+					<Name><![CDATA[addOrder]]></Name>
 					<X>-750</X><Y>530</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Parameter>
-						<Name><![CDATA[orderPos]]></Name>
-						<Type><![CDATA[OrderPosition]]></Type>
+						<Name><![CDATA[order]]></Name>
+						<Type><![CDATA[Order]]></Type>
 					</Parameter>
-					<Body><![CDATA[mapOrderPos.put(orderPos.getID(), orderPos);]]></Body>
+					<Body><![CDATA[mapOrder.put(order.getID(), order);]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[LinkedHashMap<String, OrderPosition>]]></ReturnType>
+					<ReturnType><![CDATA[LinkedHashMap<String, Order>]]></ReturnType>
 					<Id>1731492770395</Id>
-					<Name><![CDATA[getMapOrderPos]]></Name>
+					<Name><![CDATA[getMapOrder]]></Name>
 					<X>-750</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return mapOrderPos;]]></Body>
+					<Body><![CDATA[return mapOrder;]]></Body>
 				</Function>
 				<Function AccessType="private" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
@@ -2196,7 +2149,7 @@ return this;]]></Body>
 			<Id>1731479084183</Id>
 			<Name><![CDATA[LKW]]></Name>
 			<ExtendsReference>
-				<PackageName><![CDATA[da_lib]]></PackageName>
+				<PackageName><![CDATA[da_tourplanning]]></PackageName>
 				<ClassName><![CDATA[AbstractVehicle]]></ClassName>
 			</ExtendsReference>
 			<Parameters>
@@ -2208,6 +2161,9 @@ return this;]]></Body>
 				</Parameter>
 				<Parameter>
 					<Name><![CDATA[capacityInKg]]></Name>
+				</Parameter>
+				<Parameter>
+					<Name><![CDATA[root]]></Name>
 				</Parameter>
 			</Parameters>
 			<Generic>false</Generic>
@@ -2235,10 +2191,7 @@ return this;]]></Body>
 					<Code><![CDATA[10]]></Code>
 					<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
 				</VelocityCode>
-				<OnArrival><![CDATA[Client client = (Client) targetLocation;
-client.store.setVisible(false);
-
-setNextOrderPos();]]></OnArrival>
+				<OnArrival><![CDATA[setNextOrder();]]></OnArrival>
 				<PhysicalLength Class="CodeUnitValue">
 					<Code><![CDATA[1]]></Code>
 					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
@@ -2306,14 +2259,14 @@ setNextOrderPos();]]></OnArrival>
 			<Variables>
 				<Variable Class="PlainVariable">
 					<Id>1731494679081</Id>
-					<Name><![CDATA[nextOrderPos]]></Name>
+					<Name><![CDATA[nextOrder]]></Name>
 					<X>-1020</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="private" StaticVariable="false">
-						<Type><![CDATA[OrderPosition]]></Type>        
+						<Type><![CDATA[Order]]></Type>        
 					</Properties>
 				</Variable>
 				<Variable Class="PlainVariable">
@@ -2328,30 +2281,9 @@ setNextOrderPos();]]></OnArrival>
 						<Type><![CDATA[AbstractLocation]]></Type>        
 					</Properties>
 				</Variable>
-				<Variable Class="Parameter">
-					<Id>1731509402850</Id>
-					<Name><![CDATA[mainAgent]]></Name>
-					<X>-520</X><Y>150</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[Main]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<ParameterEditor>
-							<Id>1731509402848</Id>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
-				</Variable>
 				<Variable Class="CollectionVariable">
 					<Id>1731494551886</Id>
-					<Name><![CDATA[listRankedOrderPos]]></Name>
+					<Name><![CDATA[listRankedOrder]]></Name>
 					<X>-1020</X><Y>120</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -2359,7 +2291,7 @@ setNextOrderPos();]]></OnArrival>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" AccessType="protected" StaticVariable="false">
 						<CollectionClass><![CDATA[ArrayList]]></CollectionClass>
-						<ElementClass><![CDATA[OrderPosition]]></ElementClass>
+						<ElementClass><![CDATA[Order]]></ElementClass>
 						<ValueElementClass><![CDATA[OrderPosition]]></ValueElementClass>
 					</Properties>
 
@@ -2370,19 +2302,19 @@ setNextOrderPos();]]></OnArrival>
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731494581685</Id>
-					<Name><![CDATA[addNextOrderPos]]></Name>
+					<Name><![CDATA[addNextOrder]]></Name>
 					<X>-750</X><Y>140</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Parameter>
-						<Name><![CDATA[orderPos]]></Name>
-						<Type><![CDATA[OrderPosition]]></Type>
+						<Name><![CDATA[order]]></Name>
+						<Type><![CDATA[Order]]></Type>
 					</Parameter>
-					<Body><![CDATA[listRankedOrderPos.add(orderPos);
-currentWeightInKg += orderPos.getWeightInKg();
-currentScheduleLoc = orderPos.getClient();]]></Body>
+					<Body><![CDATA[listRankedOrder.add(order);
+currentWeightInKg += order.getWeightInKg();
+currentScheduleLoc = order.getCustomer();]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
@@ -2394,27 +2326,27 @@ currentScheduleLoc = orderPos.getClient();]]></Body>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[mainAgent.logger.addToLogRoute(this);
-setNextOrderPos();]]></Body>
+					<Body><![CDATA[root.logger.addToLogRoute(this);
+setNextOrder();]]></Body>
 				</Function>
 				<Function AccessType="private" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731494730987</Id>
-					<Name><![CDATA[setNextOrderPos]]></Name>
+					<Name><![CDATA[setNextOrder]]></Name>
 					<X>-740</X><Y>310</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[if (!listRankedOrderPos.isEmpty()) {
-	nextOrderPos = listRankedOrderPos.get(0);
-	targetLocation = nextOrderPos.getClient();
-	listRankedOrderPos.remove(nextOrderPos);
+					<Body><![CDATA[if (!listRankedOrder.isEmpty()) {
+	nextOrder = listRankedOrder.get(0);
+	targetLocation = nextOrder.getCustomer();
+	listRankedOrder.remove(nextOrder);
 	moveTo(targetLocation);
 	
-	Client client = (Client) nextOrderPos.getClient();
-	client.store.setVisible(true); 
+	Customer customer = (Customer) nextOrder.getCustomer();
+	customer.store.setVisible(true); 
 	
 } else {
 	deleteSelf();
@@ -2449,29 +2381,29 @@ currentScheduleLoc = initLocation;]]></Body>
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1731505717828</Id>
-					<Name><![CDATA[canTakeOrderPos]]></Name>
+					<Name><![CDATA[canTakeOrder]]></Name>
 					<X>-750</X><Y>330</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Parameter>
-						<Name><![CDATA[orderPos]]></Name>
-						<Type><![CDATA[OrderPosition]]></Type>
+						<Name><![CDATA[order]]></Name>
+						<Type><![CDATA[Order]]></Type>
 					</Parameter>
 					<Body><![CDATA[return true;]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
+					<ReturnType><![CDATA[ArrayList<Order>]]></ReturnType>
 					<Id>1731509041075</Id>
-					<Name><![CDATA[getListRankedOrderPos]]></Name>
+					<Name><![CDATA[getListRankedOrder]]></Name>
 					<X>-750</X><Y>120</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return listRankedOrderPos;]]></Body>
+					<Body><![CDATA[return listRankedOrder;]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -2816,289 +2748,6 @@ currentScheduleLoc = initLocation;]]></Body>
 		</ActiveObjectClass>
 		<!--   =========   Active Object Class   ========  -->
 		<ActiveObjectClass>
-			<Id>1731489739423</Id>
-			<Name><![CDATA[OrderPerDay]]></Name>
-			<ExtendsReference>
-				<PackageName><![CDATA[da_lib]]></PackageName>
-				<ClassName><![CDATA[AbstractOrderPerDay]]></ClassName>
-			</ExtendsReference>
-			<Parameters>
-				<Parameter>
-					<Name><![CDATA[deliveryDate]]></Name>
-				</Parameter>
-			</Parameters>
-			<Generic>false</Generic>
-			<GenericParameter>
-				<Id>1731489739429</Id>
-				<Name><![CDATA[1731489739429]]></Name>
-				<GenericParameterValue Class="CodeValue">
-					<Code><![CDATA[T extends Agent]]></Code>
-				</GenericParameterValue>
-				<GenericParameterLabel><![CDATA[Generic parameter:]]></GenericParameterLabel>
-			</GenericParameter>
-			<FlowChartsUsage>ENTITY</FlowChartsUsage>
-			<SamplesToKeep>100</SamplesToKeep>
-			<LimitNumberOfArrayElements>false</LimitNumberOfArrayElements>
-			<ElementsLimitValue>100</ElementsLimitValue>
-			<MakeDefaultViewArea>true</MakeDefaultViewArea>
-			<SceneGridColor/>
-			<SceneBackgroundColor/>
-			<SceneSkybox>null</SceneSkybox>
-			<AgentProperties>
-				<EnvironmentDefinesInitialLocation>true</EnvironmentDefinesInitialLocation>
-				<RotateAnimationTowardsMovement>true</RotateAnimationTowardsMovement>
-				<RotateAnimationVertically>false</RotateAnimationVertically>
-				<VelocityCode Class="CodeUnitValue">
-					<Code><![CDATA[10]]></Code>
-					<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
-				</VelocityCode>
-				<PhysicalLength Class="CodeUnitValue">
-					<Code><![CDATA[1]]></Code>
-					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
-				</PhysicalLength>
-				<PhysicalWidth Class="CodeUnitValue">
-					<Code><![CDATA[1]]></Code>
-					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
-				</PhysicalWidth>
-				<PhysicalHeight Class="CodeUnitValue">
-					<Code><![CDATA[1]]></Code>
-					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
-				</PhysicalHeight>
-			</AgentProperties>
-			<EnvironmentProperties>
-					<EnableSteps>false</EnableSteps>
-					<StepDurationCode Class="CodeUnitValue">
-						<Code><![CDATA[1.0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
-					</StepDurationCode>
-					<SpaceType>CONTINUOUS</SpaceType>
-					<WidthCode><![CDATA[500]]></WidthCode>
-					<HeightCode><![CDATA[500]]></HeightCode>
-					<ZHeightCode><![CDATA[0]]></ZHeightCode>
-					<ColumnsCountCode><![CDATA[100]]></ColumnsCountCode>
-					<RowsCountCode><![CDATA[100]]></RowsCountCode>
-					<NeigborhoodType>MOORE</NeigborhoodType>
-					<LayoutType>USER_DEF</LayoutType>
-					<NetworkType>USER_DEF</NetworkType>
-					<ConnectionsPerAgentCode><![CDATA[2]]></ConnectionsPerAgentCode>
-					<ConnectionsRangeCode><![CDATA[50]]></ConnectionsRangeCode>
-					<NeighborLinkFractionCode><![CDATA[0.95]]></NeighborLinkFractionCode>
-					<MCode><![CDATA[10]]></MCode>
-			</EnvironmentProperties>
-			<DatasetsCreationProperties>
-				<AutoCreate>true</AutoCreate>
-					<OccurrenceAtTime>true</OccurrenceAtTime>
-					<OccurrenceDate>1731571200000</OccurrenceDate>
-					<OccurrenceTime Class="CodeUnitValue">
-						<Code><![CDATA[0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
-					</OccurrenceTime>
-					<RecurrenceCode Class="CodeUnitValue">
-						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
-					</RecurrenceCode>
-			</DatasetsCreationProperties>
-			<ScaleRuler>
-				<Id>1731489739426</Id>
-				<Name><![CDATA[scale]]></Name>
-				<X>0</X><Y>-150</Y>
-				<PublicFlag>false</PublicFlag>
-				<PresentationFlag>false</PresentationFlag>
-				<ShowLabel>false</ShowLabel>
-				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-				<Length>100</Length>
-				<Rotation>0</Rotation>
-				<ScaleType>BASED_ON_LENGTH</ScaleType>
-				<ModelLength>10</ModelLength>
-				<LengthUnits>METER</LengthUnits>
-				<Scale>10</Scale>
-				<InheritedFromParentAgentType>true</InheritedFromParentAgentType>
-			</ScaleRuler>
-			<CurrentLevel>1731489739430</CurrentLevel>
-			<ConnectionsId>1731489739424</ConnectionsId>
-			<Variables>
-				<Variable Class="Parameter">
-					<Id>1731490957097</Id>
-					<Name><![CDATA[mainAgent]]></Name>
-					<X>-520</X><Y>110</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[Main]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<ParameterEditor>
-							<Id>1731490957095</Id>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
-				</Variable>
-			</Variables>
-			<Events>
-				<Event>
-					<Id>1731489905341</Id>
-					<Name><![CDATA[evtEndDay]]></Name>
-					<X>-1020</X><Y>290</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties TriggerType="timeout" Mode="userControls">
-						<Timeout Class="CodeUnitValue">
-							<Code><![CDATA[1]]></Code>
-							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
-						</Timeout>
-						<Rate Class="CodeUnitValue">
-							<Code><![CDATA[1]]></Code>
-							<Unit Class="RateUnits"><![CDATA[PER_HOUR]]></Unit>
-						</Rate>
-						<OccurrenceAtTime>true</OccurrenceAtTime>
-						<OccurrenceDate>1731571200000</OccurrenceDate>
-						<OccurrenceTime Class="CodeUnitValue">
-							<Code><![CDATA[0]]></Code>
-							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
-						</OccurrenceTime>
-						<RecurrenceCode Class="CodeUnitValue">
-							<Code><![CDATA[1]]></Code>
-							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
-						</RecurrenceCode>
-						<Condition><![CDATA[false]]></Condition>
-					</Properties>
-				</Event>
-			</Events>
-			<Functions>
-				<Function AccessType="public" StaticFunction="false">
-					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[OrderPerDay]]></ReturnType>
-					<Id>1731489866616</Id>
-					<Name><![CDATA[copy]]></Name>
-					<X>-250</X><Y>130</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Parameter>
-						<Name><![CDATA[main]]></Name>
-						<Type><![CDATA[Main]]></Type>
-					</Parameter>
-					<Parameter>
-						<Name><![CDATA[orderPerDay]]></Name>
-						<Type><![CDATA[AbstractOrderPerDay]]></Type>
-					</Parameter>
-					<Body><![CDATA[this.mainAgent = main;
-this.deliveryDate = orderPerDay.deliveryDate;
-
-for (OrderPosition orderPos : orderPerDay.getListOrderPos()) {
-	Client client = mainAgent.getClient(orderPos.getClientID());
-	if (client != null) {
-		orderPos.setClient(client);
-		mapOrderPos.put(orderPos.getID(), orderPos);
-	}
-}
-
-setup();
-return this;]]></Body>
-				</Function>
-				<Function AccessType="private" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1731491192043</Id>
-					<Name><![CDATA[setup]]></Name>
-					<X>-240</X><Y>150</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[for (OrderPosition orderPos : getListOrderPos()) {
-	
-	Client client = (Client) orderPos.getClient();
-	Werk werk = client.getWerk();
-	orderPos.setWerk(werk);
-	werk.addOrderPos(orderPos);
-	addLocation(client);
-	addLocation(werk);
-}
-
-evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
-				</Function>
-				<Function AccessType="private" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1731518857185</Id>
-					<Name><![CDATA[endDay]]></Name>
-					<X>-750</X><Y>290</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[for (AbstractLocation location : mapLocation.values()) {
-	location.endDay();
-}]]></Body>
-				</Function>
-			</Functions>
-			<AgentLinks>
-				<AgentLink>
-					<Id>1731489739424</Id>
-					<Name><![CDATA[connections]]></Name>
-					<X>50</X><Y>-50</Y>
-					<Label><X>15</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<HandleReceiveInConnections>false</HandleReceiveInConnections>
-					<AgentLinkType>COLLECTION_OF_LINKS</AgentLinkType>
-					<AgentLinkBidirectional>true</AgentLinkBidirectional>
-					<MessageType><![CDATA[Object]]></MessageType>
-					<LineStyle>SOLID</LineStyle>
-					<LineWidth>1</LineWidth>
-					<LineColor>-16777216</LineColor>
-					<LineZOrder>UNDER_AGENTS</LineZOrder>
-					<LineArrow>NONE</LineArrow>
-					<LineArrowPosition>END</LineArrowPosition>
-				</AgentLink>
-			</AgentLinks>
-
-			<ContainerLinks>
-				<ContainerLink>
-					<Id>1731489772381</Id>
-					<Name><![CDATA[main]]></Name>
-					<X>50</X><Y>-100</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[da_tourplanning]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-					</ActiveObjectClass>
-				</ContainerLink>
-			</ContainerLinks>
-
-			<Presentation>
-				<Level>
-					<Id>1731489739430</Id>
-					<Name><![CDATA[level]]></Name>
-					<X>0</X><Y>0</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<Z>0</Z>
-					<LevelVisibility>DIM_NON_CURRENT</LevelVisibility>
-
-
-				</Level>
-			</Presentation>
-
-		</ActiveObjectClass>
-		<!--   =========   Active Object Class   ========  -->
-		<ActiveObjectClass>
 			<Id>1731508707481</Id>
 			<Name><![CDATA[Logger]]></Name>
 			<Import><![CDATA[import com.anylogic.engine.connectivity.TextFile.Mode;
@@ -3232,7 +2881,7 @@ import java.util.stream.*;]]></Import>
 				</Variable>
 				<Variable Class="Parameter">
 					<Id>1731508707600</Id>
-					<Name><![CDATA[mainAgent]]></Name>
+					<Name><![CDATA[root]]></Name>
 					<X>30</X><Y>70</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -3283,12 +2932,12 @@ closed = false;]]></Body>
 					</Parameter>
 					<Body><![CDATA[if ( logData() ) {	
 	int i = 1;
-	for (OrderPosition orderPos : lkw.getListRankedOrderPos()) {		
+	for (Order order : lkw.getListRankedOrder()) {		
 		logRoute.println(
 			String.format("%s;%s;%s;%d;%d", 
 			date(),
 			lkw.initLocation.id,
-			orderPos.getID(),
+			order.getID(),
 			lkw.id,
 			i
 		));	
@@ -3350,7 +2999,7 @@ closed = true;]]></Body>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[mainAgent.data.getDataAdditionalInfo().writeData();]]></Body>
+					<Body><![CDATA[root.data.getDataAdditionalInfo().writeData();]]></Body>
 				</Function>
 			</Functions>
 			<Connectivity>
@@ -3598,6 +3247,1942 @@ closed = true;]]></Body>
 						<Name>SansSerif</Name>
 						<Size>18</Size>
 						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+			</Presentation>
+
+				</Level>
+			</Presentation>
+
+		</ActiveObjectClass>
+		<!--   =========   Active Object Class   ========  -->
+		<ActiveObjectClass>
+			<Id>1731592959171</Id>
+			<Name><![CDATA[AbstractLocation]]></Name>
+			<Generic>false</Generic>
+			<GenericParameter>
+				<Id>1731592959166</Id>
+				<Name><![CDATA[1731592959166]]></Name>
+				<GenericParameterValue Class="CodeValue">
+					<Code><![CDATA[T extends Agent]]></Code>
+				</GenericParameterValue>
+				<GenericParameterLabel><![CDATA[Generic parameter:]]></GenericParameterLabel>
+			</GenericParameter>
+			<FlowChartsUsage>ENTITY</FlowChartsUsage>
+			<SamplesToKeep>100</SamplesToKeep>
+			<LimitNumberOfArrayElements>false</LimitNumberOfArrayElements>
+			<ElementsLimitValue>100</ElementsLimitValue>
+			<MakeDefaultViewArea>true</MakeDefaultViewArea>
+			<SceneGridColor/>
+			<SceneBackgroundColor/>
+			<SceneSkybox>null</SceneSkybox>
+			<AgentProperties>
+				<EnvironmentDefinesInitialLocation>true</EnvironmentDefinesInitialLocation>
+				<RotateAnimationTowardsMovement>true</RotateAnimationTowardsMovement>
+				<RotateAnimationVertically>false</RotateAnimationVertically>
+				<VelocityCode Class="CodeUnitValue">
+					<Code><![CDATA[10]]></Code>
+					<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
+				</VelocityCode>
+				<PhysicalLength Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalLength>
+				<PhysicalWidth Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalWidth>
+				<PhysicalHeight Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalHeight>
+			</AgentProperties>
+			<EnvironmentProperties>
+					<EnableSteps>false</EnableSteps>
+					<StepDurationCode Class="CodeUnitValue">
+						<Code><![CDATA[1.0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</StepDurationCode>
+					<SpaceType>CONTINUOUS</SpaceType>
+					<WidthCode><![CDATA[500]]></WidthCode>
+					<HeightCode><![CDATA[500]]></HeightCode>
+					<ZHeightCode><![CDATA[0]]></ZHeightCode>
+					<ColumnsCountCode><![CDATA[100]]></ColumnsCountCode>
+					<RowsCountCode><![CDATA[100]]></RowsCountCode>
+					<NeigborhoodType>MOORE</NeigborhoodType>
+					<LayoutType>USER_DEF</LayoutType>
+					<NetworkType>USER_DEF</NetworkType>
+					<ConnectionsPerAgentCode><![CDATA[2]]></ConnectionsPerAgentCode>
+					<ConnectionsRangeCode><![CDATA[50]]></ConnectionsRangeCode>
+					<NeighborLinkFractionCode><![CDATA[0.95]]></NeighborLinkFractionCode>
+					<MCode><![CDATA[10]]></MCode>
+			</EnvironmentProperties>
+			<DatasetsCreationProperties>
+				<AutoCreate>true</AutoCreate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1731484800000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</RecurrenceCode>
+			</DatasetsCreationProperties>
+			<ScaleRuler>
+				<Id>1731592959167</Id>
+				<Name><![CDATA[scale]]></Name>
+				<X>0</X><Y>-150</Y>
+				<PublicFlag>false</PublicFlag>
+				<PresentationFlag>false</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+				<Length>100</Length>
+				<Rotation>0</Rotation>
+				<ScaleType>BASED_ON_LENGTH</ScaleType>
+				<ModelLength>10</ModelLength>
+				<LengthUnits>METER</LengthUnits>
+				<Scale>10</Scale>
+				<InheritedFromParentAgentType>true</InheritedFromParentAgentType>
+			</ScaleRuler>
+			<CurrentLevel>1731592959187</CurrentLevel>
+			<ConnectionsId>1731592959236</ConnectionsId>
+			<Variables>
+				<Variable Class="PlainVariable">
+					<Id>1731592959185</Id>
+					<Name><![CDATA[distToLocation]]></Name>
+					<X>-520</X><Y>290</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="private" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1731592959226</Id>
+					<Name><![CDATA[id]]></Name>
+					<X>-1020</X><Y>90</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[String]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1731592959224</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1731592959229</Id>
+					<Name><![CDATA[name]]></Name>
+					<X>-1020</X><Y>110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[String]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1731592959227</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1731592959232</Id>
+					<Name><![CDATA[address]]></Name>
+					<X>-1020</X><Y>130</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[Address]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1731592959230</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1731596601144</Id>
+					<Name><![CDATA[root]]></Name>
+					<X>-1020</X><Y>150</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[Main]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1731596601142</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+			</Variables>
+			<Functions>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[AbstractLocation]]></ReturnType>
+					<Id>1731592959173</Id>
+					<Name><![CDATA[getClosestLocByGIS]]></Name>
+					<X>-250</X><Y>280</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[map]]></Name>
+						<Type><![CDATA[ShapeGISMap]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[list]]></Name>
+						<Type><![CDATA[List<AbstractLocation>]]></Type>
+					</Parameter>
+					<Body><![CDATA[AbstractLocation location = null;
+double distance = Double.NaN;
+
+for (AbstractLocation loc : list) {
+	double dist = address.getDistByGIS(map, loc.address);
+	if ((location == null) || (dist < distance)) {
+		location = loc;
+		distance = dist;
+	}
+}
+
+return location;]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[AbstractLocation]]></ReturnType>
+					<Id>1731592959175</Id>
+					<Name><![CDATA[getClosestLocByRoute]]></Name>
+					<X>-250</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[map]]></Name>
+						<Type><![CDATA[ShapeGISMap]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[list]]></Name>
+						<Type><![CDATA[List<AbstractLocation>]]></Type>
+					</Parameter>
+					<Body><![CDATA[AbstractLocation location = null;
+double distance = Double.NaN;
+
+for (AbstractLocation loc : list) {
+	double dist = address.getDistByRoute(map, loc.address);
+	if ((location == null) || (dist < distance)) {
+		location = loc;
+		distance = dist;
+	}
+}
+
+return location;]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731592959177</Id>
+					<Name><![CDATA[getLastCalcDistToLoc]]></Name>
+					<X>-250</X><Y>320</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return distToLocation;]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731592959179</Id>
+					<Name><![CDATA[startDay]]></Name>
+					<X>-750</X><Y>290</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[setVisible(true);]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731592959181</Id>
+					<Name><![CDATA[endDay]]></Name>
+					<X>-750</X><Y>310</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[setVisible(false);]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731592959183</Id>
+					<Name><![CDATA[setVisible]]></Name>
+					<X>-250</X><Y>350</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[visible]]></Name>
+						<Type><![CDATA[boolean]]></Type>
+					</Parameter>
+				</Function>
+			</Functions>
+			<AgentLinks>
+				<AgentLink>
+					<Id>1731592959236</Id>
+					<Name><![CDATA[connections]]></Name>
+					<X>50</X><Y>-50</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<HandleReceiveInConnections>false</HandleReceiveInConnections>
+					<AgentLinkType>COLLECTION_OF_LINKS</AgentLinkType>
+					<AgentLinkBidirectional>true</AgentLinkBidirectional>
+					<MessageType><![CDATA[Object]]></MessageType>
+					<LineStyle>SOLID</LineStyle>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineZOrder>UNDER_AGENTS</LineZOrder>
+					<LineArrow>NONE</LineArrow>
+					<LineArrowPosition>END</LineArrowPosition>
+				</AgentLink>
+			</AgentLinks>
+
+
+			<Presentation>
+				<Level>
+					<Id>1731592959187</Id>
+					<Name><![CDATA[level]]></Name>
+					<X>0</X><Y>0</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<Z>0</Z>
+					<LevelVisibility>DIM_NON_CURRENT</LevelVisibility>
+
+			<Presentation>
+				<Group>
+					<Id>1731592959189</Id>
+					<Name><![CDATA[group]]></Name>
+					<X>-770</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731592959191</Id>
+					<Name><![CDATA[roundRectangle14]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731592959193</Id>
+					<Name><![CDATA[text17]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Parameter]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731592959195</Id>
+					<Name><![CDATA[group1]]></Name>
+					<X>-270</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731592959197</Id>
+					<Name><![CDATA[roundRectangle15]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731592959199</Id>
+					<Name><![CDATA[text18]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Setup]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731592959201</Id>
+					<Name><![CDATA[group2]]></Name>
+					<X>-270</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731592959203</Id>
+					<Name><![CDATA[roundRectangle16]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731592959205</Id>
+					<Name><![CDATA[text19]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Function]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731592959207</Id>
+					<Name><![CDATA[group3]]></Name>
+					<X>-770</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731592959209</Id>
+					<Name><![CDATA[roundRectangle17]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731592959211</Id>
+					<Name><![CDATA[text20]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Simulation]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731592959213</Id>
+					<Name><![CDATA[group4]]></Name>
+					<X>-770</X><Y>500</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731592959215</Id>
+					<Name><![CDATA[roundRectangle18]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731592959217</Id>
+					<Name><![CDATA[text21]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Data]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731592959219</Id>
+					<Name><![CDATA[group5]]></Name>
+					<X>-270</X><Y>500</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731592959221</Id>
+					<Name><![CDATA[roundRectangle19]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731592959223</Id>
+					<Name><![CDATA[text22]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Parameter]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+			</Presentation>
+
+				</Level>
+			</Presentation>
+			<Areas>
+				<Area>
+					<Id>1731592959234</Id>
+					<Name><![CDATA[viewArea]]></Name>
+					<X>0</X><Y>0</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Title><![CDATA[]]></Title>
+					<Width>1000</Width>
+					<Height>600</Height>
+				</Area>
+			</Areas>
+
+		</ActiveObjectClass>
+		<!--   =========   Active Object Class   ========  -->
+		<ActiveObjectClass>
+			<Id>1731593255915</Id>
+			<Name><![CDATA[AbstractVehicle]]></Name>
+			<StartupCode><![CDATA[setup();]]></StartupCode>
+			<Generic>false</Generic>
+			<GenericParameter>
+				<Id>1731593255910</Id>
+				<Name><![CDATA[1731593255910]]></Name>
+				<GenericParameterValue Class="CodeValue">
+					<Code><![CDATA[T extends Agent]]></Code>
+				</GenericParameterValue>
+				<GenericParameterLabel><![CDATA[Generic parameter:]]></GenericParameterLabel>
+			</GenericParameter>
+			<FlowChartsUsage>ENTITY</FlowChartsUsage>
+			<SamplesToKeep>100</SamplesToKeep>
+			<LimitNumberOfArrayElements>false</LimitNumberOfArrayElements>
+			<ElementsLimitValue>100</ElementsLimitValue>
+			<MakeDefaultViewArea>true</MakeDefaultViewArea>
+			<SceneGridColor/>
+			<SceneBackgroundColor/>
+			<SceneSkybox>null</SceneSkybox>
+			<AgentProperties>
+				<EnvironmentDefinesInitialLocation>true</EnvironmentDefinesInitialLocation>
+				<RotateAnimationTowardsMovement>true</RotateAnimationTowardsMovement>
+				<RotateAnimationVertically>false</RotateAnimationVertically>
+				<VelocityCode Class="CodeUnitValue">
+					<Code><![CDATA[10]]></Code>
+					<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
+				</VelocityCode>
+				<PhysicalLength Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalLength>
+				<PhysicalWidth Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalWidth>
+				<PhysicalHeight Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalHeight>
+			</AgentProperties>
+			<EnvironmentProperties>
+					<EnableSteps>false</EnableSteps>
+					<StepDurationCode Class="CodeUnitValue">
+						<Code><![CDATA[1.0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</StepDurationCode>
+					<SpaceType>CONTINUOUS</SpaceType>
+					<WidthCode><![CDATA[500]]></WidthCode>
+					<HeightCode><![CDATA[500]]></HeightCode>
+					<ZHeightCode><![CDATA[0]]></ZHeightCode>
+					<ColumnsCountCode><![CDATA[100]]></ColumnsCountCode>
+					<RowsCountCode><![CDATA[100]]></RowsCountCode>
+					<NeigborhoodType>MOORE</NeigborhoodType>
+					<LayoutType>USER_DEF</LayoutType>
+					<NetworkType>USER_DEF</NetworkType>
+					<ConnectionsPerAgentCode><![CDATA[2]]></ConnectionsPerAgentCode>
+					<ConnectionsRangeCode><![CDATA[50]]></ConnectionsRangeCode>
+					<NeighborLinkFractionCode><![CDATA[0.95]]></NeighborLinkFractionCode>
+					<MCode><![CDATA[10]]></MCode>
+			</EnvironmentProperties>
+			<DatasetsCreationProperties>
+				<AutoCreate>true</AutoCreate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1731484800000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
+					</RecurrenceCode>
+			</DatasetsCreationProperties>
+			<ScaleRuler>
+				<Id>1731593255911</Id>
+				<Name><![CDATA[scale]]></Name>
+				<X>0</X><Y>-150</Y>
+				<PublicFlag>false</PublicFlag>
+				<PresentationFlag>false</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+				<Length>100</Length>
+				<Rotation>0</Rotation>
+				<ScaleType>BASED_ON_LENGTH</ScaleType>
+				<ModelLength>10</ModelLength>
+				<LengthUnits>METER</LengthUnits>
+				<Scale>10</Scale>
+				<InheritedFromParentAgentType>true</InheritedFromParentAgentType>
+			</ScaleRuler>
+			<CurrentLevel>1731593255929</CurrentLevel>
+			<ConnectionsId>1731593255964</ConnectionsId>
+			<Variables>
+				<Variable Class="PlainVariable">
+					<Id>1731593255921</Id>
+					<Name><![CDATA[start]]></Name>
+					<X>-520</X><Y>290</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1731593255923</Id>
+					<Name><![CDATA[end]]></Name>
+					<X>-520</X><Y>310</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1731593255925</Id>
+					<Name><![CDATA[targetLocation]]></Name>
+					<X>-520</X><Y>330</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[AbstractLocation]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1731593255927</Id>
+					<Name><![CDATA[currentWeightInKg]]></Name>
+					<X>-520</X><Y>350</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="protected" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1731593255956</Id>
+					<Name><![CDATA[id]]></Name>
+					<X>-520</X><Y>90</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[int]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1731593255954</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1731593255959</Id>
+					<Name><![CDATA[initLocation]]></Name>
+					<X>-520</X><Y>110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[AbstractLocation]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1731593255957</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1731593255962</Id>
+					<Name><![CDATA[capacityInKg]]></Name>
+					<X>-520</X><Y>130</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1731593255960</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1731596543886</Id>
+					<Name><![CDATA[root]]></Name>
+					<X>-520</X><Y>150</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[Main]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1731596543884</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="CollectionVariable">
+					<Id>1731593255917</Id>
+					<Name><![CDATA[mapOrder]]></Name>
+					<X>-1020</X><Y>90</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" AccessType="public" StaticVariable="false">
+						<CollectionClass><![CDATA[ArrayList]]></CollectionClass>
+						<ElementClass><![CDATA[Object]]></ElementClass>
+						<ValueElementClass><![CDATA[String]]></ValueElementClass>
+					</Properties>
+
+				</Variable>
+			</Variables>
+			<Functions>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731593255919</Id>
+					<Name><![CDATA[setup]]></Name>
+					<X>-250</X><Y>110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[currentWeightInKg = 0.0;]]></Body>
+				</Function>
+			</Functions>
+			<AgentLinks>
+				<AgentLink>
+					<Id>1731593255964</Id>
+					<Name><![CDATA[connections]]></Name>
+					<X>50</X><Y>-50</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<HandleReceiveInConnections>false</HandleReceiveInConnections>
+					<AgentLinkType>COLLECTION_OF_LINKS</AgentLinkType>
+					<AgentLinkBidirectional>true</AgentLinkBidirectional>
+					<MessageType><![CDATA[Object]]></MessageType>
+					<LineStyle>SOLID</LineStyle>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineZOrder>UNDER_AGENTS</LineZOrder>
+					<LineArrow>NONE</LineArrow>
+					<LineArrowPosition>END</LineArrowPosition>
+				</AgentLink>
+			</AgentLinks>
+
+
+			<Presentation>
+				<Level>
+					<Id>1731593255929</Id>
+					<Name><![CDATA[level]]></Name>
+					<X>0</X><Y>0</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<Z>0</Z>
+					<LevelVisibility>DIM_NON_CURRENT</LevelVisibility>
+
+			<Presentation>
+				<Group>
+					<Id>1731593255931</Id>
+					<Name><![CDATA[group1]]></Name>
+					<X>-270</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731593255933</Id>
+					<Name><![CDATA[roundRectangle15]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731593255935</Id>
+					<Name><![CDATA[text18]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Setup]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731593255937</Id>
+					<Name><![CDATA[group2]]></Name>
+					<X>-270</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731593255939</Id>
+					<Name><![CDATA[roundRectangle16]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731593255941</Id>
+					<Name><![CDATA[text19]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Parameters]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731593255943</Id>
+					<Name><![CDATA[group3]]></Name>
+					<X>-770</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731593255945</Id>
+					<Name><![CDATA[roundRectangle17]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731593255947</Id>
+					<Name><![CDATA[text20]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Data]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731593255949</Id>
+					<Name><![CDATA[group4]]></Name>
+					<X>-770</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731593255951</Id>
+					<Name><![CDATA[roundRectangle18]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731593255953</Id>
+					<Name><![CDATA[text21]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Simulation]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+			</Presentation>
+
+				</Level>
+			</Presentation>
+
+		</ActiveObjectClass>
+		<!--   =========   Active Object Class   ========  -->
+		<ActiveObjectClass>
+			<Id>1731594031437</Id>
+			<Name><![CDATA[DeliveryDay]]></Name>
+			<Generic>false</Generic>
+			<GenericParameter>
+				<Id>1731594031432</Id>
+				<Name><![CDATA[1731594031432]]></Name>
+				<GenericParameterValue Class="CodeValue">
+					<Code><![CDATA[T extends Agent]]></Code>
+				</GenericParameterValue>
+				<GenericParameterLabel><![CDATA[Generic parameter:]]></GenericParameterLabel>
+			</GenericParameter>
+			<FlowChartsUsage>ENTITY</FlowChartsUsage>
+			<SamplesToKeep>100</SamplesToKeep>
+			<LimitNumberOfArrayElements>false</LimitNumberOfArrayElements>
+			<ElementsLimitValue>100</ElementsLimitValue>
+			<MakeDefaultViewArea>true</MakeDefaultViewArea>
+			<SceneGridColor/>
+			<SceneBackgroundColor/>
+			<SceneSkybox>null</SceneSkybox>
+			<AgentProperties>
+				<EnvironmentDefinesInitialLocation>true</EnvironmentDefinesInitialLocation>
+				<RotateAnimationTowardsMovement>true</RotateAnimationTowardsMovement>
+				<RotateAnimationVertically>false</RotateAnimationVertically>
+				<VelocityCode Class="CodeUnitValue">
+					<Code><![CDATA[10]]></Code>
+					<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
+				</VelocityCode>
+				<PhysicalLength Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalLength>
+				<PhysicalWidth Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalWidth>
+				<PhysicalHeight Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalHeight>
+			</AgentProperties>
+			<EnvironmentProperties>
+					<EnableSteps>false</EnableSteps>
+					<StepDurationCode Class="CodeUnitValue">
+						<Code><![CDATA[1.0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</StepDurationCode>
+					<SpaceType>CONTINUOUS</SpaceType>
+					<WidthCode><![CDATA[500]]></WidthCode>
+					<HeightCode><![CDATA[500]]></HeightCode>
+					<ZHeightCode><![CDATA[0]]></ZHeightCode>
+					<ColumnsCountCode><![CDATA[100]]></ColumnsCountCode>
+					<RowsCountCode><![CDATA[100]]></RowsCountCode>
+					<NeigborhoodType>MOORE</NeigborhoodType>
+					<LayoutType>USER_DEF</LayoutType>
+					<NetworkType>USER_DEF</NetworkType>
+					<ConnectionsPerAgentCode><![CDATA[2]]></ConnectionsPerAgentCode>
+					<ConnectionsRangeCode><![CDATA[50]]></ConnectionsRangeCode>
+					<NeighborLinkFractionCode><![CDATA[0.95]]></NeighborLinkFractionCode>
+					<MCode><![CDATA[10]]></MCode>
+			</EnvironmentProperties>
+			<DatasetsCreationProperties>
+				<AutoCreate>true</AutoCreate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1731571200000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</RecurrenceCode>
+			</DatasetsCreationProperties>
+			<ScaleRuler>
+				<Id>1731594031433</Id>
+				<Name><![CDATA[scale]]></Name>
+				<X>0</X><Y>-150</Y>
+				<PublicFlag>false</PublicFlag>
+				<PresentationFlag>false</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+				<Length>100</Length>
+				<Rotation>0</Rotation>
+				<ScaleType>BASED_ON_LENGTH</ScaleType>
+				<ModelLength>10</ModelLength>
+				<LengthUnits>METER</LengthUnits>
+				<Scale>10</Scale>
+				<InheritedFromParentAgentType>true</InheritedFromParentAgentType>
+			</ScaleRuler>
+			<CurrentLevel>1731594031457</CurrentLevel>
+			<ConnectionsId>1731594031486</ConnectionsId>
+			<Variables>
+				<Variable Class="Parameter">
+					<Id>1731594031484</Id>
+					<Name><![CDATA[deliveryDate]]></Name>
+					<X>-520</X><Y>90</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[Date]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1731594031482</Id>
+							<EditorContolType>CALENDAR</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1731598720183</Id>
+					<Name><![CDATA[root]]></Name>
+					<X>-520</X><Y>110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[Main]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1731598720181</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="CollectionVariable">
+					<Id>1731594031439</Id>
+					<Name><![CDATA[mapOrder]]></Name>
+					<X>-1020</X><Y>90</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" AccessType="protected" StaticVariable="false">
+						<CollectionClass><![CDATA[LinkedHashMap]]></CollectionClass>
+						<ElementClass><![CDATA[String]]></ElementClass>
+						<ValueElementClass><![CDATA[Order]]></ValueElementClass>
+					</Properties>
+
+				</Variable>
+				<Variable Class="CollectionVariable">
+					<Id>1731594031441</Id>
+					<Name><![CDATA[mapLocation]]></Name>
+					<X>-1020</X><Y>160</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" AccessType="protected" StaticVariable="false">
+						<CollectionClass><![CDATA[LinkedHashMap]]></CollectionClass>
+						<ElementClass><![CDATA[String]]></ElementClass>
+						<ValueElementClass><![CDATA[AbstractLocation]]></ValueElementClass>
+					</Properties>
+
+				</Variable>
+			</Variables>
+			<Events>
+				<Event>
+					<Id>1731594050983</Id>
+					<Name><![CDATA[evtEndDay]]></Name>
+					<X>-1020</X><Y>290</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="userControls">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_HOUR]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1731571200000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+				</Event>
+			</Events>
+			<Functions>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[ArrayList<Order>]]></ReturnType>
+					<Id>1731594031443</Id>
+					<Name><![CDATA[getListOrder]]></Name>
+					<X>-750</X><Y>110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return new ArrayList<>(mapOrder.values());]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
+					<Id>1731594031445</Id>
+					<Name><![CDATA[addOrder]]></Name>
+					<X>-750</X><Y>130</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[order]]></Name>
+						<Type><![CDATA[Order]]></Type>
+					</Parameter>
+					<Body><![CDATA[mapOrder.put(order.getID(), order);]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[String]]></ReturnType>
+					<Id>1731594031447</Id>
+					<Name><![CDATA[toString]]></Name>
+					<X>-250</X><Y>90</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return String.format("%s", deliveryDate);]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1731594031449</Id>
+					<Name><![CDATA[equals]]></Name>
+					<X>-250</X><Y>110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[obj]]></Name>
+						<Type><![CDATA[Object]]></Type>
+					</Parameter>
+					<Body><![CDATA[if ( obj == null ) {
+	return false;
+}
+
+if ( obj.getClass() != getClass() ) {
+	return false;
+}
+
+final DeliveryDay other = (DeliveryDay) obj;
+return deliveryDate.equals( other.deliveryDate );]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[LinkedHashMap<String, Order>]]></ReturnType>
+					<Id>1731594031451</Id>
+					<Name><![CDATA[getMapOrder]]></Name>
+					<X>-750</X><Y>90</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return mapOrder;]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
+					<Id>1731594031453</Id>
+					<Name><![CDATA[addLocation]]></Name>
+					<X>-750</X><Y>180</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[location]]></Name>
+						<Type><![CDATA[AbstractLocation]]></Type>
+					</Parameter>
+					<Body><![CDATA[if (!mapLocation.containsKey(location.id)) {
+	mapLocation.put(location.id, location);
+	location.startDay();
+}]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[LinkedHashMap<String, AbstractLocation>]]></ReturnType>
+					<Id>1731594031455</Id>
+					<Name><![CDATA[getMapLocation]]></Name>
+					<X>-750</X><Y>160</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return mapLocation;]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[DeliveryDay]]></ReturnType>
+					<Id>1731594050974</Id>
+					<Name><![CDATA[copy]]></Name>
+					<X>-250</X><Y>130</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[main]]></Name>
+						<Type><![CDATA[Main]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[deliveryDay]]></Name>
+						<Type><![CDATA[DeliveryDay]]></Type>
+					</Parameter>
+					<Body><![CDATA[this.root = main;
+this.deliveryDate = deliveryDay.deliveryDate;
+
+for (Order order : deliveryDay.getListOrder()) {
+	Customer customer = root.getCustomer(order.getCustomer().id);
+	if (customer != null) {
+		order.setCustomer(customer);
+		mapOrder.put(order.getID(), order);
+	}
+}
+
+setup();
+return this;]]></Body>
+				</Function>
+				<Function AccessType="private" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731594050978</Id>
+					<Name><![CDATA[setup]]></Name>
+					<X>-240</X><Y>150</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[for (Order order : getListOrder()) {
+	
+	Customer customer = (Customer) order.getCustomer();
+	Lager Lager = customer.getLager();
+	Lager.addOrder(order);
+	addLocation(customer);
+	addLocation(Lager);
+}
+
+evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
+				</Function>
+				<Function AccessType="private" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731594050980</Id>
+					<Name><![CDATA[endDay]]></Name>
+					<X>-750</X><Y>290</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[for (AbstractLocation location : mapLocation.values()) {
+	location.endDay();
+}]]></Body>
+				</Function>
+			</Functions>
+			<AgentLinks>
+				<AgentLink>
+					<Id>1731594031486</Id>
+					<Name><![CDATA[connections]]></Name>
+					<X>50</X><Y>-50</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<HandleReceiveInConnections>false</HandleReceiveInConnections>
+					<AgentLinkType>COLLECTION_OF_LINKS</AgentLinkType>
+					<AgentLinkBidirectional>true</AgentLinkBidirectional>
+					<MessageType><![CDATA[Object]]></MessageType>
+					<LineStyle>SOLID</LineStyle>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineZOrder>UNDER_AGENTS</LineZOrder>
+					<LineArrow>NONE</LineArrow>
+					<LineArrowPosition>END</LineArrowPosition>
+				</AgentLink>
+			</AgentLinks>
+
+
+			<Presentation>
+				<Level>
+					<Id>1731594031457</Id>
+					<Name><![CDATA[level]]></Name>
+					<X>0</X><Y>0</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<Z>0</Z>
+					<LevelVisibility>DIM_NON_CURRENT</LevelVisibility>
+
+			<Presentation>
+				<Group>
+					<Id>1731594031459</Id>
+					<Name><![CDATA[group3]]></Name>
+					<X>-770</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731594031461</Id>
+					<Name><![CDATA[roundRectangle17]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731594031463</Id>
+					<Name><![CDATA[text20]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Data]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731594031465</Id>
+					<Name><![CDATA[group1]]></Name>
+					<X>-270</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731594031467</Id>
+					<Name><![CDATA[roundRectangle15]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731594031469</Id>
+					<Name><![CDATA[text18]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Setup]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731594031471</Id>
+					<Name><![CDATA[group2]]></Name>
+					<X>-270</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731594031473</Id>
+					<Name><![CDATA[roundRectangle16]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731594031475</Id>
+					<Name><![CDATA[text19]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Function]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731594031477</Id>
+					<Name><![CDATA[group4]]></Name>
+					<X>-770</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731594031479</Id>
+					<Name><![CDATA[roundRectangle18]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731594031481</Id>
+					<Name><![CDATA[text21]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Simulation]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text>
@@ -4045,7 +5630,6 @@ data = new InputData();]]></Body>
 			<Name><![CDATA[DataAdditionalInfo]]></Name>
 			<Text><![CDATA[//IMPORT
 import lib_xls.Data;
-import da_lib.*;
 
 public class DataAdditionalInfo extends Data {
 
@@ -4059,16 +5643,6 @@ public class DataAdditionalInfo extends Data {
 	private DataArtikel_Sheet dataArtikel;
 	private DataVehicle_Sheet dataVehicle;
 	
-	private HashMap<Integer, Address> mapAddressKeyID;
-	private HashMap<String, Address> mapAddressKeyAddress;
-	private HashMap<String, Lieferart> mapLieferart;
-	private HashMap<String, PositionType> mapPositionType;
-	private HashMap<String, Route> mapRoute;
-	private HashMap<String, Material> mapMaterial;
-	private HashMap<String, Werk> mapWerk;
-	private HashMap<String, Client> mapClient;
-	private HashMap<String, Segment> mapSegment;
-	
 /*  Constructor
 ***********************************************************************************************************************/
 
@@ -4079,24 +5653,11 @@ public class DataAdditionalInfo extends Data {
 	}
 	
 	protected void readData() {
-		init();
 		dataAddress = new DataAddress_Sheet(this, "Addresse");
 		dataWerk = new DataWerk_Sheet(this, "Werk");
 		dataArtikel = new DataArtikel_Sheet(this, "Artikel");
 		dataVehicle = new DataVehicle_Sheet(this, "Fahrzeug");
 		
-	}
-	
-	private void init() {
-		mapLieferart = new HashMap();
-		mapPositionType = new HashMap();
-		mapRoute = new HashMap();
-		mapMaterial = new HashMap();
-		mapAddressKeyID = new HashMap();
-		mapAddressKeyAddress = new HashMap();
-		mapWerk = new HashMap();
-		mapClient = new HashMap();
-		mapSegment = new HashMap();
 	}
 	
 	public void writeData() {
@@ -4149,8 +5710,6 @@ public class DataOrder_Sheet extends DataSheet {
 			<Name><![CDATA[DataOrder_Row]]></Name>
 			<Text><![CDATA[//IMPORT
 import lib_xls.DataRow;
-import da_lib.*;
-import da_lib.Assure;
 
 public class DataOrder_Row extends DataRow {
 	
@@ -4159,19 +5718,16 @@ public class DataOrder_Row extends DataRow {
 
 	private String orderId;
 	private int orderPos;
-	private Lieferart lieferart;
 	private Date deliveryDate;
-	private PositionType positionType;
-	private Route route;
 	private Material material;
-	private AbstractWerk werk;
+	private Lager lager;
 	private Address clientAddress;
-	private AbstractClient client;
+	private Customer customer;
 	
 	private double bruttoWeight;
 	private WeightUnit weightUnit;
 	
-	private OrderPosition orderPosisiton;
+	private Order order;
 	
 /*  Constructor
 ***********************************************************************************************************************/		
@@ -4186,20 +5742,20 @@ public class DataOrder_Row extends DataRow {
 		orderId = getStrValueFromData(i);i++;
 		orderPos = getIntValueFromData(i);i++;
 		String lieferartName = getStrValueFromData(i);i++;
-		lieferart = ((DataOrder) getDataSheet().getData()).getData().setLieferart(lieferartName);
+		i++; //Lieferart
 		deliveryDate = Assure.strToDate(getStrValueFromData(i));i++;
 		String positionTypeName = getStrValueFromData(i);i++;
-		positionType = ((DataOrder) getDataSheet().getData()).getData().setPositionType(lieferartName);
+		i++; //positionType
 		i++; // Angelegt von
 		i++; // Uhrzeit
 		i++; // Angelegt am
 		String routeName = getStrValueFromData(i);i++;
-		route = ((DataOrder) getDataSheet().getData()).getData().setRoute(routeName);
+		i++; //route
 		String materialId = getStrValueFromData(i);i++;
 		String materialName = getStrValueFromData(i);i++;
 		material = ((DataOrder) getDataSheet().getData()).getData().setMaterial(materialId, materialName);
 		String werkId = getStrValueFromData(i);i++;
-		werk = ((DataOrder) getDataSheet().getData()).getData().getWerk(werkId);
+		lager = ((DataOrder) getDataSheet().getData()).getData().getLager(werkId);
 		i++; // Lagerort
 		i++; // Nettopreis
 		i++; // Währung
@@ -4232,7 +5788,7 @@ public class DataOrder_Row extends DataRow {
 		String clientCity = getStrValueFromData(i);i++;
 		String country = "Switzerland";
 		clientAddress = ((DataOrder) getDataSheet().getData()).getData().setAddress(clientStreet, clientPLZ, clientCity, country);
-		client = ((DataOrder) getDataSheet().getData()).getData().setClient(clientId, clientName, clientAddress);
+		customer = ((DataOrder) getDataSheet().getData()).getData().setCustomer(clientId, clientName, clientAddress);
 		i++; // Übergeordnete Position
 		i++; // Ladegruppe
 		i++; // Transportgruppe
@@ -4251,8 +5807,10 @@ public class DataOrder_Row extends DataRow {
 		i++; // Sonderbestandsnummer
 		i++; // Komm. Bereich
 		
-		orderPosisiton = new OrderPosition(orderId, deliveryDate, material, client.id, bruttoWeight);
-		((DataOrder) getDataSheet().getData()).getData().addOrderPosition(orderPosisiton);
+		order = new Order(orderId, deliveryDate, customer);
+		OrderPos orderPos = new OrderPos(order, material, bruttoWeight);
+		order.addOrderPos(orderPos);
+		((DataOrder) getDataSheet().getData()).getData().addOrder(order);
 	}
 
 /*  Methode
@@ -4299,7 +5857,6 @@ public class DataWerk_Sheet extends DataSheet {
 			<Name><![CDATA[DataWerk_Row]]></Name>
 			<Text><![CDATA[//IMPORT
 import lib_xls.DataRow;
-import da_lib.*;
 
 public class DataWerk_Row extends DataRow {
 	
@@ -4307,8 +5864,7 @@ public class DataWerk_Row extends DataRow {
 ***********************************************************************************************************************/
 	
 	private Address address;
-	private Segment segment;
-	private AbstractWerk werk;
+	private Lager lager;
 	
 /*  Constructor
 ***********************************************************************************************************************/		
@@ -4323,11 +5879,8 @@ public class DataWerk_Row extends DataRow {
 		String werkId = getStrValueFromData(i);i++;
 		String werkName = getStrValueFromData(i);i++;
 		int addressId = getIntValueFromData(i);i++;
-		String segmentId = getStrValueFromData(i);i++;
-		String segmentName = String.format("Segment %s", segmentId);
-		segment = ((DataAdditionalInfo) getDataSheet().getData()).getData().setSegment(segmentId, segmentName);
 		address = ((DataAdditionalInfo) getDataSheet().getData()).getData().getAddress(addressId);
-		werk = ((DataAdditionalInfo) getDataSheet().getData()).getData().setWerk(werkId, werkName, address, segment);
+		lager = ((DataAdditionalInfo) getDataSheet().getData()).getData().setLager(werkId, werkName, address);
 		
 	}
 
@@ -4374,7 +5927,6 @@ public class DataArtikel_Sheet extends DataSheet {
 			<Name><![CDATA[DataArtikel_Row]]></Name>
 			<Text><![CDATA[//IMPORT
 import lib_xls.DataRow;
-import da_lib.*;
 
 public class DataArtikel_Row extends DataRow {
 	
@@ -4439,7 +5991,6 @@ public class DataVehicle_Sheet extends DataSheet {
 			<Name><![CDATA[DataVehicle_Row]]></Name>
 			<Text><![CDATA[//IMPORT
 import lib_xls.DataRow;
-import da_lib.*;
 
 public class DataVehicle_Row extends DataRow {
 	
@@ -4528,7 +6079,6 @@ public class DataAddress_Sheet extends DataSheet {
 			<Name><![CDATA[DataAddress_Row]]></Name>
 			<Text><![CDATA[//IMPORT
 import lib_xls.DataRow;
-import da_lib.*;
 
 public class DataAddress_Row extends DataRow {
 	
@@ -4587,15 +6137,10 @@ public class InputData {
 	
 	private HashMap<Integer, Address> mapAddressKeyID;
 	private HashMap<String, Address> mapAddressKeyAddress;
-	private HashMap<String, Lieferart> mapLieferart;
-	private HashMap<String, PositionType> mapPositionType;
-	private HashMap<String, Route> mapRoute;
 	private HashMap<String, Material> mapMaterial;
-	private HashMap<String, AbstractWerk> mapWerk;
-	private HashMap<String, AbstractClient> mapClient;
-	private HashMap<String, Segment> mapSegment;
-	private HashMap<Date, AbstractOrderPerDay> mapOrderPerDay;
-	private HashMap<String, OrderPosition> mapOrderPosition;
+	private HashMap<String, Lager> mapLager;
+	private HashMap<String, Customer> mapCustomer;
+	private HashMap<Date, DeliveryDay> mapDeliveryDay;
 	
 /*  Constructor
 ***********************************************************************************************************************/
@@ -4607,17 +6152,12 @@ public class InputData {
 	private void init() {
 		startDate = null;
 		endDate = null;
-		mapLieferart = new HashMap();
-		mapPositionType = new HashMap();
-		mapRoute = new HashMap();
 		mapMaterial = new HashMap();
 		mapAddressKeyID = new HashMap();
 		mapAddressKeyAddress = new HashMap();
-		mapWerk = new HashMap();
-		mapClient = new HashMap();
-		mapSegment = new HashMap();
-		mapOrderPerDay = new HashMap();
-		mapOrderPosition = new HashMap();
+		mapLager = new HashMap();
+		mapCustomer = new HashMap();
+		mapDeliveryDay = new HashMap();
 	}
 	
 	public void readDataAdditionalInfo(String path) {
@@ -4642,39 +6182,12 @@ public class InputData {
 	public Date getStartDate() { return startDate; }
 	public Date getEndDate() { return endDate; }
 	
-	public HashMap<Date, AbstractOrderPerDay> getMapOrderPerDay() { return mapOrderPerDay; }
+	public HashMap<Date, DeliveryDay> getMapDeliveryDay() { return mapDeliveryDay; }
 	
-	public ArrayList<AbstractOrderPerDay> getListOrderPerDay() { return new ArrayList<>(mapOrderPerDay.values()); }
+	public ArrayList<DeliveryDay> getListDeliveryDay() { return new ArrayList<>(mapDeliveryDay.values()); }
 	public ArrayList<Address> getListAddress() { return new ArrayList<>(mapAddressKeyID.values()); }
-	public ArrayList<AbstractWerk> getListWerk() { return new ArrayList<>(mapWerk.values()); }
-	public ArrayList<AbstractClient> getListClient() { return new ArrayList<>(mapClient.values()); }
-	
-	public Lieferart setLieferart(String id) {
-		if(mapLieferart.containsKey(id)) {
-			return mapLieferart.get(id);
-		}
-		Lieferart lieferart = new Lieferart(id);
-		mapLieferart.put(id, lieferart);
-		return lieferart;
-	}
-	
-	public PositionType setPositionType(String id) {
-		if(mapPositionType.containsKey(id)) {
-			return mapPositionType.get(id);
-		}
-		PositionType positionType = new PositionType(id);
-		mapPositionType.put(id, positionType);
-		return positionType;
-	}
-	
-	public Route setRoute(String id) {
-		if(mapRoute.containsKey(id)) {
-			return mapRoute.get(id);
-		}
-		Route route = new Route(id);
-		mapRoute.put(id, route);
-		return route;
-	}
+	public ArrayList<Lager> getListLager() { return new ArrayList<>(mapLager.values()); }
+	public ArrayList<Customer> getListCustomer() { return new ArrayList<>(mapCustomer.values()); }
 	
 	public Material setMaterial(String id, String name) {
 		if(mapMaterial.containsKey(id)) {
@@ -4685,38 +6198,29 @@ public class InputData {
 		return material;
 	}
 	
-	public Segment setSegment(String id, String name) {
-		if(mapSegment.containsKey(id)) {
-			return mapSegment.get(id);
+	public Lager setLager(String id, String name, Address address) {
+		if(mapLager.containsKey(id)) {
+			return mapLager.get(id);
 		}
-		Segment segment = new Segment(id, name);
-		mapSegment.put(id, segment);
-		return segment;
-	}
-	
-	public AbstractWerk setWerk(String id, String name, Address address, Segment segment) {
-		if(mapWerk.containsKey(id)) {
-			return mapWerk.get(id);
-		}
-		AbstractWerk werk = new AbstractWerk(id, "-", address, segment);
-		mapWerk.put(id, werk);
+		Lager werk = new Lager(id, "-", address, null);
+		mapLager.put(id, werk);
 		return werk;
 	}
 	
-	public AbstractWerk getWerk(String id) {
-		if(mapWerk.containsKey(id)) {
-			return mapWerk.get(id);
+	public Lager getLager(String id) {
+		if(mapLager.containsKey(id)) {
+			return mapLager.get(id);
 		}
 		return null;
 		//throw new RuntimeException(String.format("Werk [%s] not defined", id));
 	}
 	
-	public AbstractClient setClient(String id, String name, Address address) {
-		if(mapClient.containsKey(id)) {
-			return mapClient.get(id);
+	public Customer setCustomer(String id, String name, Address address) {
+		if(mapCustomer.containsKey(id)) {
+			return mapCustomer.get(id);
 		}
-		AbstractClient client = new AbstractClient(id, name, address);
-		mapClient.put(id, client);
+		Customer client = new Customer(id, name, address, null);
+		mapCustomer.put(id, client);
 		return client;
 	}
 
@@ -4753,18 +6257,17 @@ public class InputData {
 		return null;
 	} 
 	
-	public void addOrderPosition(OrderPosition orderPosition) {
-		mapOrderPosition.put(orderPosition.getID(), orderPosition);
-		addOrderToDate(orderPosition);
-		startDate = (((startDate == null) || orderPosition.getDeliveryDate().before(startDate)) ? orderPosition.getDeliveryDate() : startDate);
-		endDate = (((endDate == null) || orderPosition.getDeliveryDate().after(endDate)) ? orderPosition.getDeliveryDate() : endDate);
+	public void addOrder(Order order) {
+		addOrderToDay(order);
+		startDate = (((startDate == null) || order.getDeliveryDate().before(startDate)) ? order.getDeliveryDate() : startDate);
+		endDate = (((endDate == null) || order.getDeliveryDate().after(endDate)) ? order.getDeliveryDate() : endDate);
 	}
 	
-	private void addOrderToDate(OrderPosition orderPosition) {
-		if (!mapOrderPerDay.containsKey(orderPosition.getDeliveryDate())) {
-			mapOrderPerDay.put(orderPosition.getDeliveryDate(), new AbstractOrderPerDay(orderPosition.getDeliveryDate()));
+	private void addOrderToDay(Order order) {
+		if (!mapDeliveryDay.containsKey(order.getDeliveryDate())) {
+			mapDeliveryDay.put(order.getDeliveryDate(), new DeliveryDay(order.getDeliveryDate(), null));
 		}
-		mapOrderPerDay.get(orderPosition.getDeliveryDate()).addOrderPos(orderPosition);
+		mapDeliveryDay.get(order.getDeliveryDate()).addOrder(order);
 	}
 }]]></Text>
 		</JavaClass>
@@ -4774,7 +6277,6 @@ public class InputData {
 			<Name><![CDATA[DataOrder]]></Name>
 			<Text><![CDATA[//IMPORT
 import lib_xls.Data;
-import da_lib.*;
 
 public class DataOrder extends Data {
 
@@ -4811,43 +6313,43 @@ public class DataOrder extends Data {
 		<!--   =========   Java Class   ========  -->
 		<JavaClass>
 			<Id>1731502616750</Id>
-			<Name><![CDATA[Scheduler]]></Name>
+			<Name><![CDATA[AlgScheduler]]></Name>
 			<Text><![CDATA[
-public class Scheduler implements Serializable {
+public class AlgScheduler implements Serializable {
 
 /*  Variable
 ***********************************************************************************************************************/
 	
-	protected final Main main;
-	protected final Werk werk;
+	protected Main main;
+	protected Lager lager;
 	
-	protected ArrayList<OrderPosition> listToDo;
+	protected ArrayList<Order> listToDo;
 	protected ArrayList<LKW> listLKW;
 	
 /*  Constructor
 ***********************************************************************************************************************/
 	
-	public Scheduler(Main main, Werk werk) {
+	public AlgScheduler(Main main, Lager lager) {
 		this.main = main;
-		this.werk = werk;
+		this.lager = lager;
 	}
 	
 /*  Methode
 ***********************************************************************************************************************/
 
-	public Werk getWerk() { return werk; }	
+	public Lager getLager() { return lager; }	
 	
 	public void startRouting() {
 		listLKW = new ArrayList();
-		listToDo = new ArrayList<>(werk.getListOrderPos());
+		listToDo = new ArrayList<>(lager.getListOrder());
 	}
 	
 	protected void sortOrderPosByGISDist() {
-        Collections.sort(listToDo, new Comparator<OrderPosition>() {
+        Collections.sort(listToDo, new Comparator<Order>() {
             @Override
-            public int compare(OrderPosition op1, OrderPosition op2) {
-                double distance1 = werk.address.getDistByGIS(main.map, op1.getClient().address);
-                double distance2 = werk.address.getDistByGIS(main.map, op2.getClient().address);
+            public int compare(Order op1, Order op2) {
+                double distance1 = lager.address.getDistByGIS(main.map, op1.getCustomer().address);
+                double distance2 = lager.address.getDistByGIS(main.map, op2.getCustomer().address);
                 return Double.compare(distance1, distance2);
             }
         });
@@ -4858,9 +6360,9 @@ public class Scheduler implements Serializable {
 		<!--   =========   Java Class   ========  -->
 		<JavaClass>
 			<Id>1731502780373</Id>
-			<Name><![CDATA[NearestNeighbour]]></Name>
+			<Name><![CDATA[AlgNearestNeighbour]]></Name>
 			<Text><![CDATA[
-public class NearestNeighbour extends Scheduler {
+public class AlgNearestNeighbour extends AlgScheduler {
 
 /*  Variable
 ***********************************************************************************************************************/
@@ -4868,8 +6370,8 @@ public class NearestNeighbour extends Scheduler {
 /*  Constructor
 ***********************************************************************************************************************/
 	
-	public NearestNeighbour(Main main, Werk werk) {
-		super(main, werk);
+	public AlgNearestNeighbour(Main main, Lager lager) {
+		super(main, lager);
 	}
 	
 /*  Methode
@@ -4882,25 +6384,25 @@ public class NearestNeighbour extends Scheduler {
 		while (!listToDo.isEmpty()) {
 			
 			LKW nextLKW = null;
-			OrderPosition nextOrderPos = listToDo.get(0);
-			double distance = werk.address.getDistByGIS(main.map, nextOrderPos.getClient().address);
+			Order nextOrder = listToDo.get(0);
+			double distance = lager.address.getDistByGIS(main.map, nextOrder.getCustomer().address);
 
 			for (LKW lkw : listLKW) {
-				OrderPosition next = getNextOrderPosition(lkw, listToDo, distance);
+				Order next = getNextOrder(lkw, listToDo, distance);
 				if (next != null) {
 					nextLKW = lkw;
-					nextOrderPos = next;
-					distance = lkw.getCurrentScheduleLoc().address.getDistByGIS(main.map, next.getClient().address);
+					nextOrder = next;
+					distance = lkw.getCurrentScheduleLoc().address.getDistByGIS(main.map, next.getCustomer().address);
 				}
 			}
 			
 			if (nextLKW == null) {
-				nextLKW = main.addNewLKW(werk);
+				nextLKW = main.addNewLKW(lager);
 				listLKW.add(nextLKW);
 			}
 			
-			nextLKW.addNextOrderPos(nextOrderPos);
-			listToDo.remove(nextOrderPos);
+			nextLKW.addNextOrder(nextOrder);
+			listToDo.remove(nextOrder);
 		}
 		
 		for (LKW lkw : listLKW) {
@@ -4908,13 +6410,13 @@ public class NearestNeighbour extends Scheduler {
 		}
 	}
 	
-	private OrderPosition getNextOrderPosition(LKW lkw, ArrayList<OrderPosition> list, double distance) {
-		OrderPosition next = null;
+	private Order getNextOrder(LKW lkw, ArrayList<Order> list, double distance) {
+		Order next = null;
 		Address currentAddress = lkw.getCurrentScheduleLoc().address;
 
-		for (OrderPosition pos : list) {
-			if (lkw.canTakeOrderPos(pos)) {
-				double dist = currentAddress.getDistByGIS(main.map, pos.getClient().address);
+		for (Order pos : list) {
+			if (lkw.canTakeOrder(pos)) {
+				double dist = currentAddress.getDistByGIS(main.map, pos.getCustomer().address);
 				if (dist < distance) {
 					next = pos;
 					distance = dist;
@@ -4927,7 +6429,514 @@ public class NearestNeighbour extends Scheduler {
 	
 }]]></Text>
 		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731593213559</Id>
+			<Name><![CDATA[WeightUnit]]></Name>
+			<Text><![CDATA[
+public enum WeightUnit {
+    KG(1.0),
+    G(0.001),
+    T(1000.0);
+
+    private final double toKilogramFactor;
+
+    WeightUnit(double toKilogramFactor) {
+        this.toKilogramFactor = toKilogramFactor;
+    }
+
+    public double toKilograms(double value) {
+        return value * toKilogramFactor;
+    }
+}
+]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731593402542</Id>
+			<Name><![CDATA[Address]]></Name>
+			<Text><![CDATA[// IMPORT
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URLEncoder;
+import org.json.JSONObject;
+import org.json.JSONArray;
+
+
+public class Address implements Serializable {
+
+/*  Variable
+***********************************************************************************************************************/
+	
+	private static int _id = 1;
+	
+	private int id;
+	private String street;
+	private int plz;
+	private String city;
+	private String country = "Switzerland";
+	
+	private String longAddress;
+	private String shortAddress;
+	
+	private boolean hasCoordinates;
+	private double latitude = Double.NaN;
+    private double longitude = Double.NaN;
+    
+    private GISPoint gisPoint;
+	
+/*  Constructor
+***********************************************************************************************************************/
+
+	public Address(int id, String street, int plz, String city, String country, double latitude, double longitude) {
+		this.id = id;
+		_id = Math.max(_id, id);
+		this.street = street;
+		this.plz = plz;
+		this.city = city;
+		this.country = country;
+		this.longAddress = setLongAddress();
+		this.shortAddress = setShortAddress();
+		this.longitude = longitude;
+		this.latitude = latitude;
+		hasCoordinates = !(Double.isNaN(longitude) || Double.isNaN(latitude));
+		setCoordinatesFromOSM();
+	}
+	
+	public Address(String street, int plz, String city, String country) {
+		this.id = _id++;
+		this.street = street;
+		this.plz = plz;
+		this.city = city;
+		this.country = country;
+		this.hasCoordinates = false;
+		this.longAddress = setLongAddress();
+		this.shortAddress = setShortAddress();
+		setCoordinatesFromOSM();
+	}
+	
+/*  Methode
+***********************************************************************************************************************/
+
+	public int getID() { return id; }
+	public String getStreet() { return street; }
+	public int getPlz() { return plz; }
+	public String getCity() { return city; }
+	public String getCountry() { return country; }
+	
+	public boolean hasCoordinates() { return hasCoordinates; }
+	public double getLatitude() { return latitude; }
+	public double getLongitude() { return longitude; }
+	
+	public static String setLongAddress(String street, int plz, String city, String country) { return street + ", " + plz + " " + city; }
+	private String setLongAddress() { return setLongAddress(street, plz, city, country); }
+	public String getLongAddress() { return longAddress; }
+
+	public static String setShortAddress(int plz, String city, String country) { return plz + " " + city + ", " + country; }
+	private String setShortAddress() { return setShortAddress(plz, city, country); }
+	public String getShortAddress() { return shortAddress; }
+	
+	private void setCoordinatesFromOSM() {
+		setCoordinatesFromOSM(longAddress);
+		if (!hasCoordinates()) {
+			setCoordinatesFromOSM(shortAddress);
+		}
+	}
+	
+	public void setCoordinatesFromOSM(String address) {
+		
+		if ( !hasCoordinates() ) {
+		    try {
+		    	String encodedAddress = URLEncoder.encode(address, "UTF-8");
+		    	// Begrenzungsrahmen für die Schweiz: ungefähr von (Nördlich-Westlich) bis (Südlich-Östlich)
+		    	String urlString = "https://nominatim.openstreetmap.org/search?q=" + encodedAddress + "&format=json&limit=1&viewbox=5.9559,47.8085,10.4920,45.8170&bounded=1";
+				
+		    	URL url = new URL(urlString);
+		        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		        conn.setRequestMethod("GET");
+		        conn.setRequestProperty("User-Agent", "Mozilla/5.0 (compatible; AnyLogicBot/1.0; +https://yourwebsite.com)");
+	
+		        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		        String inputLine;
+		        StringBuilder response = new StringBuilder();
+		        while ((inputLine = in.readLine()) != null) {
+		            response.append(inputLine);
+		        }
+		        in.close();
+		        
+		        // JSON parsing
+		        JSONArray jsonResponse = new JSONArray(response.toString());
+		        if (jsonResponse.length() > 0) {
+		            JSONObject location = jsonResponse.getJSONObject(0);
+		            latitude = location.getDouble("lat");
+		            longitude = location.getDouble("lon");
+		            hasCoordinates = true;
+		        } else {
+		        	traceln(String.format("Warning: Adresse [%s] nicht gefunden", address));
+		        }
+		    
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+		}
+	}
+	
+	private void setCoordinatesFromPhoton() {
+		setCoordinatesFromPhoton(longAddress);
+		if (hasCoordinates()) {
+			setCoordinatesFromPhoton(shortAddress);
+		}
+	}
+	
+	public void setCoordinatesFromPhoton(String address) {
+
+	    if (!hasCoordinates()) {
+	        try {
+	            // Ersetze Leerzeichen und andere Sonderzeichen in der Adresse mit URL-kodierten Werten
+	            String encodedAddress = URLEncoder.encode(address, "UTF-8");
+	            String urlString = "https://photon.komoot.io/api/?q=" + encodedAddress + "&limit=1";
+
+	            URL url = new URL(urlString);
+	            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+	            conn.setRequestMethod("GET");
+	            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (compatible; AnyLogicBot/1.0; +https://yourwebsite.com)");
+
+	            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	            String inputLine;
+	            StringBuilder response = new StringBuilder();
+	            while ((inputLine = in.readLine()) != null) {
+	                response.append(inputLine);
+	            }
+	            in.close();
+
+	            // JSON parsing
+	            JSONObject jsonResponse = new JSONObject(response.toString());
+	            JSONArray features = jsonResponse.getJSONArray("features");
+	            if (features.length() > 0) {
+	            	JSONArray location = features.getJSONObject(0).
+	            			getJSONObject("geometry").
+	            			getJSONArray("coordinates");
+	                longitude = location.getDouble(0); // Longitude first
+	                latitude = location.getDouble(1);  // Latitude second
+	                hasCoordinates = true;
+	            } else {
+	                traceln(String.format("Warning: Adresse [%s] nicht gefunden", address));
+	            }
+
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+	}
+
+	public double getDistByGIS(ShapeGISMap map, Address other) {
+		if (hasCoordinates() && other.hasCoordinates()) {
+			return getDistanceGIS(getLatitude(), getLongitude(), other.getLatitude(), other.getLongitude());
+		}
+		throw new RuntimeException(String.format("Address [%s] or Address [%s] has no coordinates", getLongAddress(), other.getLongAddress()));
+	}
+	
+	public double getDistByRoute(ShapeGISMap map, Address other) {
+		if (hasCoordinates() && other.hasCoordinates()) {
+			return map.getDistanceByRoute(getLatitude(), getLongitude(), other.getLatitude(), other.getLongitude());
+		}
+		throw new RuntimeException(String.format("Address [%s] or Address [%s] has no coordinates", getLongAddress(), other.getLongAddress()));
+	}
+	
+	@Override
+	public String toString() { return String.format("%s", getLongAddress()); }
+	
+	 @Override
+    public boolean equals(Object obj) {
+		if ( obj == null ) {
+			return false;
+		}
+
+		if ( obj.getClass() != getClass() ) {
+			return false;
+		}
+
+		final Address other = (Address) obj;
+		return longAddress.equals( other.getLongAddress() );
+	 }
+}
+
+]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731593427183</Id>
+			<Name><![CDATA[OrderPos]]></Name>
+			<Text><![CDATA[
+public class OrderPos implements Serializable {
+
+/*  Variable
+***********************************************************************************************************************/
+	
+	private Order order;
+	private Material  material;
+	
+	private double weightInKg;
+	
+/*  Constructor
+***********************************************************************************************************************/
+	
+	public OrderPos(Order order, Material material, double weight) {
+		this.material = material;
+		this.weightInKg = weight;
+	}
+	
+/*  Methode
+***********************************************************************************************************************/
+
+	public Order getOrder() { return order; }
+	public Material getMaterial() { return material; }
+	
+	public double getWeightInKg() { return weightInKg; }
+			
+	@Override
+	public String toString() { return String.format("%s", order.getID()); }
+	
+	 @Override
+    public boolean equals(Object obj) {
+		if ( obj == null ) {
+			return false;
+		}
+
+		if ( obj.getClass() != getClass() ) {
+			return false;
+		}
+
+		final OrderPos other = (OrderPos) obj;
+		return order.getID().equals( other.order.getID() );
+    }
+}
+	
+]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731593600711</Id>
+			<Name><![CDATA[Material]]></Name>
+			<Text><![CDATA[
+public class Material implements Serializable {
+
+/*  Variable
+***********************************************************************************************************************/
+
+	protected String id;
+	protected String name;
+	
+/*  Constructor
+***********************************************************************************************************************/
+	
+	public Material(String id, String name) {
+		this.id = id;
+		this.name = name;
+	}
+	
+/*  Methode
+***********************************************************************************************************************/
+
+	public String getId() { return id; }
+	protected void setId(String id) { this.id = id; }
+	
+	public String getName() { return name; }
+	protected void setName(String name) { this.name = name; }
+	
+	@Override
+	public String toString() { return String.format("%s - %s", getId(), getName()); }
+	
+	 @Override
+    public boolean equals(Object obj) {
+		if ( obj == null ) {
+			return false;
+		}
+
+		if ( obj.getClass() != getClass() ) {
+			return false;
+		}
+
+		final Material other = (Material) obj;
+		return getId().equals( other.getId() );
+    }
+	
+}]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731593947031</Id>
+			<Name><![CDATA[Order]]></Name>
+			<Text><![CDATA[
+public class Order implements Serializable {
+
+/*  Variable
+***********************************************************************************************************************/
+	
+	private String id;
+	private Date deliveryDate;
+	private Customer customer;
+	
+	private double weightInKg;
+	
+	private Lager lager;
+	
+	private ArrayList<OrderPos> listOrderPos;
+	
+/*  Constructor
+***********************************************************************************************************************/
+	
+	public Order(String id, Date date, Customer customer) {
+		this.id = id;
+		this.deliveryDate = date;
+		this.customer = customer;
+		this.weightInKg = 0.0;
+		this.listOrderPos = new ArrayList();
+	}
+	
+/*  Methode
+***********************************************************************************************************************/
+
+	public String getID() { return id; }
+	public Date getDeliveryDate() { return deliveryDate; }
+	
+	public Customer getCustomer() { return customer; }
+	
+	public double getWeightInKg() { return weightInKg; }
+	
+	public ArrayList<OrderPos> getListOrderPos() { return listOrderPos; }
+	
+	public void addOrderPos(OrderPos orderPos) { 
+		listOrderPos.add(orderPos); 
+		weightInKg += orderPos.getWeightInKg();
+	}
+	
+	public void setLager(Lager lager) { this.lager = lager; }
+	public Lager getLager() { return lager; }
+	
+	@Override
+	public String toString() { return String.format("%s", getID()); }
+	
+	 @Override
+    public boolean equals(Object obj) {
+		if ( obj == null ) {
+			return false;
+		}
+
+		if ( obj.getClass() != getClass() ) {
+			return false;
+		}
+
+		final Order other = (Order) obj;
+		return getID().equals( other.getID() );
+    }
+}
+	
+]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731594470565</Id>
+			<Name><![CDATA[Assure]]></Name>
+			<Text><![CDATA[//IMPORTS
+import java.time.LocalDate;
+import java.time.ZoneId;
+
+public class Assure implements Serializable {
+	
+/*  Variable
+***********************************************************************************************************************/
+
+	public static boolean isValidDouble( String strValue ) {
+		try {
+			Double.parseDouble( strValue );
+			return true;
+		}
+		catch( NumberFormatException e ) {
+		  return false;
+		}
+	}
+	
+	public static boolean isValidInt( String strValue ) {
+		try {
+			double value = Double.parseDouble( strValue );
+			return Math.abs( value % 1 ) < 0.0001;
+		}
+		catch( NumberFormatException e ) {
+		  return false;
+		}
+	}
+	
+	
+	public static int strToInt( String strValue ) {
+		
+		if ( isValidInt( strValue ) ) {
+			return (int) Math.round( Double.parseDouble( strValue ) );
+		}     	
+		return -1;
+	}
+	
+	public static double strToDouble( String strValue ) {
+		
+		if ( isValidDouble( strValue ) ) {
+			return Double.parseDouble( strValue.replace( ",", "." ) );
+		}     	
+		return Double.NaN;
+	}
+	
+	public static Date strToDate( String strValue ) {
+		Date date = null;
+		
+		if (!strValue.isEmpty()) {
+			try {
+
+				double dDate = Double.valueOf(strValue);	
+				date = getDateFromNum(dDate);	
+				return date;
+				
+			} catch(Exception exc) {
+				traceln(exc);
+				throw new RuntimeException(String.format("[%s] ist kein Datum.", strValue));
+			}
+		}
+		throw new RuntimeException(String.format("[%s] ist kein Datum.", strValue));
+	}
+	
+	private static Date getDateFromNum( double dDate ) {
+
+		LocalDate st = LocalDate.of(1900,1,1);
+		LocalDate de = st.plusDays((int) dDate).minusDays(2);
+		
+		return java.util.Date
+		      .from(de.atStartOfDay().atZone(ZoneId.systemDefault())
+		      .toInstant());
+	}
+	
+	public static WeightUnit strToWeightUnit(String strValue) {
+		try {
+			return WeightUnit.valueOf(strValue);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+/*  Variable
+***********************************************************************************************************************/
+
+	private static final long serialVersionUID = 1L;
+}
+]]></Text>
+		</JavaClass>
 	</JavaClasses>
+	<ModelResources>
+		<Resource>
+			<Path><![CDATA[json-20240303.jar]]></Path>
+			<ReferencedFromUserCode>false</ReferencedFromUserCode>
+			<Location>FILE_SYSTEM</Location>
+		</Resource>
+	</ModelResources>
     <RequiredLibraryReference>
 		<LibraryName><![CDATA[com.anylogic.libraries.modules.markup_descriptors]]></LibraryName>
 		<VersionMajor>1</VersionMajor>
@@ -4940,11 +6949,13 @@ public class NearestNeighbour extends Scheduler {
 		<VersionMinor>0</VersionMinor>
 		<VersionBuild>0</VersionBuild>
     </RequiredLibraryReference>
-    <RequiredLibraryReference>
-		<LibraryName><![CDATA[da_lib]]></LibraryName>
-		<VersionMajor>0</VersionMajor>
-		<VersionMinor>0</VersionMinor>
-		<VersionBuild>0</VersionBuild>
-    </RequiredLibraryReference>
+	<ClassPathEntry>
+		<ResourceReference>
+			<PackageName><![CDATA[da_tourplanning]]></PackageName>
+			<ClassName><![CDATA[json-20240303.jar]]></ClassName>
+		</ResourceReference>
+		<Imported>true</Imported>
+		<Folder>false</Folder>
+	</ClassPathEntry>
 </Model>
 </AnyLogicWorkspace>
