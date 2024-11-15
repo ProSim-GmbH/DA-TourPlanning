@@ -241,6 +241,7 @@ setupSimulation();]]></Body>
 	Address address = c.address;
 	if (address.hasCoordinates()) {
 		Customer customer = add_popCustomer(c.id, c.name, address, this);
+		customer.setup();
 		mapCustomer.put(customer.id, customer);
 	}
 }]]></Body>
@@ -259,7 +260,8 @@ setupSimulation();]]></Body>
 	Address address = l.address;
 	if (address.hasCoordinates()) {
 		Lager lager = add_popLager(l.id, l.name, l.address, this, 
-			l.loadingTimeInHour, l.workTimeInHour);
+			l.loadingTimeInHour, l.workTimeInHour).copy(l);
+		lager.setup();
 		mapLager.put(lager.id, lager);
 	}
 }]]></Body>
@@ -410,7 +412,9 @@ deliveryDay.startDay();]]></Body>
 						<Type><![CDATA[Order]]></Type>
 					</Parameter>
 					<Body><![CDATA[ArrayList<AbstractLocation> list = new ArrayList();
-list.addAll(order.getWHG().getListLager());
+//list.addAll(order.getWHG().getListLager());
+list.addAll(getListLager());
+
 return list;]]></Body>
 				</Function>
 				<Function AccessType="private" StaticFunction="false">
@@ -1396,13 +1400,30 @@ return list;]]></Body>
 			</ScaleRuler>
 			<CurrentLevel>1731431168952</CurrentLevel>
 			<ConnectionsId>1731431168946</ConnectionsId>
+			<Variables>
+				<Variable Class="CollectionVariable">
+					<Id>1731705096512</Id>
+					<Name><![CDATA[mapVehicle]]></Name>
+					<X>70</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" AccessType="public" StaticVariable="false">
+						<CollectionClass><![CDATA[LinkedHashMap]]></CollectionClass>
+						<ElementClass><![CDATA[Integer]]></ElementClass>
+						<ValueElementClass><![CDATA[AbstractVehicle]]></ValueElementClass>
+					</Properties>
+
+				</Variable>
+			</Variables>
 			<Functions>
-				<Function AccessType="protected" StaticFunction="false">
+				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731520270643</Id>
 					<Name><![CDATA[setVisible]]></Name>
-					<X>-250.333</X><Y>290.667</Y>
+					<X>840</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1412,6 +1433,69 @@ return list;]]></Body>
 						<Type><![CDATA[boolean]]></Type>
 					</Parameter>
 					<Body><![CDATA[store.setVisible(visible && Par.visualize());]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731705142040</Id>
+					<Name><![CDATA[addVehicle]]></Name>
+					<X>250</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[vehicle]]></Name>
+						<Type><![CDATA[AbstractVehicle]]></Type>
+					</Parameter>
+					<Body><![CDATA[mapVehicle.put(vehicle.id, vehicle);]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[ArrayList<AbstractVehicle>]]></ReturnType>
+					<Id>1731705142042</Id>
+					<Name><![CDATA[getListVehicle]]></Name>
+					<X>400</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return new ArrayList<>(mapVehicle.values());]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731705184816</Id>
+					<Name><![CDATA[startDay]]></Name>
+					<X>840</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[super.startDay();
+
+mapVehicle.clear();]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731705285337</Id>
+					<Name><![CDATA[deliverOrder]]></Name>
+					<X>840</X><Y>540</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[vehicle]]></Name>
+						<Type><![CDATA[AbstractVehicle]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[order]]></Name>
+						<Type><![CDATA[Order]]></Type>
+					</Parameter>
+					<Body><![CDATA[mapVehicle.remove(vehicle);
+setVisible(!mapVehicle.isEmpty());]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -1838,7 +1922,7 @@ return list;]]></Body>
 				<Variable Class="PlainVariable">
 					<Id>1731653652298</Id>
 					<Name><![CDATA[scheduler]]></Name>
-					<X>-1020</X><Y>290</Y>
+					<X>70</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1850,7 +1934,7 @@ return list;]]></Body>
 				<Variable Class="Parameter">
 					<Id>1731655904572</Id>
 					<Name><![CDATA[loadingTimeInHour]]></Name>
-					<X>-1020</X><Y>170</Y>
+					<X>70</X><Y>170</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1871,7 +1955,7 @@ return list;]]></Body>
 				<Variable Class="Parameter">
 					<Id>1731655922254</Id>
 					<Name><![CDATA[workTimeInHour]]></Name>
-					<X>-1020</X><Y>190</Y>
+					<X>70</X><Y>190</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1892,7 +1976,7 @@ return list;]]></Body>
 				<Variable Class="CollectionVariable">
 					<Id>1731492770389</Id>
 					<Name><![CDATA[mapOrder]]></Name>
-					<X>-1020</X><Y>570</Y>
+					<X>70</X><Y>570</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1907,7 +1991,7 @@ return list;]]></Body>
 				<Variable Class="CollectionVariable">
 					<Id>1731657954414</Id>
 					<Name><![CDATA[mapWHG]]></Name>
-					<X>-1020</X><Y>490</Y>
+					<X>70</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1922,7 +2006,7 @@ return list;]]></Body>
 				<Variable Class="CollectionVariable">
 					<Id>1731658500827</Id>
 					<Name><![CDATA[mapFzgTyp]]></Name>
-					<X>-1020</X><Y>550</Y>
+					<X>70</X><Y>550</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1937,7 +2021,7 @@ return list;]]></Body>
 				<Variable Class="CollectionVariable">
 					<Id>1731664205308</Id>
 					<Name><![CDATA[mapVehicle]]></Name>
-					<X>-1020</X><Y>610</Y>
+					<X>70</X><Y>610</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1956,7 +2040,7 @@ return list;]]></Body>
 					<ReturnType><![CDATA[ArrayList<Order>]]></ReturnType>
 					<Id>1731492770391</Id>
 					<Name><![CDATA[getListOrder]]></Name>
-					<X>-700</X><Y>590</Y>
+					<X>390</X><Y>590</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1969,7 +2053,7 @@ return list;]]></Body>
 					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
 					<Id>1731492770393</Id>
 					<Name><![CDATA[addOrder]]></Name>
-					<X>-850</X><Y>570</Y>
+					<X>240</X><Y>570</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1988,19 +2072,19 @@ mapOrder.put(order.getMatClass(), list);]]></Body>
 					<ReturnType><![CDATA[TreeMap<MaterialKlassifizierung, ArrayList<Order>>]]></ReturnType>
 					<Id>1731492770395</Id>
 					<Name><![CDATA[getMapOrder]]></Name>
-					<X>-700</X><Y>570</Y>
+					<X>390</X><Y>570</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[return mapOrder;]]></Body>
 				</Function>
-				<Function AccessType="protected" StaticFunction="false">
+				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731519583795</Id>
 					<Name><![CDATA[setup]]></Name>
-					<X>-250</X><Y>90</Y>
+					<X>840</X><Y>90</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2009,12 +2093,12 @@ mapOrder.put(order.getMatClass(), list);]]></Body>
 setScheduler();
 setupVehicle();]]></Body>
 				</Function>
-				<Function AccessType="protected" StaticFunction="false">
+				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731520306004</Id>
 					<Name><![CDATA[setVisible]]></Name>
-					<X>-250</X><Y>290</Y>
+					<X>840</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2023,14 +2107,15 @@ setupVehicle();]]></Body>
 						<Name><![CDATA[visible]]></Name>
 						<Type><![CDATA[boolean]]></Type>
 					</Parameter>
-					<Body><![CDATA[warehouse.setVisible(visible && Par.visualize());]]></Body>
+					<Body><![CDATA[//warehouse.setVisible(visible && Par.visualize());
+warehouse.setVisible(true);]]></Body>
 				</Function>
 				<Function AccessType="protected" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731653665459</Id>
 					<Name><![CDATA[setScheduler]]></Name>
-					<X>-240</X><Y>130</Y>
+					<X>850</X><Y>130</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2042,7 +2127,7 @@ setupVehicle();]]></Body>
 					<ReturnType><![CDATA[AlgScheduler]]></ReturnType>
 					<Id>1731653678859</Id>
 					<Name><![CDATA[getScheduler]]></Name>
-					<X>-700</X><Y>290</Y>
+					<X>390</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2054,7 +2139,7 @@ setupVehicle();]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731654790545</Id>
 					<Name><![CDATA[startDay]]></Name>
-					<X>-250</X><Y>490</Y>
+					<X>840</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2071,7 +2156,7 @@ for (AbstractVehicle vehicle : getListVehicle()) {
 					<ReturnType><![CDATA[ArrayList<Warenhauptgruppe>]]></ReturnType>
 					<Id>1731657954417</Id>
 					<Name><![CDATA[getListWHG]]></Name>
-					<X>-700</X><Y>510</Y>
+					<X>390</X><Y>510</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2083,7 +2168,7 @@ for (AbstractVehicle vehicle : getListVehicle()) {
 					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
 					<Id>1731657954419</Id>
 					<Name><![CDATA[addWHG]]></Name>
-					<X>-850</X><Y>490</Y>
+					<X>240</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2099,7 +2184,7 @@ for (AbstractVehicle vehicle : getListVehicle()) {
 					<ReturnType><![CDATA[LinkedHashMap<String, Warenhauptgruppe>]]></ReturnType>
 					<Id>1731657954421</Id>
 					<Name><![CDATA[getMapWHG]]></Name>
-					<X>-700</X><Y>490</Y>
+					<X>390</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2111,7 +2196,7 @@ for (AbstractVehicle vehicle : getListVehicle()) {
 					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
 					<Id>1731658500831</Id>
 					<Name><![CDATA[addFzgTyp]]></Name>
-					<X>-850</X><Y>550</Y>
+					<X>240</X><Y>550</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2131,7 +2216,7 @@ for (AbstractVehicle vehicle : getListVehicle()) {
 					<ReturnType><![CDATA[LinkedHashMap<Fahrzeugtyp, Integer>]]></ReturnType>
 					<Id>1731658500833</Id>
 					<Name><![CDATA[getMapFzgTyp]]></Name>
-					<X>-700</X><Y>550</Y>
+					<X>390</X><Y>550</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2143,7 +2228,7 @@ for (AbstractVehicle vehicle : getListVehicle()) {
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731664248620</Id>
 					<Name><![CDATA[addVehicle]]></Name>
-					<X>-850</X><Y>610</Y>
+					<X>240</X><Y>610</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2161,7 +2246,7 @@ mapVehicle.put(vehicle.fzgTyp, list);]]></Body>
 					<ReturnType><![CDATA[ArrayList<AbstractVehicle>]]></ReturnType>
 					<Id>1731664326105</Id>
 					<Name><![CDATA[getListVehicle]]></Name>
-					<X>-700</X><Y>610</Y>
+					<X>390</X><Y>610</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2174,7 +2259,7 @@ mapVehicle.put(vehicle.fzgTyp, list);]]></Body>
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1731665071472</Id>
 					<Name><![CDATA[canStoreOrder]]></Name>
-					<X>-250</X><Y>540</Y>
+					<X>840</X><Y>540</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2190,7 +2275,7 @@ mapVehicle.put(vehicle.fzgTyp, list);]]></Body>
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1731665130725</Id>
 					<Name><![CDATA[hasWHG]]></Name>
-					<X>-700</X><Y>530</Y>
+					<X>390</X><Y>530</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2206,7 +2291,7 @@ mapVehicle.put(vehicle.fzgTyp, list);]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731672473206</Id>
 					<Name><![CDATA[setupVehicle]]></Name>
-					<X>-240</X><Y>110</Y>
+					<X>850</X><Y>110</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2222,7 +2307,7 @@ mapVehicle.put(vehicle.fzgTyp, list);]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731686223066</Id>
 					<Name><![CDATA[endDay]]></Name>
-					<X>-250</X><Y>510</Y>
+					<X>840</X><Y>510</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2234,6 +2319,26 @@ mapOrder.clear();
 for (AbstractVehicle vehicle : getListVehicle()) {
 	vehicle.endDay();
 } ]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[Lager]]></ReturnType>
+					<Id>1731703493595</Id>
+					<Name><![CDATA[copy]]></Name>
+					<X>840</X><Y>150</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[lager]]></Name>
+						<Type><![CDATA[Lager]]></Type>
+					</Parameter>
+					<Body><![CDATA[mapWHG.putAll(lager.getMapWHG());
+mapFzgTyp.putAll(lager.getMapFzgTyp());
+
+
+return this;]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -2639,12 +2744,12 @@ for (AbstractVehicle vehicle : getListVehicle()) {
 			<CurrentLevel>1731479084190</CurrentLevel>
 			<ConnectionsId>1731479084184</ConnectionsId>
 			<Functions>
-				<Function AccessType="protected" StaticFunction="false">
+				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731684717927</Id>
 					<Name><![CDATA[setVisible]]></Name>
-					<X>-250</X><Y>290</Y>
+					<X>840</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3514,7 +3619,6 @@ closed = true;]]></Body>
 		<ActiveObjectClass>
 			<Id>1731592959171</Id>
 			<Name><![CDATA[AbstractLocation]]></Name>
-			<StartupCode><![CDATA[setup();]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1731592959166</Id>
@@ -3608,7 +3712,7 @@ closed = true;]]></Body>
 				<Variable Class="Parameter">
 					<Id>1731592959226</Id>
 					<Name><![CDATA[id]]></Name>
-					<X>-1020</X><Y>90</Y>
+					<X>70</X><Y>90</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3629,7 +3733,7 @@ closed = true;]]></Body>
 				<Variable Class="Parameter">
 					<Id>1731592959229</Id>
 					<Name><![CDATA[name]]></Name>
-					<X>-1020</X><Y>110</Y>
+					<X>70</X><Y>110</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3650,7 +3754,7 @@ closed = true;]]></Body>
 				<Variable Class="Parameter">
 					<Id>1731592959232</Id>
 					<Name><![CDATA[address]]></Name>
-					<X>-1020</X><Y>130</Y>
+					<X>70</X><Y>130</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3671,7 +3775,7 @@ closed = true;]]></Body>
 				<Variable Class="Parameter">
 					<Id>1731596601144</Id>
 					<Name><![CDATA[root]]></Name>
-					<X>-1020</X><Y>150</Y>
+					<X>70</X><Y>150</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3696,7 +3800,7 @@ closed = true;]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731592959179</Id>
 					<Name><![CDATA[startDay]]></Name>
-					<X>-250</X><Y>490</Y>
+					<X>840</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3708,19 +3812,19 @@ closed = true;]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731592959181</Id>
 					<Name><![CDATA[endDay]]></Name>
-					<X>-250</X><Y>510</Y>
+					<X>840</X><Y>510</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[setVisible(false);]]></Body>
 				</Function>
-				<Function AccessType="protected" StaticFunction="false">
+				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731592959183</Id>
 					<Name><![CDATA[setVisible]]></Name>
-					<X>-250</X><Y>290</Y>
+					<X>840</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3730,12 +3834,12 @@ closed = true;]]></Body>
 						<Type><![CDATA[boolean]]></Type>
 					</Parameter>
 				</Function>
-				<Function AccessType="protected" StaticFunction="false">
+				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731662817323</Id>
 					<Name><![CDATA[setup]]></Name>
-					<X>-250</X><Y>90</Y>
+					<X>840</X><Y>90</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3747,7 +3851,7 @@ closed = true;]]></Body>
 					<ReturnType><![CDATA[AbstractLocation]]></ReturnType>
 					<Id>1731663761002</Id>
 					<Name><![CDATA[getClosestLocByGIS]]></Name>
-					<X>-250</X><Y>310</Y>
+					<X>840</X><Y>310</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3764,7 +3868,7 @@ closed = true;]]></Body>
 double distance = Double.NaN;
 
 for (AbstractLocation loc : list) {
-	double dist = address.getDistByGIS(map, loc.address);
+	double dist = address.getDistanceInKm(map, loc.address);
 	if ((location == null) || (dist < distance)) {
 		location = loc;
 		distance = dist;
@@ -3778,7 +3882,7 @@ return location;]]></Body>
 					<ReturnType><![CDATA[AbstractLocation]]></ReturnType>
 					<Id>1731663761005</Id>
 					<Name><![CDATA[getClosestLocByRoute]]></Name>
-					<X>-250</X><Y>330</Y>
+					<X>840</X><Y>330</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3795,7 +3899,7 @@ return location;]]></Body>
 double distance = Double.NaN;
 
 for (AbstractLocation loc : list) {
-	double dist = address.getDistByRoute(map, loc.address);
+	double dist = address.getDistanceInKm(map, loc.address);
 	if ((location == null) || (dist < distance)) {
 		location = loc;
 		distance = dist;
@@ -3803,6 +3907,43 @@ for (AbstractLocation loc : list) {
 }
 
 return location;]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[String]]></ReturnType>
+					<Id>1731702765590</Id>
+					<Name><![CDATA[toString]]></Name>
+					<X>570</X><Y>90</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return String.format("%s | %s", id, name);]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1731702765594</Id>
+					<Name><![CDATA[equals]]></Name>
+					<X>570</X><Y>110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[obj]]></Name>
+						<Type><![CDATA[Object]]></Type>
+					</Parameter>
+					<Body><![CDATA[if ( obj == null ) {
+	return false;
+}
+
+if ( obj.getClass() != getClass() ) {
+	return false;
+}
+
+final AbstractLocation other = (AbstractLocation) obj;
+return id.equals( other.id );]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -3845,7 +3986,7 @@ return location;]]></Body>
 				<Group>
 					<Id>1731592959189</Id>
 					<Name><![CDATA[group]]></Name>
-					<X>-770</X><Y>100</Y>
+					<X>320</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3906,7 +4047,7 @@ return location;]]></Body>
 				<Group>
 					<Id>1731592959195</Id>
 					<Name><![CDATA[group1]]></Name>
-					<X>-270</X><Y>100</Y>
+					<X>820</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3967,7 +4108,7 @@ return location;]]></Body>
 				<Group>
 					<Id>1731592959201</Id>
 					<Name><![CDATA[group2]]></Name>
-					<X>-270</X><Y>300</Y>
+					<X>820</X><Y>300</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4028,7 +4169,7 @@ return location;]]></Body>
 				<Group>
 					<Id>1731592959207</Id>
 					<Name><![CDATA[group3]]></Name>
-					<X>-770</X><Y>300</Y>
+					<X>320</X><Y>300</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4089,7 +4230,7 @@ return location;]]></Body>
 				<Group>
 					<Id>1731592959213</Id>
 					<Name><![CDATA[group4]]></Name>
-					<X>-770</X><Y>500</Y>
+					<X>320</X><Y>500</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4150,7 +4291,7 @@ return location;]]></Body>
 				<Group>
 					<Id>1731592959219</Id>
 					<Name><![CDATA[group5]]></Name>
-					<X>-270</X><Y>500</Y>
+					<X>820</X><Y>500</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4258,6 +4399,7 @@ return location;]]></Body>
 					<Code><![CDATA[10]]></Code>
 					<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
 				</VelocityCode>
+				<OnArrival><![CDATA[endMoving = time(HOUR);]]></OnArrival>
 				<PhysicalLength Class="CodeUnitValue">
 					<Code><![CDATA[1]]></Code>
 					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
@@ -4326,7 +4468,7 @@ return location;]]></Body>
 				<Variable Class="PlainVariable">
 					<Id>1731593255921</Id>
 					<Name><![CDATA[startMoving]]></Name>
-					<X>-1020</X><Y>310</Y>
+					<X>70</X><Y>310</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4338,7 +4480,7 @@ return location;]]></Body>
 				<Variable Class="PlainVariable">
 					<Id>1731593255923</Id>
 					<Name><![CDATA[endMoving]]></Name>
-					<X>-1020</X><Y>330</Y>
+					<X>70</X><Y>330</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4350,7 +4492,7 @@ return location;]]></Body>
 				<Variable Class="PlainVariable">
 					<Id>1731593255925</Id>
 					<Name><![CDATA[target]]></Name>
-					<X>-1020</X><Y>390</Y>
+					<X>70</X><Y>390</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4362,7 +4504,7 @@ return location;]]></Body>
 				<Variable Class="PlainVariable">
 					<Id>1731593255927</Id>
 					<Name><![CDATA[loadedWeightInKg]]></Name>
-					<X>-1020</X><Y>350</Y>
+					<X>70</X><Y>350</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4374,7 +4516,7 @@ return location;]]></Body>
 				<Variable Class="PlainVariable">
 					<Id>1731651089602</Id>
 					<Name><![CDATA[currentScheduleLoc]]></Name>
-					<X>-1020</X><Y>540</Y>
+					<X>70</X><Y>570</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4386,7 +4528,7 @@ return location;]]></Body>
 				<Variable Class="PlainVariable">
 					<Id>1731652445052</Id>
 					<Name><![CDATA[startLoading]]></Name>
-					<X>-1020</X><Y>410</Y>
+					<X>70</X><Y>430</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4398,7 +4540,7 @@ return location;]]></Body>
 				<Variable Class="PlainVariable">
 					<Id>1731674777037</Id>
 					<Name><![CDATA[scheduledTotDurInHour]]></Name>
-					<X>-1020</X><Y>370</Y>
+					<X>70</X><Y>370</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4410,7 +4552,7 @@ return location;]]></Body>
 				<Variable Class="PlainVariable">
 					<Id>1731683846493</Id>
 					<Name><![CDATA[currentLocation]]></Name>
-					<X>-1020</X><Y>430</Y>
+					<X>70</X><Y>450</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4422,7 +4564,7 @@ return location;]]></Body>
 				<Variable Class="PlainVariable">
 					<Id>1731686635638</Id>
 					<Name><![CDATA[active]]></Name>
-					<X>-1020</X><Y>290</Y>
+					<X>70</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4434,10 +4576,22 @@ return location;]]></Body>
 						</InitialValue>
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1731706406845</Id>
+					<Name><![CDATA[nextDurationInHour]]></Name>
+					<X>70</X><Y>410</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="protected" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
 				<Variable Class="Parameter">
 					<Id>1731593255956</Id>
 					<Name><![CDATA[id]]></Name>
-					<X>-1020</X><Y>90</Y>
+					<X>70</X><Y>90</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4458,7 +4612,7 @@ return location;]]></Body>
 				<Variable Class="Parameter">
 					<Id>1731664661575</Id>
 					<Name><![CDATA[fzgTyp]]></Name>
-					<X>-1020</X><Y>110</Y>
+					<X>70</X><Y>110</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4479,7 +4633,7 @@ return location;]]></Body>
 				<Variable Class="Parameter">
 					<Id>1731593255959</Id>
 					<Name><![CDATA[lager]]></Name>
-					<X>-1020</X><Y>130</Y>
+					<X>70</X><Y>130</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4500,7 +4654,7 @@ return location;]]></Body>
 				<Variable Class="Parameter">
 					<Id>1731596543886</Id>
 					<Name><![CDATA[root]]></Name>
-					<X>-1020</X><Y>150</Y>
+					<X>70</X><Y>150</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4521,7 +4675,7 @@ return location;]]></Body>
 				<Variable Class="CollectionVariable">
 					<Id>1731651089593</Id>
 					<Name><![CDATA[mapScheduledOrder]]></Name>
-					<X>-1020</X><Y>490</Y>
+					<X>70</X><Y>520</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4538,7 +4692,7 @@ return location;]]></Body>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1731686470071</Id>
 					<Name><![CDATA[stateActive]]></Name>
-					<X>260</X><Y>100</Y>
+					<X>-610</X><Y>70</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4550,20 +4704,21 @@ return location;]]></Body>
 				<StatechartElement Class="State" ParentState="stateActive" ParentStateId="1731686470071">
 					<Id>1731652979149</Id>
 					<Name><![CDATA[stateFinishing]]></Name>
-					<X>585</X><Y>270</Y>
+					<X>-285</X><Y>240</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="150" Height="50">
-						<EntryAction><![CDATA[moveToLocation(lager);]]></EntryAction>
+						<EntryAction><![CDATA[nextDurationInHour = getDrivingHour(lager);
+moveToLocation(lager, nextDurationInHour);]]></EntryAction>
 						<FillColor/>
 					</Properties>
 				</StatechartElement>
 				<StatechartElement Class="Branch" ParentState="stateActive" ParentStateId="1731686470071">
 					<Id>1731651919056</Id>
 					<Name><![CDATA[branch]]></Name>
-					<X>660</X><Y>490</Y>
+					<X>-210</X><Y>460</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4574,7 +4729,7 @@ return location;]]></Body>
 				<StatechartElement Class="State" ParentState="stateActive" ParentStateId="1731686470071">
 					<Id>1731651873266</Id>
 					<Name><![CDATA[stateUnloading]]></Name>
-					<X>360</X><Y>470</Y>
+					<X>-510</X><Y>440</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4587,7 +4742,7 @@ return location;]]></Body>
 				<StatechartElement Class="State" ParentState="stateActive" ParentStateId="1731686470071">
 					<Id>1731651852456</Id>
 					<Name><![CDATA[stateLoading]]></Name>
-					<X>360</X><Y>270</Y>
+					<X>-510</X><Y>240</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4599,27 +4754,30 @@ return location;]]></Body>
 				<StatechartElement Class="State" ParentState="stateActive" ParentStateId="1731686470071">
 					<Id>1731651822131</Id>
 					<Name><![CDATA[stateDriving]]></Name>
-					<X>360</X><Y>370</Y>
+					<X>-510</X><Y>340</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="150" Height="50">
-						<EntryAction><![CDATA[setNextTarget();
-moveToLocation(target.getCustomer());]]></EntryAction>
+						<EntryAction><![CDATA[startMoving = time(HOUR);
+setNextTarget();
+moveToLocation(target.getCustomer(), getDrivingHour(target));
+target.getCustomer().setVisible(true);]]></EntryAction>
 						<FillColor/>
 					</Properties>
 				</StatechartElement>
 				<StatechartElement Class="State" ParentState="stateActive" ParentStateId="1731686470071">
 					<Id>1731651724852</Id>
 					<Name><![CDATA[stateWaiting]]></Name>
-					<X>360</X><Y>170</Y>
+					<X>-510</X><Y>140</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="150" Height="50">
-						<EntryAction><![CDATA[currentLocation = lager;
+						<EntryAction><![CDATA[setVisible(false);
+currentLocation = lager;
 root.logger.addToLogRoute(this);
 setStartLoading();]]></EntryAction>
 						<FillColor/>
@@ -4628,7 +4786,7 @@ setStartLoading();]]></EntryAction>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1731686535874</Id>
 					<Name><![CDATA[stateInactive]]></Name>
-					<X>50</X><Y>150</Y>
+					<X>-820</X><Y>120</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4641,7 +4799,7 @@ setStartLoading();]]></EntryAction>
 				<StatechartElement Class="EntryPoint" ParentState="ROOT_NODE">
 					<Id>1731651719408</Id>
 					<Name><![CDATA[statechart]]></Name>
-					<X>120</X><Y>110</Y>
+					<X>-750</X><Y>80</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4656,7 +4814,7 @@ setStartLoading();]]></EntryAction>
 				<StatechartElement Class="Transition" ParentState="stateActive" ParentStateId="1731686470071">
 					<Id>1731651895966</Id>
 					<Name><![CDATA[transition]]></Name>
-					<X>430</X><Y>220</Y>
+					<X>-440</X><Y>190</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4667,7 +4825,8 @@ setStartLoading();]]></EntryAction>
 					</Points>
 					<IconOffset>20.0</IconOffset>
 					<Properties Source="1731651724852" Target="1731651852456" Trigger="condition">
-						<Action><![CDATA[startLoading = false;]]></Action>
+						<Action><![CDATA[startLoading = false;
+setVisible(true);]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
@@ -4687,7 +4846,7 @@ setStartLoading();]]></EntryAction>
 				<StatechartElement Class="Transition" ParentState="stateActive" ParentStateId="1731686470071">
 					<Id>1731651907400</Id>
 					<Name><![CDATA[transition1]]></Name>
-					<X>430</X><Y>320</Y>
+					<X>-440</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4699,7 +4858,7 @@ setStartLoading();]]></EntryAction>
 					<IconOffset>20.0</IconOffset>
 					<Properties Source="1731651852456" Target="1731651822131" Trigger="timeout">
 						<Timeout Class="CodeUnitValue">
-							<Code><![CDATA[getLoadingTime()]]></Code>
+							<Code><![CDATA[getLoadingHour()]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
 						</Timeout>
 						<Condition><![CDATA[true]]></Condition>
@@ -4717,7 +4876,7 @@ setStartLoading();]]></EntryAction>
 				<StatechartElement Class="Transition" ParentState="stateActive" ParentStateId="1731686470071">
 					<Id>1731651912132</Id>
 					<Name><![CDATA[transition2]]></Name>
-					<X>430</X><Y>420</Y>
+					<X>-440</X><Y>390</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4729,7 +4888,7 @@ setStartLoading();]]></EntryAction>
 					<IconOffset>20.0</IconOffset>
 					<Properties Source="1731651822131" Target="1731651873266" Trigger="timeout">
 						<Timeout Class="CodeUnitValue">
-							<Code><![CDATA[getDrivingTime(target)]]></Code>
+							<Code><![CDATA[getDrivingHour(target)]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
 						</Timeout>
 						<Condition><![CDATA[true]]></Condition>
@@ -4747,7 +4906,7 @@ setStartLoading();]]></EntryAction>
 				<StatechartElement Class="Transition" ParentState="stateActive" ParentStateId="1731686470071">
 					<Id>1731651937794</Id>
 					<Name><![CDATA[transition3]]></Name>
-					<X>510</X><Y>490</Y>
+					<X>-360</X><Y>460</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4760,7 +4919,7 @@ setStartLoading();]]></EntryAction>
 					<Properties Source="1731651873266" Target="1731651919056" Trigger="timeout">
 						<Action><![CDATA[unloadOrder(target);]]></Action>
 						<Timeout Class="CodeUnitValue">
-							<Code><![CDATA[getUnloadingTime(target)]]></Code>
+							<Code><![CDATA[getUnloadingHour(target)]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
 						</Timeout>
 						<Condition><![CDATA[true]]></Condition>
@@ -4778,7 +4937,7 @@ setStartLoading();]]></EntryAction>
 				<StatechartElement Class="Transition" ParentState="stateActive" ParentStateId="1731686470071">
 					<Id>1731651967184</Id>
 					<Name><![CDATA[transition4]]></Name>
-					<X>660</X><Y>480</Y>
+					<X>-210</X><Y>450</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4810,7 +4969,7 @@ setStartLoading();]]></EntryAction>
 				<StatechartElement Class="Transition" ParentState="stateActive" ParentStateId="1731686470071">
 					<Id>1731651995202</Id>
 					<Name><![CDATA[transition5]]></Name>
-					<X>660</X><Y>480</Y>
+					<X>-210</X><Y>450</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4840,7 +4999,7 @@ setStartLoading();]]></EntryAction>
 				<StatechartElement Class="Transition" ParentState="stateActive" ParentStateId="1731686470071">
 					<Id>1731653031205</Id>
 					<Name><![CDATA[transition6]]></Name>
-					<X>660</X><Y>270</Y>
+					<X>-210</X><Y>240</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4853,7 +5012,7 @@ setStartLoading();]]></EntryAction>
 					<IconOffset>30.0</IconOffset>
 					<Properties Source="1731652979149" Target="1731651724852" Trigger="timeout">
 						<Timeout Class="CodeUnitValue">
-							<Code><![CDATA[getDrivingTime(lager)]]></Code>
+							<Code><![CDATA[nextDurationInHour]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
 						</Timeout>
 						<Condition><![CDATA[true]]></Condition>
@@ -4871,7 +5030,7 @@ setStartLoading();]]></EntryAction>
 				<StatechartElement Class="InitialStatePointer" ParentState="stateActive" ParentStateId="1731686470071">
 					<Id>1731686514038</Id>
 					<Name><![CDATA[initialState]]></Name>
-					<X>430</X><Y>130</Y>
+					<X>-440</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4886,7 +5045,7 @@ setStartLoading();]]></EntryAction>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1731686593287</Id>
 					<Name><![CDATA[transition7]]></Name>
-					<X>200</X><Y>160</Y>
+					<X>-670</X><Y>130</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4917,7 +5076,7 @@ setStartLoading();]]></EntryAction>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1731686613954</Id>
 					<Name><![CDATA[transition8]]></Name>
-					<X>260</X><Y>180</Y>
+					<X>-610</X><Y>150</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4952,7 +5111,7 @@ setStartLoading();]]></EntryAction>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731593255919</Id>
 					<Name><![CDATA[setup]]></Name>
-					<X>-250</X><Y>110</Y>
+					<X>840</X><Y>110</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4966,7 +5125,7 @@ currentScheduleLoc = lager;]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731651089596</Id>
 					<Name><![CDATA[addNextOrder]]></Name>
-					<X>-750</X><Y>530</Y>
+					<X>340</X><Y>560</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4981,15 +5140,16 @@ currentScheduleLoc = lager;]]></Body>
 					</Parameter>
 					<Body><![CDATA[mapScheduledOrder.put(order, durationInHour);
 loadedWeightInKg += order.getWeightInKg();
-scheduledTotDurInHour += durationInHour + getUnloadingTime(order);
-currentScheduleLoc = order.getCustomer();]]></Body>
+scheduledTotDurInHour += durationInHour + getUnloadingHour(order);
+currentScheduleLoc = order.getCustomer();
+order.getCustomer().addVehicle(this);]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[AbstractLocation]]></ReturnType>
 					<Id>1731651089598</Id>
 					<Name><![CDATA[getCurrentScheduleLoc]]></Name>
-					<X>-750</X><Y>550</Y>
+					<X>340</X><Y>580</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5001,7 +5161,7 @@ currentScheduleLoc = order.getCustomer();]]></Body>
 					<ReturnType><![CDATA[ArrayList<Order>]]></ReturnType>
 					<Id>1731651089600</Id>
 					<Name><![CDATA[getListScheduledOrder]]></Name>
-					<X>-750</X><Y>510</Y>
+					<X>340</X><Y>540</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5013,7 +5173,7 @@ currentScheduleLoc = order.getCustomer();]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731651488062</Id>
 					<Name><![CDATA[startDay]]></Name>
-					<X>-250</X><Y>490</Y>
+					<X>840</X><Y>520</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5026,7 +5186,7 @@ onChange();]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731651488064</Id>
 					<Name><![CDATA[setNextTarget]]></Name>
-					<X>-250</X><Y>560</Y>
+					<X>840</X><Y>590</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5036,27 +5196,9 @@ onChange();]]></Body>
 				<Function AccessType="protected" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1731651488066</Id>
-					<Name><![CDATA[moveToLocation]]></Name>
-					<X>-250</X><Y>610</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Parameter>
-						<Name><![CDATA[location]]></Name>
-						<Type><![CDATA[AbstractLocation]]></Type>
-					</Parameter>
-					<Body><![CDATA[if (Par.visualize()) {
-	moveTo(location);
-}]]></Body>
-				</Function>
-				<Function AccessType="protected" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731652505633</Id>
 					<Name><![CDATA[setStartLoading]]></Name>
-					<X>-240</X><Y>510</Y>
+					<X>850</X><Y>540</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5068,8 +5210,8 @@ onChange();]]></Body>
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731652552190</Id>
-					<Name><![CDATA[getLoadingTime]]></Name>
-					<X>-250</X><Y>330</Y>
+					<Name><![CDATA[getLoadingHour]]></Name>
+					<X>840</X><Y>330</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5080,8 +5222,8 @@ onChange();]]></Body>
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731652714750</Id>
-					<Name><![CDATA[getDrivingTime]]></Name>
-					<X>-250</X><Y>370</Y>
+					<Name><![CDATA[getDrivingHour]]></Name>
+					<X>840</X><Y>370</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5090,15 +5232,15 @@ onChange();]]></Body>
 						<Name><![CDATA[location]]></Name>
 						<Type><![CDATA[AbstractLocation]]></Type>
 					</Parameter>
-					<Body><![CDATA[double distanceInKm = currentLocation.address.getDistByGIS(root.map, location.address);
+					<Body><![CDATA[double distanceInKm = currentLocation.address.getDistanceInKm(root.map, location.address);
 return Calc.calcDrivingDuration(distanceInKm);]]></Body>
 				</Function>
 				<Function AccessType="protected" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731652781526</Id>
-					<Name><![CDATA[getUnloadingTime]]></Name>
-					<X>-250</X><Y>390</Y>
+					<Name><![CDATA[getUnloadingHour]]></Name>
+					<X>840</X><Y>390</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5114,7 +5256,7 @@ return Calc.calcDrivingDuration(distanceInKm);]]></Body>
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1731652841481</Id>
 					<Name><![CDATA[hasOrdersToDeliver]]></Name>
-					<X>-250</X><Y>310</Y>
+					<X>840</X><Y>310</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5126,7 +5268,7 @@ return Calc.calcDrivingDuration(distanceInKm);]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731653208838</Id>
 					<Name><![CDATA[unloadOrder]]></Name>
-					<X>-250</X><Y>580</Y>
+					<X>840</X><Y>610</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5135,15 +5277,19 @@ return Calc.calcDrivingDuration(distanceInKm);]]></Body>
 						<Name><![CDATA[order]]></Name>
 						<Type><![CDATA[Order]]></Type>
 					</Parameter>
-					<Body><![CDATA[mapScheduledOrder.remove(order);
-loadedWeightInKg -= order.getWeightInKg();]]></Body>
+					<Body><![CDATA[order.getCustomer().deliverOrder(this, order);
+
+mapScheduledOrder.remove(order);
+loadedWeightInKg -= order.getWeightInKg();
+
+order.getCustomer().setVisible(false);]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1731674130130</Id>
 					<Name><![CDATA[canTakeOrder]]></Name>
-					<X>-250</X><Y>410</Y>
+					<X>840</X><Y>410</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5152,19 +5298,19 @@ loadedWeightInKg -= order.getWeightInKg();]]></Body>
 						<Name><![CDATA[order]]></Name>
 						<Type><![CDATA[Order]]></Type>
 					</Parameter>
-					<Body><![CDATA[boolean hasWeightCapacity = (loadedWeightInKg + order.getWeightInKg()) <= fzgTyp.getMaxWeightInKg();
+					<Body><![CDATA[double currentWeight = loadedWeightInKg + order.getWeightInKg();
+boolean hasWeightCapacity = currentWeight <= fzgTyp.getMaxWeightInKg();
 
 if (hasWeightCapacity) {
 
 	Address currentAddress = currentScheduleLoc.address;	
 	Address targetAddress = order.getCustomer().address;
-	double distToCustomerInKm = currentAddress.getDistByGIS(root.map, targetAddress);
+	double distToCustomerInKm = currentAddress.getDistanceInKm(root.map, targetAddress);
 	double durToCustomerInHour = Calc.calcDrivingDuration(distToCustomerInKm);
-	double distToLagerInHour = targetAddress.getDistByGIS(root.map, lager.address);
+	double distToLagerInHour = targetAddress.getDistanceInKm(root.map, lager.address);
 	double durToLagerInHour = Calc.calcDrivingDuration(distToLagerInHour);
-	
-	boolean hasTimeCapacity = (durToCustomerInHour + getUnloadingTime(order) + durToLagerInHour) <= lager.workTimeInHour;
-	
+	boolean hasTimeCapacity = (durToCustomerInHour + getUnloadingHour(order) + durToLagerInHour) <= lager.workTimeInHour;
+
 	return hasTimeCapacity;
 }	
 
@@ -5175,7 +5321,7 @@ return false;]]></Body>
 					<ReturnType><![CDATA[LinkedHashMap<Order,Double>]]></ReturnType>
 					<Id>1731674210803</Id>
 					<Name><![CDATA[getMapScheduledOrder]]></Name>
-					<X>-750</X><Y>490</Y>
+					<X>340</X><Y>520</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5186,8 +5332,8 @@ return false;]]></Body>
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731674307569</Id>
-					<Name><![CDATA[getDrivingTime]]></Name>
-					<X>-250</X><Y>350</Y>
+					<Name><![CDATA[getDrivingHour]]></Name>
+					<X>840</X><Y>350</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5198,12 +5344,12 @@ return false;]]></Body>
 					</Parameter>
 					<Body><![CDATA[return mapScheduledOrder.get(order);]]></Body>
 				</Function>
-				<Function AccessType="protected" StaticFunction="false">
+				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731684670690</Id>
 					<Name><![CDATA[setVisible]]></Name>
-					<X>-250</X><Y>290</Y>
+					<X>840</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5218,7 +5364,7 @@ return false;]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731686374706</Id>
 					<Name><![CDATA[endDay]]></Name>
-					<X>-250</X><Y>530</Y>
+					<X>840</X><Y>560</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5231,7 +5377,7 @@ onChange();]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731686925469</Id>
 					<Name><![CDATA[jumpToLocation]]></Name>
-					<X>-250</X><Y>630</Y>
+					<X>840</X><Y>660</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5243,6 +5389,66 @@ onChange();]]></Body>
 					<Body><![CDATA[currentLocation = location;
 if (Par.visualize()) {
 	moveToInTime(location, 0.0);
+}]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[String]]></ReturnType>
+					<Id>1731702810684</Id>
+					<Name><![CDATA[toString]]></Name>
+					<X>570</X><Y>90</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return String.format("%s | %s", id, fzgTyp);]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1731702810686</Id>
+					<Name><![CDATA[equals]]></Name>
+					<X>570</X><Y>110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[other]]></Name>
+						<Type><![CDATA[Object]]></Type>
+					</Parameter>
+					<Body><![CDATA[if ( other == null ) {
+	return false;
+}
+
+if ( other.getClass() != getClass() ) {
+	return false;
+}
+
+final AbstractVehicle obj = (AbstractVehicle) other;
+return id == obj.id;]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731706298907</Id>
+					<Name><![CDATA[moveToLocation]]></Name>
+					<X>840</X><Y>640</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[location]]></Name>
+						<Type><![CDATA[AbstractLocation]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[durationInHour]]></Name>
+						<Type><![CDATA[double]]></Type>
+					</Parameter>
+					<Body><![CDATA[if (Par.visualize()) {
+	traceln(String.format("%s - %s - %s", date(), durationInHour, timeToDate(time()+durationInHour)));
+	moveToInTime(location, durationInHour);
 }]]></Body>
 				</Function>
 			</Functions>
@@ -5291,7 +5497,7 @@ if (Par.visualize()) {
 				<Group>
 					<Id>1731650788691</Id>
 					<Name><![CDATA[group]]></Name>
-					<X>-770</X><Y>100</Y>
+					<X>320</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5352,7 +5558,7 @@ if (Par.visualize()) {
 				<Group>
 					<Id>1731650788697</Id>
 					<Name><![CDATA[group1]]></Name>
-					<X>-270</X><Y>100</Y>
+					<X>820</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5413,7 +5619,7 @@ if (Par.visualize()) {
 				<Group>
 					<Id>1731650788703</Id>
 					<Name><![CDATA[group2]]></Name>
-					<X>-270</X><Y>300</Y>
+					<X>820</X><Y>300</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5441,7 +5647,7 @@ if (Par.visualize()) {
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
 					<Width>490</Width>
-					<Height>190</Height>
+					<Height>220</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
@@ -5474,7 +5680,7 @@ if (Par.visualize()) {
 				<Group>
 					<Id>1731650788709</Id>
 					<Name><![CDATA[group3]]></Name>
-					<X>-770</X><Y>300</Y>
+					<X>320</X><Y>300</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5502,7 +5708,7 @@ if (Par.visualize()) {
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
 					<Width>490</Width>
-					<Height>190</Height>
+					<Height>220</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
@@ -5535,7 +5741,7 @@ if (Par.visualize()) {
 				<Group>
 					<Id>1731650788715</Id>
 					<Name><![CDATA[group4]]></Name>
-					<X>-770</X><Y>500</Y>
+					<X>320</X><Y>530</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5563,7 +5769,7 @@ if (Par.visualize()) {
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
 					<Width>490</Width>
-					<Height>190</Height>
+					<Height>250</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
@@ -5596,7 +5802,7 @@ if (Par.visualize()) {
 				<Group>
 					<Id>1731650788721</Id>
 					<Name><![CDATA[group5]]></Name>
-					<X>-270</X><Y>500</Y>
+					<X>820</X><Y>530</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5624,7 +5830,7 @@ if (Par.visualize()) {
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
 					<Width>490</Width>
-					<Height>190</Height>
+					<Height>250</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
@@ -5757,7 +5963,7 @@ if (Par.visualize()) {
 				<Variable Class="Parameter">
 					<Id>1731594031484</Id>
 					<Name><![CDATA[deliveryDate]]></Name>
-					<X>-1020</X><Y>90</Y>
+					<X>70</X><Y>90</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5778,7 +5984,7 @@ if (Par.visualize()) {
 				<Variable Class="Parameter">
 					<Id>1731598720183</Id>
 					<Name><![CDATA[root]]></Name>
-					<X>-1020</X><Y>110</Y>
+					<X>70</X><Y>110</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5799,7 +6005,7 @@ if (Par.visualize()) {
 				<Variable Class="CollectionVariable">
 					<Id>1731594031439</Id>
 					<Name><![CDATA[mapOrder]]></Name>
-					<X>-1020</X><Y>490</Y>
+					<X>70</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5814,7 +6020,7 @@ if (Par.visualize()) {
 				<Variable Class="CollectionVariable">
 					<Id>1731594031441</Id>
 					<Name><![CDATA[mapLager]]></Name>
-					<X>-1020</X><Y>560</Y>
+					<X>70</X><Y>560</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5829,7 +6035,7 @@ if (Par.visualize()) {
 				<Variable Class="CollectionVariable">
 					<Id>1731654302306</Id>
 					<Name><![CDATA[mapCustomer]]></Name>
-					<X>-1020</X><Y>600</Y>
+					<X>70</X><Y>600</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5846,7 +6052,7 @@ if (Par.visualize()) {
 				<Event>
 					<Id>1731594050983</Id>
 					<Name><![CDATA[evtEndDay]]></Name>
-					<X>-520</X><Y>530</Y>
+					<X>570</X><Y>530</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5881,7 +6087,7 @@ if (Par.visualize()) {
 					<ReturnType><![CDATA[ArrayList<Order>]]></ReturnType>
 					<Id>1731594031443</Id>
 					<Name><![CDATA[getListOrder]]></Name>
-					<X>-750</X><Y>510</Y>
+					<X>340</X><Y>510</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5893,7 +6099,7 @@ if (Par.visualize()) {
 					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
 					<Id>1731594031445</Id>
 					<Name><![CDATA[addOrder]]></Name>
-					<X>-750</X><Y>530</Y>
+					<X>340</X><Y>530</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5909,7 +6115,7 @@ if (Par.visualize()) {
 					<ReturnType><![CDATA[String]]></ReturnType>
 					<Id>1731594031447</Id>
 					<Name><![CDATA[toString]]></Name>
-					<X>-260</X><Y>80</Y>
+					<X>830</X><Y>80</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5921,7 +6127,7 @@ if (Par.visualize()) {
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1731594031449</Id>
 					<Name><![CDATA[equals]]></Name>
-					<X>-260</X><Y>100</Y>
+					<X>830</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5946,7 +6152,7 @@ return deliveryDate.equals( other.deliveryDate );]]></Body>
 					<ReturnType><![CDATA[LinkedHashMap<String, Order>]]></ReturnType>
 					<Id>1731594031451</Id>
 					<Name><![CDATA[getMapOrder]]></Name>
-					<X>-750</X><Y>490</Y>
+					<X>340</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5958,7 +6164,7 @@ return deliveryDate.equals( other.deliveryDate );]]></Body>
 					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
 					<Id>1731594031453</Id>
 					<Name><![CDATA[addLager]]></Name>
-					<X>-750</X><Y>580</Y>
+					<X>340</X><Y>580</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5976,7 +6182,7 @@ return deliveryDate.equals( other.deliveryDate );]]></Body>
 					<ReturnType><![CDATA[LinkedHashMap<String, Lager>]]></ReturnType>
 					<Id>1731594031455</Id>
 					<Name><![CDATA[getMapLager]]></Name>
-					<X>-750</X><Y>560</Y>
+					<X>340</X><Y>560</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5988,7 +6194,7 @@ return deliveryDate.equals( other.deliveryDate );]]></Body>
 					<ReturnType><![CDATA[DeliveryDay]]></ReturnType>
 					<Id>1731594050974</Id>
 					<Name><![CDATA[copy]]></Name>
-					<X>-260</X><Y>120</Y>
+					<X>830</X><Y>120</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6020,7 +6226,7 @@ return this;]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731594050980</Id>
 					<Name><![CDATA[endDay]]></Name>
-					<X>-250</X><Y>530</Y>
+					<X>840</X><Y>530</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6038,13 +6244,13 @@ for (Customer customer : mapCustomer.values()) {
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731654198932</Id>
 					<Name><![CDATA[startDay]]></Name>
-					<X>-250</X><Y>490</Y>
+					<X>840</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[setupOrder();
-
+traceln("here");
 for (Customer customer : mapCustomer.values()) {
 	customer.startDay();
 }
@@ -6060,7 +6266,7 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
 					<Id>1731654302310</Id>
 					<Name><![CDATA[addCustomer]]></Name>
-					<X>-750</X><Y>620</Y>
+					<X>340</X><Y>620</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6078,7 +6284,7 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 					<ReturnType><![CDATA[LinkedHashMap<String, Customer>]]></ReturnType>
 					<Id>1731654302312</Id>
 					<Name><![CDATA[getMapCustomer]]></Name>
-					<X>-750</X><Y>600</Y>
+					<X>340</X><Y>600</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6090,15 +6296,18 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731662567322</Id>
 					<Name><![CDATA[setupOrder]]></Name>
-					<X>-240</X><Y>510</Y>
+					<X>850</X><Y>510</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[for (Order order : getListOrder()) {
 	Lager lager = (Lager) order.getCustomer().getClosestLocByGIS(root.map, root.getListLager(order));
-	lager.addOrder(order);
-	addLager(lager);
+	traceln(lager);
+	if (lager != null) {
+		lager.addOrder(order);
+		addLager(lager);
+	}
 }]]></Body>
 				</Function>
 			</Functions>
@@ -6157,7 +6366,7 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 				<Group>
 					<Id>1731654568184</Id>
 					<Name><![CDATA[group]]></Name>
-					<X>-770</X><Y>100</Y>
+					<X>320</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6218,7 +6427,7 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 				<Group>
 					<Id>1731654568190</Id>
 					<Name><![CDATA[group5]]></Name>
-					<X>-270</X><Y>100</Y>
+					<X>820</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6279,7 +6488,7 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 				<Group>
 					<Id>1731654568196</Id>
 					<Name><![CDATA[group6]]></Name>
-					<X>-270</X><Y>300</Y>
+					<X>820</X><Y>300</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6340,7 +6549,7 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 				<Group>
 					<Id>1731654568202</Id>
 					<Name><![CDATA[group7]]></Name>
-					<X>-770</X><Y>300</Y>
+					<X>320</X><Y>300</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6401,7 +6610,7 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 				<Group>
 					<Id>1731654568208</Id>
 					<Name><![CDATA[group8]]></Name>
-					<X>-770</X><Y>500</Y>
+					<X>320</X><Y>500</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6462,7 +6671,7 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 				<Group>
 					<Id>1731654568214</Id>
 					<Name><![CDATA[group9]]></Name>
-					<X>-270</X><Y>500</Y>
+					<X>820</X><Y>500</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6605,7 +6814,7 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731412605319</Id>
-					<Name><![CDATA[read]]></Name>
+					<Name><![CDATA[readData]]></Name>
 					<X>-220</X><Y>250</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -6621,7 +6830,7 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 	data.readDataAdditionalInfo(path);
 	
 	//path = "C:\\Users\\TimoHarlacher\\Developer\\AnyLogic\\DA-Logistik\\Data\\DataIn\\241111_Lieferpositionen_OneDay_100.xlsx";
-	path = "C:\\Users\\TimoHarlacher\\OneDrive - ProSim GmbH\\2_Projekt\\1_Laufend\\00340_Debrunner\\5_Programm\\1_Daten\\lieferposition_01.2023.csv";
+	path = "C:\\Users\\TimoHarlacher\\OneDrive - ProSim GmbH\\2_Projekt\\1_Laufend\\00340_Debrunner\\5_Programm\\1_Daten\\lieferposition_02-04.01.2023.csv";
 	data.readDataOrder(path);
 	
 	getEngine().setStartDate( data.getStartDate() );
@@ -6631,6 +6840,7 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 	textCurrentState.setText("Daten erfolgreich gelesen");
 	textCurrentState.setColor(Color.GREEN);
 	
+	writeData();
 	
 });
 thread.start();]]></Body>
@@ -6650,6 +6860,28 @@ thread.start();]]></Body>
 textCurrentState.setColor(Color.RED);
 
 data = new InputData();]]></Body>
+				</Function>
+				<Function AccessType="private" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731699878988</Id>
+					<Name><![CDATA[writeData]]></Name>
+					<X>-220</X><Y>270</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[Thread thread = new Thread(() -> {
+	getEngine().getExperimentHost().setRunControlEnabled(false);
+	
+	textCurrentState.setText("Daten werden gespeichert...");
+	data.writeData();
+	
+	textCurrentState.setText("Daten erfolgreich gespeichert");
+	getEngine().getExperimentHost().setRunControlEnabled(true);
+	
+});
+thread.start();]]></Body>
 				</Function>
 			</Functions>
 
@@ -6852,7 +7084,7 @@ data = new InputData();]]></Body>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<OnClickCode><![CDATA[read();]]></OnClickCode>
+					<OnClickCode><![CDATA[readData();]]></OnClickCode>
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
@@ -6927,6 +7159,68 @@ data = new InputData();]]></Body>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text>
+				<Group>
+					<Id>1731699944022</Id>
+					<Name><![CDATA[group3]]></Name>
+					<X>140</X><Y>450</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<OnClickCode><![CDATA[writeData();]]></OnClickCode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731699944024</Id>
+					<Name><![CDATA[roundRectangle1]]></Name>
+					<X>-80</X><Y>-30</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>2</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>150</Width>
+					<Height>60</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731699944026</Id>
+					<Name><![CDATA[text2]]></Name>
+					<X>-10</X><Y>-10</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[WRITE DATA]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>14</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>CENTER</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
 			</Presentation>
 
 			<Parameters>			
@@ -7297,8 +7591,7 @@ public class DataAddress_Row extends DataRow {
 		int plz = getIntValueFromData(i);i++;
 		String city = getStrValueFromData(i);i++;
 		String country = "Switzerland";
-		
-		if ( getArrRowValue().length > 6 ) {
+		if ( getArrRowValue().length > 5 ) {
 			double latitude = getDoubleValueFromData(i);i++;
 			double longitude = getDoubleValueFromData(i);i++;
 			address = ((DataAdditionalInfo) getDataSheet().getData()).getData().setAddress(street, plz, city, country, latitude, longitude);
@@ -7340,6 +7633,7 @@ public class InputData {
 	private HashMap<String, MaterialKlassifizierung> mapMatClass;
 	private HashMap<String, Lager> mapLager;
 	private HashMap<String, Customer> mapCustomer;
+	private HashMap<String, Order> mapOrder;
 	private HashMap<Date, DeliveryDay> mapDeliveryDay;
 	
 /*  Constructor
@@ -7363,10 +7657,12 @@ public class InputData {
 	}
 	
 	public void readDataAdditionalInfo(String path) {
+		traceln("\nRead Additional Info Data");
 		dataAdditionalInfo = new DataAdditionalInfo(this, path);
 	}
 	
 	public void readDataOrder(String path) {
+		traceln("\nRead Order data");
 		//dataOrder = new DataOrder(this, path);
 		dataOrderCsv = new DataOrder_Csv(this, path);
 	}
@@ -7415,9 +7711,9 @@ public class InputData {
 		if(mapLager.containsKey(id)) {
 			return mapLager.get(id);
 		}
-		Lager werk = new Lager(id, "-", address, null, loadingTimeInMin, workTimeInHour);
-		mapLager.put(id, werk);
-		return werk;
+		Lager lager = new Lager(id, "-", address, null, loadingTimeInMin, workTimeInHour);
+		mapLager.put(id, lager);
+		return lager;
 	}
 	
 	public Warenhauptgruppe getWHG(String id) {
@@ -7499,9 +7795,20 @@ public class InputData {
 			return mapAddress.get(key);
 		}
 		Address address = new Address(street, plz, city, country);
-		mapAddress.put(address.getID(), address);
+		mapAddress.put(address.getLongAddress(), address);
 		return address;
 	}
+	
+	/*
+	public Address setOrder(String id, Date deliveryDate, Customer customer, matClass, whg) {
+		if(mapOrder.containsKey(key)) {
+			return mapOrder.get(key);
+		}
+		Order order = new Order(orderId, deliveryDate, customer, matClass, whg);
+		mapAddress.put(address.getLongAddress(), address);
+		return address;
+	}
+	*/
 	
 	public void addOrder(Order order) {
 		addOrderToDay(order);
@@ -7592,8 +7899,8 @@ public class AlgScheduler implements Serializable {
         Collections.sort(listToDo, new Comparator<Order>() {
             @Override
             public int compare(Order op1, Order op2) {
-                double distance1 = lager.address.getDistByGIS(root.map, op1.getCustomer().address);
-                double distance2 = lager.address.getDistByGIS(root.map, op2.getCustomer().address);
+                double distance1 = lager.address.getDistanceInKm(root.map, op1.getCustomer().address);
+                double distance2 = lager.address.getDistanceInKm(root.map, op2.getCustomer().address);
                 return Double.compare(distance1, distance2);
             }
         });
@@ -7624,7 +7931,8 @@ public class AlgNearestNeighbour extends AlgScheduler {
 	public void setupRoute() {
 		super.setupRoute();
 		sortOrderPosByGISDist();
-		
+		traceln("HERE");
+		traceln(listToDo.size());
 		while (!listToDo.isEmpty()) {
 			
 			Order next = getNextOrder(lager.getListVehicle(), listToDo);
@@ -7640,14 +7948,14 @@ public class AlgNearestNeighbour extends AlgScheduler {
 	private Order getNextOrder(ArrayList<AbstractVehicle> listVehicle, ArrayList<Order> listOrder) {
 		AbstractVehicle nextVehicle = null;
 		Order nextOrder = null;
-		double distance = -1.0;
-		
+		double distance = Double.MAX_VALUE;
+		traceln("VEHICLE: " + listVehicle);
 		for (AbstractVehicle vehicle : listVehicle) {
 			Address currentAddress = vehicle.getCurrentScheduleLoc().address;
-	
+			traceln("ORDER: " + listOrder);
 			for (Order order : listOrder) {
 				if (vehicle.canTakeOrder(order)) {
-					double dist = currentAddress.getDistByGIS(root.map, order.getCustomer().address);
+					double dist = currentAddress.getDistanceInKm(root.map, order.getCustomer().address);
 					if (dist < distance) {
 						nextVehicle = vehicle;
 						nextOrder = order;
@@ -7707,6 +8015,10 @@ public class Address implements Serializable {
 /*  Variable
 ***********************************************************************************************************************/
 	
+	private static int _id;
+	
+	private int id;
+	
 	private String street;
 	private int plz;
 	private String city;
@@ -7725,6 +8037,7 @@ public class Address implements Serializable {
 ***********************************************************************************************************************/
 
 	public Address(String street, int plz, String city, String country, double latitude, double longitude) {
+		this.id = _id++;
 		this.street = street;
 		this.plz = plz;
 		this.city = city;
@@ -7738,6 +8051,7 @@ public class Address implements Serializable {
 	}
 	
 	public Address(String street, int plz, String city, String country) {
+		this.id = _id++;
 		this.street = street;
 		this.plz = plz;
 		this.city = city;
@@ -7751,7 +8065,7 @@ public class Address implements Serializable {
 /*  Methode
 ***********************************************************************************************************************/
 
-	public String getID() { return getLongAddress(); }
+	public int getID() { return id; }
 	public String getStreet() { return street; }
 	public int getPlz() { return plz; }
 	public String getCity() { return city; }
@@ -7862,16 +8176,33 @@ public class Address implements Serializable {
 	    }
 	}
 
-	public double getDistByGIS(ShapeGISMap map, Address other) {
+	public double getDistanceInKm(ShapeGISMap map, Address other) {
+		DistanceCalculator method = Par.getDistCalc();
+	    if (method == null) {
+	        throw new IllegalArgumentException("Distance calculation method cannot be null");
+	    }
+
+	    switch (method) {
+	        case ByGIS:
+	            return getDistByGIS(map, other);
+	        case ByRoute:
+	            return getDistByRoute(map, other);
+	        default:
+	            throw new UnsupportedOperationException("Unsupported distance calculation method: " + method);
+	    }
+	}
+
+	
+	private double getDistByGIS(ShapeGISMap map, Address other) {
 		if (hasCoordinates() && other.hasCoordinates()) {
-			return getDistanceGIS(getLatitude(), getLongitude(), other.getLatitude(), other.getLongitude());
+			return getDistanceGIS(getLatitude(), getLongitude(), other.getLatitude(), other.getLongitude()) / 1000.0;
 		}
 		throw new RuntimeException(String.format("Address [%s] or Address [%s] has no coordinates", getLongAddress(), other.getLongAddress()));
 	}
 	
-	public double getDistByRoute(ShapeGISMap map, Address other) {
+	private double getDistByRoute(ShapeGISMap map, Address other) {
 		if (hasCoordinates() && other.hasCoordinates()) {
-			return map.getDistanceByRoute(getLatitude(), getLongitude(), other.getLatitude(), other.getLongitude());
+			return map.getDistanceByRoute(getLatitude(), getLongitude(), other.getLatitude(), other.getLongitude()) / 1000.0;
 		}
 		throw new RuntimeException(String.format("Address [%s] or Address [%s] has no coordinates", getLongAddress(), other.getLongAddress()));
 	}
@@ -7883,14 +8214,14 @@ public class Address implements Serializable {
     public boolean equals(Object obj) {
 		if ( obj == null ) {
 			return false;
-		}
+		} 
 
 		if ( obj.getClass() != getClass() ) {
 			return false;
 		}
 
 		final Address other = (Address) obj;
-		return getID().equals( other.getID() );
+		return getID() == other.getID();
 	 }
 }
 
@@ -8048,6 +8379,8 @@ public class Order implements Serializable {
 		this.id = order.getID();
 		this.deliveryDate = order.getDeliveryDate();
 		this.customer = customer;
+		this.matClass = order.matClass;
+		this.whg = order.whg;
 		this.weightInKg = 0.0;
 		this.listOrderPos = new ArrayList();
 		copy(order);
@@ -8159,25 +8492,36 @@ public class Assure implements Serializable {
 	
 	public static Date strToDate(String strValue) {
 	    Date date = null;
-	    
+
 	    if (!strValue.isEmpty()) {
 	        try {
-	            // Prüfen, ob der String dem Format "yyyy-MM-dd" entspricht
+	        	strValue = strValue.trim(); // Entferne führende und nachfolgende Leerzeichen
+	        	// Prüfen, ob der String dem Format "yyyy-MM-dd" entspricht
 	            if (strValue.matches("\\d{4}-\\d{2}-\\d{2}")) {
 	                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-	                formatter.setLenient(false); // Striktere Überprüfung der Eingabe
+	                formatter.setLenient(false); // Striktere Überprüfung
 	                date = formatter.parse(strValue);
 	                return date;
 	            }
-	            
+
+	            // Prüfen, ob der String dem Format "[dd.MM.yyyy]" entspricht
+	            if (strValue.matches("\\d{2}.\\d{2}.\\d{4}")) {
+	                // Entferne die eckigen Klammern und parse den Rest
+	                String cleanedDate = strValue.replaceAll("[\\[\\]]", "");
+	                SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+	                formatter.setLenient(false); // Striktere Überprüfung
+	                date = formatter.parse(cleanedDate);
+	                return date;
+	            }
+
 	            // Falls es sich um einen numerischen Wert handelt, als Excel-Datum behandeln
-	            double dDate = Double.valueOf(strValue);    
-	            date = getDateFromNum(dDate);    
+	            double dDate = Double.valueOf(strValue);
+	            date = getDateFromNum(dDate);
 	            return date;
 
 	        } catch (ParseException e) {
 	            traceln(e);
-	            throw new RuntimeException(String.format("[%s] ist kein gültiges Datum im Format yyyy-MM-dd.", strValue));
+	            throw new RuntimeException(String.format("[%s] ist kein gültiges Datum im unterstützten Format.", strValue));
 	        } catch (Exception exc) {
 	            traceln(exc);
 	            throw new RuntimeException(String.format("[%s] ist kein gültiges Datum.", strValue));
@@ -8818,6 +9162,9 @@ public class Par implements Serializable {
 	
 	private static double meanKmPerHour = 60.0;
 	
+	private static double startWorkInHour = 7;
+	
+	private static DistanceCalculator distCalc = DistanceCalculator.ByGIS;
 	
 /*  Methode
 ***********************************************************************************************************************/
@@ -8825,6 +9172,10 @@ public class Par implements Serializable {
 	public static boolean visualize() { return visualize; }
 	
 	public static double getMeanKmPerHour() { return meanKmPerHour; }
+	
+	public static double getStartWorkInHour() { return startWorkInHour; }
+	
+	public static DistanceCalculator getDistCalc() { return distCalc; }
 	
 }
 	
@@ -8878,7 +9229,6 @@ public class DataOrder_Csv {
 
                 // Order
                 String orderId = arr[i++].trim();
-                traceln(orderId);
                 Date deliveryDate = Assure.strToDate(arr[i++].trim());
                 String route1 = arr[i++].trim();
                 String route2 = arr[i++].trim();
@@ -8933,7 +9283,26 @@ public class DataOrder_Csv {
             System.err.println("Fehler beim Lesen der CSV-Datei: " + e.getMessage());
         }
     }
-}]]></Text>
+}
+]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731705932435</Id>
+			<Name><![CDATA[DistanceCalculator]]></Name>
+			<Text><![CDATA[
+public enum DistanceCalculator {
+    ByGIS,
+    ByRoute;
+
+    @Override
+    public String toString() {
+        // Hier könnte eine benutzerdefinierte String-Darstellung implementiert werden.
+        // Momentan gibt es den Enum-Wert in einer lesbaren Form zurück.
+        return name();
+    }
+}
+]]></Text>
 		</JavaClass>
 	</JavaClasses>
 	<ModelResources>
