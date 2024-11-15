@@ -115,7 +115,7 @@
 				<Variable Class="PlainVariable">
 					<Id>1731509241466</Id>
 					<Name><![CDATA[idLKW]]></Name>
-					<X>-190</X><Y>330</Y>
+					<X>-1020</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -130,7 +130,7 @@
 				<Variable Class="Parameter">
 					<Id>1731413521487</Id>
 					<Name><![CDATA[data]]></Name>
-					<X>-480</X><Y>50</Y>
+					<X>-1020</X><Y>90</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -151,7 +151,7 @@
 				<Variable Class="CollectionVariable">
 					<Id>1731481804984</Id>
 					<Name><![CDATA[mapCustomer]]></Name>
-					<X>-980</X><Y>70</Y>
+					<X>-1020</X><Y>510</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -166,7 +166,7 @@
 				<Variable Class="CollectionVariable">
 					<Id>1731481824861</Id>
 					<Name><![CDATA[mapLager]]></Name>
-					<X>-980</X><Y>120</Y>
+					<X>-1020</X><Y>560</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -181,7 +181,7 @@
 				<Variable Class="CollectionVariable">
 					<Id>1731486932465</Id>
 					<Name><![CDATA[mapOrder]]></Name>
-					<X>-980</X><Y>140</Y>
+					<X>-1020</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -193,27 +193,12 @@
 					</Properties>
 
 				</Variable>
-				<Variable Class="CollectionVariable">
-					<Id>1731506508949</Id>
-					<Name><![CDATA[mapScheduler]]></Name>
-					<X>-980</X><Y>50</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" AccessType="private" StaticVariable="false">
-						<CollectionClass><![CDATA[LinkedHashMap]]></CollectionClass>
-						<ElementClass><![CDATA[Lager]]></ElementClass>
-						<ValueElementClass><![CDATA[AlgScheduler]]></ValueElementClass>
-					</Properties>
-
-				</Variable>
 			</Variables>
 			<DynamicEvents>
 				<DynamicEventClass>
 					<Id>1731516284799</Id>
-					<Name><![CDATA[evtDeliveryDay]]></Name>
-					<X>-980</X><Y>250</Y>
+					<Name><![CDATA[evtStartNewDay]]></Name>
+					<X>-520</X><Y>500</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -231,21 +216,23 @@
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731413564181</Id>
 					<Name><![CDATA[setup]]></Name>
-					<X>-200</X><Y>50</Y>
+					<X>-250</X><Y>90</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[setupLager();
+					<Body><![CDATA[map.setVisible(Par.visualize());
+
+setupLager();
 setupCustomer();
-setupOrder();]]></Body>
+setupSimulation();]]></Body>
 				</Function>
 				<Function AccessType="private" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731413591561</Id>
 					<Name><![CDATA[setupCustomer]]></Name>
-					<X>-190</X><Y>70</Y>
+					<X>-240</X><Y>130</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -263,7 +250,7 @@ setupOrder();]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731479248489</Id>
 					<Name><![CDATA[setupLager]]></Name>
-					<X>-190</X><Y>90</Y>
+					<X>-240</X><Y>110</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -271,9 +258,9 @@ setupOrder();]]></Body>
 					<Body><![CDATA[for (Lager l : data.getListLager()) {
 	Address address = l.address;
 	if (address.hasCoordinates()) {
-		Lager lager = add_popLager(l.id, l.name, l.address, this);
+		Lager lager = add_popLager(l.id, l.name, l.address, this, 
+			l.loadingTimeInHour, l.workTimeInHour);
 		mapLager.put(lager.id, lager);
-		mapScheduler.put(lager, new AlgNearestNeighbour(this, lager));
 	}
 }]]></Body>
 				</Function>
@@ -281,14 +268,14 @@ setupOrder();]]></Body>
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731489821433</Id>
-					<Name><![CDATA[setupOrder]]></Name>
-					<X>-190</X><Y>110</Y>
+					<Name><![CDATA[setupSimulation]]></Name>
+					<X>-240</X><Y>150</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[for (DeliveryDay d : data.getListDeliveryDay()) {
-	create_evtDeliveryDay(dateToTime(d.deliveryDate), d);
+	create_evtStartNewDay(dateToTime(d.deliveryDate), d);
 }]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
@@ -296,7 +283,7 @@ setupOrder();]]></Body>
 					<ReturnType><![CDATA[LinkedHashMap<String, Customer>]]></ReturnType>
 					<Id>1731490721252</Id>
 					<Name><![CDATA[getMapCustomer]]></Name>
-					<X>-700</X><Y>70</Y>
+					<X>-750</X><Y>510</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -308,7 +295,7 @@ setupOrder();]]></Body>
 					<ReturnType><![CDATA[Customer]]></ReturnType>
 					<Id>1731490763252</Id>
 					<Name><![CDATA[getCustomer]]></Name>
-					<X>-690</X><Y>90</Y>
+					<X>-740</X><Y>530</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -329,7 +316,7 @@ return null;]]></Body>
 					<ReturnType><![CDATA[LinkedHashMap<String, Lager>]]></ReturnType>
 					<Id>1731491386717</Id>
 					<Name><![CDATA[getMapLager]]></Name>
-					<X>-700</X><Y>120</Y>
+					<X>-750</X><Y>560</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -341,7 +328,7 @@ return null;]]></Body>
 					<ReturnType><![CDATA[Lager]]></ReturnType>
 					<Id>1731491386721</Id>
 					<Name><![CDATA[getLager]]></Name>
-					<X>-690</X><Y>160</Y>
+					<X>-740</X><Y>620</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -362,7 +349,7 @@ return null;]]></Body>
 					<ReturnType><![CDATA[ArrayList<Lager>]]></ReturnType>
 					<Id>1731491423473</Id>
 					<Name><![CDATA[getListLager]]></Name>
-					<X>-700</X><Y>140</Y>
+					<X>-750</X><Y>580</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -374,7 +361,7 @@ return null;]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731494133607</Id>
 					<Name><![CDATA[startNewDay]]></Name>
-					<X>-700</X><Y>250</Y>
+					<X>-250</X><Y>500</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -383,39 +370,59 @@ return null;]]></Body>
 						<Name><![CDATA[d]]></Name>
 						<Type><![CDATA[DeliveryDay]]></Type>
 					</Parameter>
-					<Body><![CDATA[DeliveryDay deliveryDay = add_popDeliveryDay().copy(this, d);
+					<Body><![CDATA[resetDay();
 
-for (AlgScheduler scheduler : mapScheduler.values()) {
-	scheduler.startRouting();
-}]]></Body>
+DeliveryDay deliveryDay = add_popDeliveryDay().copy(this, d);
+deliveryDay.startDay();]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[LKW]]></ReturnType>
 					<Id>1731494419788</Id>
-					<Name><![CDATA[addNewLKW]]></Name>
-					<X>-200</X><Y>310</Y>
+					<Name><![CDATA[setLKW]]></Name>
+					<X>-250</X><Y>170</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Parameter>
-						<Name><![CDATA[location]]></Name>
-						<Type><![CDATA[AbstractLocation]]></Type>
+						<Name><![CDATA[fzgTyp]]></Name>
+						<Type><![CDATA[Fahrzeugtyp]]></Type>
 					</Parameter>
-					<Body><![CDATA[return add_popLKW(idLKW++, location, 100, this);]]></Body>
+					<Parameter>
+						<Name><![CDATA[lager]]></Name>
+						<Type><![CDATA[Lager]]></Type>
+					</Parameter>
+					<Body><![CDATA[return add_popLKW(idLKW++, fzgTyp, lager, this);]]></Body>
 				</Function>
-				<Function AccessType="private" StaticFunction="false">
+				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[ArrayList<AbstractLocation>]]></ReturnType>
 					<Id>1731596660230</Id>
-					<Name><![CDATA[getListWerk]]></Name>
-					<X>-400</X><Y>540</Y>
+					<Name><![CDATA[getListLager]]></Name>
+					<X>-750</X><Y>600</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return new ArrayList<>(root.getMapWerk().values());]]></Body>
+					<Parameter>
+						<Name><![CDATA[order]]></Name>
+						<Type><![CDATA[Order]]></Type>
+					</Parameter>
+					<Body><![CDATA[ArrayList<AbstractLocation> list = new ArrayList();
+list.addAll(order.getWHG().getListLager());
+return list;]]></Body>
+				</Function>
+				<Function AccessType="private" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731664042952</Id>
+					<Name><![CDATA[resetDay]]></Name>
+					<X>-240</X><Y>520</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -444,7 +451,7 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 				<EmbeddedObject>
 					<Id>1731431357422</Id>
 					<Name><![CDATA[popCustomer]]></Name>
-					<X>-480</X><Y>270</Y>
+					<X>-520</X><Y>130</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -482,7 +489,7 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 					<CollectionType>ARRAY_LIST_BASED</CollectionType>
 					<InEnvironment>true</InEnvironment>	
 					<InitialSpeedCode Class="CodeUnitValue">
-						<Code><![CDATA[1]]></Code>
+						<Code><![CDATA[0]]></Code>
 						<Unit Class="SpeedUnits"><![CDATA[KPH]]></Unit>
 					</InitialSpeedCode>
 					<InitialLocationType>XYZ</InitialLocationType>
@@ -513,7 +520,7 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 				<EmbeddedObject>
 					<Id>1731479107656</Id>
 					<Name><![CDATA[popLager]]></Name>
-					<X>-480</X><Y>290</Y>
+					<X>-520</X><Y>110</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -543,6 +550,12 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 						<Parameter>
 							<Name><![CDATA[root]]></Name>
 						</Parameter>
+						<Parameter>
+							<Name><![CDATA[loadingTimeInHour]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[workTimeInHour]]></Name>
+						</Parameter>
 					</Parameters>
 					<ReplicationFlag>true</ReplicationFlag>
 					<Replication Class="CodeValue">
@@ -550,6 +563,10 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 					</Replication>
 					<CollectionType>ARRAY_LIST_BASED</CollectionType>
 					<InEnvironment>true</InEnvironment>	
+					<InitialSpeedCode Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="SpeedUnits"><![CDATA[KPH]]></Unit>
+					</InitialSpeedCode>
 					<InitialLocationType>XYZ</InitialLocationType>
 					<ColumnCode Class="CodeValue">
 						<Code><![CDATA[0]]></Code>
@@ -578,7 +595,7 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 				<EmbeddedObject>
 					<Id>1731479187616</Id>
 					<Name><![CDATA[popLKW]]></Name>
-					<X>-480</X><Y>310</Y>
+					<X>-520</X><Y>170</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -600,10 +617,10 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 							<Name><![CDATA[id]]></Name>
 						</Parameter>
 						<Parameter>
-							<Name><![CDATA[initLocation]]></Name>
+							<Name><![CDATA[fzgTyp]]></Name>
 						</Parameter>
 						<Parameter>
-							<Name><![CDATA[capacityInKg]]></Name>
+							<Name><![CDATA[lager]]></Name>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[root]]></Name>
@@ -616,7 +633,7 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 					<CollectionType>ARRAY_LIST_BASED</CollectionType>
 					<InEnvironment>true</InEnvironment>	
 					<InitialSpeedCode Class="CodeUnitValue">
-						<Code><![CDATA[10]]></Code>
+						<Code><![CDATA[Par.getMeanKmPerHour()]]></Code>
 						<Unit Class="SpeedUnits"><![CDATA[KPH]]></Unit>
 					</InitialSpeedCode>
 					<InitialLocationType>XYZ</InitialLocationType>
@@ -627,10 +644,10 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 						<Code><![CDATA[0]]></Code>
 					</RowCode>
 					<LatitudeCode Class="CodeValue">
-						<Code><![CDATA[self.initLocation.address.getLatitude()]]></Code>
+						<Code><![CDATA[self.lager.address.getLatitude()]]></Code>
 					</LatitudeCode>
 					<LongitudeCode Class="CodeValue">
-						<Code><![CDATA[self.initLocation.address.getLongitude()]]></Code>
+						<Code><![CDATA[self.lager.address.getLongitude()]]></Code>
 					</LongitudeCode>
 					<LocationNameCode Class="CodeValue">
 						<Code><![CDATA[""]]></Code>
@@ -647,7 +664,7 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 				<EmbeddedObject>
 					<Id>1731489770390</Id>
 					<Name><![CDATA[popDeliveryDay]]></Name>
-					<X>-480</X><Y>330</Y>
+					<X>-520</X><Y>150</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -678,6 +695,10 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 					</Replication>
 					<CollectionType>ARRAY_LIST_BASED</CollectionType>
 					<InEnvironment>true</InEnvironment>	
+					<InitialSpeedCode Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="SpeedUnits"><![CDATA[KPH]]></Unit>
+					</InitialSpeedCode>
 					<InitialLocationType>XYZ</InitialLocationType>
 					<ColumnCode Class="CodeValue">
 						<Code><![CDATA[0]]></Code>
@@ -700,7 +721,7 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 				<EmbeddedObject>
 					<Id>1731509370748</Id>
 					<Name><![CDATA[logger]]></Name>
-					<X>-480</X><Y>250</Y>
+					<X>-520</X><Y>90</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -736,6 +757,10 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 					</Replication>
 					<CollectionType>ARRAY_LIST_BASED</CollectionType>
 					<InEnvironment>true</InEnvironment>	
+					<InitialSpeedCode Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
+					</InitialSpeedCode>
 					<InitialLocationType>XYZ</InitialLocationType>
 					<ColumnCode Class="CodeValue">
 						<Code><![CDATA[0]]></Code>
@@ -816,67 +841,6 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 
 
 				</GISMap>
-				<Group>
-					<Id>1731413512730</Id>
-					<Name><![CDATA[group]]></Name>
-					<X>-230</X><Y>60</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-
-			<Presentation>
-				<RoundedRectangle>
-					<Id>1731413512732</Id>
-					<Name><![CDATA[roundRectangle14]]></Name>
-					<X>-270</X><Y>-50</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>10</ZHeight>
-					<LineWidth>1</LineWidth>
-					<LineColor>-16777216</LineColor>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>490</Width>
-					<Height>190</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-1</FillColor>
-					<FillMaterial>null</FillMaterial>
-					<ArcRadius>10</ArcRadius>
-				</RoundedRectangle>
-				<Text>
-					<Id>1731413512734</Id>
-					<Name><![CDATA[text17]]></Name>
-					<X>-260</X><Y>-50</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-16777216</Color>
-					<Text><![CDATA[Setup]]></Text>
-					<Font>
-						<Name>SansSerif</Name>
-						<Size>18</Size>
-						<Style>1</Style>
-					</Font>
-					<Alignment>LEFT</Alignment>
-				</Text>
-			</Presentation>
-
-				</Group>
 				<EmbeddedObjectPresentation>
 					<Id>1731431358917</Id>
 					<Name><![CDATA[popCustomer_presentation]]></Name>
@@ -913,10 +877,46 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 					<Latitude>47.0</Latitude>
 					<Longitude>8.0</Longitude>
 				</EmbeddedObjectPresentation>
+				<EmbeddedObjectPresentation>
+					<Id>1731489772375</Id>
+					<Name><![CDATA[popDeliveryDay_presentation]]></Name>
+					<X>0</X><Y>0</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<ScaleType>AUTOMATICALLY_CALCULATED</ScaleType>
+					<GISScaleForRealEmbeddedObjectPresentationSize>1000</GISScaleForRealEmbeddedObjectPresentationSize>
+					<GISScaleForFixedEmbeddedObjectPresentationSize>1000000000</GISScaleForFixedEmbeddedObjectPresentationSize>
+					<Latitude>47.0</Latitude>
+					<Longitude>8.0</Longitude>
+				</EmbeddedObjectPresentation>
+				<EmbeddedObjectPresentation>
+					<Id>1731517436996</Id>
+					<Name><![CDATA[popLKW_presentation]]></Name>
+					<X>0</X><Y>0</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<ScaleType>AUTOMATICALLY_CALCULATED</ScaleType>
+					<GISScaleForRealEmbeddedObjectPresentationSize>1000</GISScaleForRealEmbeddedObjectPresentationSize>
+					<GISScaleForFixedEmbeddedObjectPresentationSize>1000000000</GISScaleForFixedEmbeddedObjectPresentationSize>
+					<Latitude>47.0</Latitude>
+					<Longitude>8.0</Longitude>
+				</EmbeddedObjectPresentation>
 				<Group>
-					<Id>1731481785085</Id>
-					<Name><![CDATA[group1]]></Name>
-					<X>-730</X><Y>60</Y>
+					<Id>1731653508624</Id>
+					<Name><![CDATA[group4]]></Name>
+					<X>-770</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -928,8 +928,8 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 
 			<Presentation>
 				<RoundedRectangle>
-					<Id>1731481785087</Id>
-					<Name><![CDATA[roundRectangle15]]></Name>
+					<Id>1731653508626</Id>
+					<Name><![CDATA[roundRectangle18]]></Name>
 					<X>-270</X><Y>-50</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -951,8 +951,252 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 					<ArcRadius>10</ArcRadius>
 				</RoundedRectangle>
 				<Text>
-					<Id>1731481785089</Id>
-					<Name><![CDATA[text18]]></Name>
+					<Id>1731653508628</Id>
+					<Name><![CDATA[text21]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Parameter]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731653508630</Id>
+					<Name><![CDATA[group5]]></Name>
+					<X>-270</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731653508632</Id>
+					<Name><![CDATA[roundRectangle19]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731653508634</Id>
+					<Name><![CDATA[text22]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Setup]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731653508636</Id>
+					<Name><![CDATA[group6]]></Name>
+					<X>-270</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731653508638</Id>
+					<Name><![CDATA[roundRectangle20]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731653508640</Id>
+					<Name><![CDATA[text23]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Function]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731653508642</Id>
+					<Name><![CDATA[group7]]></Name>
+					<X>-770</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731653508644</Id>
+					<Name><![CDATA[roundRectangle21]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731653508646</Id>
+					<Name><![CDATA[text24]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Variable]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731653508648</Id>
+					<Name><![CDATA[group8]]></Name>
+					<X>-770</X><Y>500</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731653508650</Id>
+					<Name><![CDATA[roundRectangle22]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731653508652</Id>
+					<Name><![CDATA[text25]]></Name>
 					<X>-260</X><Y>-50</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -974,28 +1218,10 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 			</Presentation>
 
 				</Group>
-				<EmbeddedObjectPresentation>
-					<Id>1731489772375</Id>
-					<Name><![CDATA[popDeliveryDay_presentation]]></Name>
-					<X>0</X><Y>0</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<ScaleType>AUTOMATICALLY_CALCULATED</ScaleType>
-					<GISScaleForRealEmbeddedObjectPresentationSize>1000</GISScaleForRealEmbeddedObjectPresentationSize>
-					<GISScaleForFixedEmbeddedObjectPresentationSize>1000000000</GISScaleForFixedEmbeddedObjectPresentationSize>
-					<Latitude>47.0</Latitude>
-					<Longitude>8.0</Longitude>
-				</EmbeddedObjectPresentation>
 				<Group>
-					<Id>1731494104965</Id>
-					<Name><![CDATA[group2]]></Name>
-					<X>-730</X><Y>260</Y>
+					<Id>1731653508654</Id>
+					<Name><![CDATA[group9]]></Name>
+					<X>-270</X><Y>500</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1007,8 +1233,8 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 
 			<Presentation>
 				<RoundedRectangle>
-					<Id>1731494104967</Id>
-					<Name><![CDATA[roundRectangle16]]></Name>
+					<Id>1731653508656</Id>
+					<Name><![CDATA[roundRectangle23]]></Name>
 					<X>-270</X><Y>-50</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -1030,8 +1256,8 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 					<ArcRadius>10</ArcRadius>
 				</RoundedRectangle>
 				<Text>
-					<Id>1731494104969</Id>
-					<Name><![CDATA[text19]]></Name>
+					<Id>1731653508658</Id>
+					<Name><![CDATA[text26]]></Name>
 					<X>-260</X><Y>-50</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -1053,85 +1279,6 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 			</Presentation>
 
 				</Group>
-				<Group>
-					<Id>1731517168466</Id>
-					<Name><![CDATA[group3]]></Name>
-					<X>-230</X><Y>260</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-
-			<Presentation>
-				<RoundedRectangle>
-					<Id>1731517168468</Id>
-					<Name><![CDATA[roundRectangle17]]></Name>
-					<X>-270</X><Y>-50</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>10</ZHeight>
-					<LineWidth>1</LineWidth>
-					<LineColor>-16777216</LineColor>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>490</Width>
-					<Height>190</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-1</FillColor>
-					<FillMaterial>null</FillMaterial>
-					<ArcRadius>10</ArcRadius>
-				</RoundedRectangle>
-				<Text>
-					<Id>1731517168470</Id>
-					<Name><![CDATA[text20]]></Name>
-					<X>-260</X><Y>-50</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-16777216</Color>
-					<Text><![CDATA[Agents]]></Text>
-					<Font>
-						<Name>SansSerif</Name>
-						<Size>18</Size>
-						<Style>1</Style>
-					</Font>
-					<Alignment>LEFT</Alignment>
-				</Text>
-			</Presentation>
-
-				</Group>
-				<EmbeddedObjectPresentation>
-					<Id>1731517436996</Id>
-					<Name><![CDATA[popLKW_presentation]]></Name>
-					<X>0</X><Y>0</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<ScaleType>AUTOMATICALLY_CALCULATED</ScaleType>
-					<GISScaleForRealEmbeddedObjectPresentationSize>1000</GISScaleForRealEmbeddedObjectPresentationSize>
-					<GISScaleForFixedEmbeddedObjectPresentationSize>1000000000</GISScaleForFixedEmbeddedObjectPresentationSize>
-					<Latitude>47.0</Latitude>
-					<Longitude>8.0</Longitude>
-				</EmbeddedObjectPresentation>
 			</Presentation>
 
 				</Level>
@@ -1160,7 +1307,6 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 					<Name><![CDATA[root]]></Name>
 				</Parameter>
 			</Parameters>
-			<StartupCode><![CDATA[setup();]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1731431168951</Id>
@@ -1250,66 +1396,13 @@ for (AlgScheduler scheduler : mapScheduler.values()) {
 			</ScaleRuler>
 			<CurrentLevel>1731431168952</CurrentLevel>
 			<ConnectionsId>1731431168946</ConnectionsId>
-			<Variables>
-				<Variable Class="PlainVariable">
-					<Id>1731519228480</Id>
-					<Name><![CDATA[lager]]></Name>
-					<X>-520</X><Y>490</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="private" StaticVariable="false">
-						<Type><![CDATA[Lager]]></Type>        
-					</Properties>
-				</Variable>
-			</Variables>
 			<Functions>
-				<Function AccessType="public" StaticFunction="false">
-					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[Lager]]></ReturnType>
-					<Id>1731519228476</Id>
-					<Name><![CDATA[getLager]]></Name>
-					<X>-250</X><Y>490</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return lager;]]></Body>
-				</Function>
-				<Function AccessType="private" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1731519228478</Id>
-					<Name><![CDATA[setLager]]></Name>
-					<X>-240</X><Y>110</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[if (lager == null) {
-	lager = (Lager) getClosestLocByGIS(root.getListLager());
-}]]></Body>
-				</Function>
-				<Function AccessType="private" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1731519636695</Id>
-					<Name><![CDATA[setup]]></Name>
-					<X>-250</X><Y>90</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[setLager();
-setVisible(false);]]></Body>
-				</Function>
 				<Function AccessType="protected" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731520270643</Id>
 					<Name><![CDATA[setVisible]]></Name>
-					<X>-250.333</X><Y>350.667</Y>
+					<X>-250.333</X><Y>290.667</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1318,7 +1411,7 @@ setVisible(false);]]></Body>
 						<Name><![CDATA[visible]]></Name>
 						<Type><![CDATA[boolean]]></Type>
 					</Parameter>
-					<Body><![CDATA[store.setVisible(visible);]]></Body>
+					<Body><![CDATA[store.setVisible(visible && Par.visualize());]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -1652,7 +1745,6 @@ setVisible(false);]]></Body>
 					<Name><![CDATA[root]]></Name>
 				</Parameter>
 			</Parameters>
-			<StartupCode><![CDATA[setup();]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1731431181264</Id>
@@ -1743,9 +1835,78 @@ setVisible(false);]]></Body>
 			<CurrentLevel>1731431181265</CurrentLevel>
 			<ConnectionsId>1731431181259</ConnectionsId>
 			<Variables>
+				<Variable Class="PlainVariable">
+					<Id>1731653652298</Id>
+					<Name><![CDATA[scheduler]]></Name>
+					<X>-1020</X><Y>290</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[AlgScheduler]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1731655904572</Id>
+					<Name><![CDATA[loadingTimeInHour]]></Name>
+					<X>-1020</X><Y>170</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1731655904570</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1731655922254</Id>
+					<Name><![CDATA[workTimeInHour]]></Name>
+					<X>-1020</X><Y>190</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1731655922252</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
 				<Variable Class="CollectionVariable">
 					<Id>1731492770389</Id>
 					<Name><![CDATA[mapOrder]]></Name>
+					<X>-1020</X><Y>570</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" AccessType="protected" StaticVariable="false">
+						<CollectionClass><![CDATA[TreeMap]]></CollectionClass>
+						<ElementClass><![CDATA[MaterialKlassifizierung]]></ElementClass>
+						<ValueElementClass><![CDATA[ArrayList<Order>]]></ValueElementClass>
+					</Properties>
+
+				</Variable>
+				<Variable Class="CollectionVariable">
+					<Id>1731657954414</Id>
+					<Name><![CDATA[mapWHG]]></Name>
 					<X>-1020</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -1754,7 +1915,37 @@ setVisible(false);]]></Body>
 					<Properties SaveInSnapshot="true" AccessType="protected" StaticVariable="false">
 						<CollectionClass><![CDATA[LinkedHashMap]]></CollectionClass>
 						<ElementClass><![CDATA[String]]></ElementClass>
-						<ValueElementClass><![CDATA[Order]]></ValueElementClass>
+						<ValueElementClass><![CDATA[Warenhauptgruppe]]></ValueElementClass>
+					</Properties>
+
+				</Variable>
+				<Variable Class="CollectionVariable">
+					<Id>1731658500827</Id>
+					<Name><![CDATA[mapFzgTyp]]></Name>
+					<X>-1020</X><Y>550</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" AccessType="protected" StaticVariable="false">
+						<CollectionClass><![CDATA[LinkedHashMap]]></CollectionClass>
+						<ElementClass><![CDATA[Fahrzeugtyp]]></ElementClass>
+						<ValueElementClass><![CDATA[Integer]]></ValueElementClass>
+					</Properties>
+
+				</Variable>
+				<Variable Class="CollectionVariable">
+					<Id>1731664205308</Id>
+					<Name><![CDATA[mapVehicle]]></Name>
+					<X>-1020</X><Y>610</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" AccessType="public" StaticVariable="false">
+						<CollectionClass><![CDATA[LinkedHashMap]]></CollectionClass>
+						<ElementClass><![CDATA[Fahrzeugtyp]]></ElementClass>
+						<ValueElementClass><![CDATA[ArrayList<AbstractVehicle>]]></ValueElementClass>
 					</Properties>
 
 				</Variable>
@@ -1762,46 +1953,23 @@ setVisible(false);]]></Body>
 			<Functions>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[Lager]]></ReturnType>
-					<Id>1731486629804</Id>
-					<Name><![CDATA[copy]]></Name>
-					<ExcludeFromBuild>true</ExcludeFromBuild>
-					<X>-250</X><Y>90</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Parameter>
-						<Name><![CDATA[werk]]></Name>
-						<Type><![CDATA[Werk]]></Type>
-					</Parameter>
-					<Body><![CDATA[this.id = werk.id;
-this.name = werk.name;
-this.address = werk.address;
-this.segment = werk.segment;
-
-jumpTo(address.getLatitude(), address.getLongitude());
-
-return this;]]></Body>
-				</Function>
-				<Function AccessType="public" StaticFunction="false">
-					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[ArrayList<Order>]]></ReturnType>
 					<Id>1731492770391</Id>
 					<Name><![CDATA[getListOrder]]></Name>
-					<X>-750</X><Y>510</Y>
+					<X>-700</X><Y>590</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return new ArrayList<>(mapOrder.values());]]></Body>
+					<Body><![CDATA[return new ArrayList<>(mapOrder.values().stream().
+	flatMap(List::stream).toList());]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
 					<Id>1731492770393</Id>
 					<Name><![CDATA[addOrder]]></Name>
-					<X>-750</X><Y>530</Y>
+					<X>-850</X><Y>570</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1810,38 +1978,43 @@ return this;]]></Body>
 						<Name><![CDATA[order]]></Name>
 						<Type><![CDATA[Order]]></Type>
 					</Parameter>
-					<Body><![CDATA[mapOrder.put(order.getID(), order);]]></Body>
+					<Body><![CDATA[order.setLager(this);
+ArrayList<Order> list = mapOrder.getOrDefault(order.getMatClass(), new ArrayList());
+list.add(order);
+mapOrder.put(order.getMatClass(), list);]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[LinkedHashMap<String, Order>]]></ReturnType>
+					<ReturnType><![CDATA[TreeMap<MaterialKlassifizierung, ArrayList<Order>>]]></ReturnType>
 					<Id>1731492770395</Id>
 					<Name><![CDATA[getMapOrder]]></Name>
-					<X>-750</X><Y>490</Y>
+					<X>-700</X><Y>570</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[return mapOrder;]]></Body>
 				</Function>
-				<Function AccessType="private" StaticFunction="false">
+				<Function AccessType="protected" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731519583795</Id>
 					<Name><![CDATA[setup]]></Name>
-					<X>-250</X><Y>110</Y>
+					<X>-250</X><Y>90</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[setVisible(false);]]></Body>
+					<Body><![CDATA[super.setup();
+setScheduler();
+setupVehicle();]]></Body>
 				</Function>
 				<Function AccessType="protected" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731520306004</Id>
 					<Name><![CDATA[setVisible]]></Name>
-					<X>-250</X><Y>350</Y>
+					<X>-250</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1850,7 +2023,217 @@ return this;]]></Body>
 						<Name><![CDATA[visible]]></Name>
 						<Type><![CDATA[boolean]]></Type>
 					</Parameter>
-					<Body><![CDATA[warehouse.setVisible(visible);]]></Body>
+					<Body><![CDATA[warehouse.setVisible(visible && Par.visualize());]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731653665459</Id>
+					<Name><![CDATA[setScheduler]]></Name>
+					<X>-240</X><Y>130</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[scheduler = new AlgNearestNeighbour(root, this);]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[AlgScheduler]]></ReturnType>
+					<Id>1731653678859</Id>
+					<Name><![CDATA[getScheduler]]></Name>
+					<X>-700</X><Y>290</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return scheduler;]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731654790545</Id>
+					<Name><![CDATA[startDay]]></Name>
+					<X>-250</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[super.startDay();
+scheduler.setupRoute();
+
+for (AbstractVehicle vehicle : getListVehicle()) {
+	vehicle.startDay();
+}]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[ArrayList<Warenhauptgruppe>]]></ReturnType>
+					<Id>1731657954417</Id>
+					<Name><![CDATA[getListWHG]]></Name>
+					<X>-700</X><Y>510</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return new ArrayList<>(mapWHG.values());]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
+					<Id>1731657954419</Id>
+					<Name><![CDATA[addWHG]]></Name>
+					<X>-850</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[whg]]></Name>
+						<Type><![CDATA[Warenhauptgruppe]]></Type>
+					</Parameter>
+					<Body><![CDATA[mapWHG.put(whg.getID(), whg);]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[LinkedHashMap<String, Warenhauptgruppe>]]></ReturnType>
+					<Id>1731657954421</Id>
+					<Name><![CDATA[getMapWHG]]></Name>
+					<X>-700</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return mapWHG;]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
+					<Id>1731658500831</Id>
+					<Name><![CDATA[addFzgTyp]]></Name>
+					<X>-850</X><Y>550</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[fzgTyp]]></Name>
+						<Type><![CDATA[Fahrzeugtyp]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[numFzg]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[mapFzgTyp.put(fzgTyp, numFzg);]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[LinkedHashMap<Fahrzeugtyp, Integer>]]></ReturnType>
+					<Id>1731658500833</Id>
+					<Name><![CDATA[getMapFzgTyp]]></Name>
+					<X>-700</X><Y>550</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return mapFzgTyp;]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731664248620</Id>
+					<Name><![CDATA[addVehicle]]></Name>
+					<X>-850</X><Y>610</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[vehicle]]></Name>
+						<Type><![CDATA[AbstractVehicle]]></Type>
+					</Parameter>
+					<Body><![CDATA[ArrayList<AbstractVehicle> list = mapVehicle.getOrDefault(vehicle.fzgTyp, new ArrayList());
+list.add(vehicle);
+mapVehicle.put(vehicle.fzgTyp, list);]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[ArrayList<AbstractVehicle>]]></ReturnType>
+					<Id>1731664326105</Id>
+					<Name><![CDATA[getListVehicle]]></Name>
+					<X>-700</X><Y>610</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return new ArrayList<>(mapVehicle.values().stream().
+	flatMap(List::stream).toList());]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1731665071472</Id>
+					<Name><![CDATA[canStoreOrder]]></Name>
+					<X>-250</X><Y>540</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[order]]></Name>
+						<Type><![CDATA[Order]]></Type>
+					</Parameter>
+					<Body><![CDATA[return hasWHG(order.getWHG());]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1731665130725</Id>
+					<Name><![CDATA[hasWHG]]></Name>
+					<X>-700</X><Y>530</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[whg]]></Name>
+						<Type><![CDATA[Warenhauptgruppe]]></Type>
+					</Parameter>
+					<Body><![CDATA[return mapWHG.containsKey(whg.getID());]]></Body>
+				</Function>
+				<Function AccessType="private" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731672473206</Id>
+					<Name><![CDATA[setupVehicle]]></Name>
+					<X>-240</X><Y>110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[for (Fahrzeugtyp fzgTyp : mapFzgTyp.keySet()) {
+	for (int i=0; i<mapFzgTyp.get(fzgTyp); i++) {
+		addVehicle(root.setLKW(fzgTyp, this));
+	}
+}]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731686223066</Id>
+					<Name><![CDATA[endDay]]></Name>
+					<X>-250</X><Y>510</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[super.endDay();
+
+mapOrder.clear();
+
+for (AbstractVehicle vehicle : getListVehicle()) {
+	vehicle.endDay();
+} ]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -2157,10 +2540,10 @@ return this;]]></Body>
 					<Name><![CDATA[id]]></Name>
 				</Parameter>
 				<Parameter>
-					<Name><![CDATA[initLocation]]></Name>
+					<Name><![CDATA[fzgTyp]]></Name>
 				</Parameter>
 				<Parameter>
-					<Name><![CDATA[capacityInKg]]></Name>
+					<Name><![CDATA[lager]]></Name>
 				</Parameter>
 				<Parameter>
 					<Name><![CDATA[root]]></Name>
@@ -2191,7 +2574,6 @@ return this;]]></Body>
 					<Code><![CDATA[10]]></Code>
 					<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
 				</VelocityCode>
-				<OnArrival><![CDATA[setNextOrder();]]></OnArrival>
 				<PhysicalLength Class="CodeUnitValue">
 					<Code><![CDATA[1]]></Code>
 					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
@@ -2256,154 +2638,22 @@ return this;]]></Body>
 			</ScaleRuler>
 			<CurrentLevel>1731479084190</CurrentLevel>
 			<ConnectionsId>1731479084184</ConnectionsId>
-			<Variables>
-				<Variable Class="PlainVariable">
-					<Id>1731494679081</Id>
-					<Name><![CDATA[nextOrder]]></Name>
-					<X>-1020</X><Y>290</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="private" StaticVariable="false">
-						<Type><![CDATA[Order]]></Type>        
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1731500312958</Id>
-					<Name><![CDATA[currentScheduleLoc]]></Name>
-					<X>-1010</X><Y>140</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="private" StaticVariable="false">
-						<Type><![CDATA[AbstractLocation]]></Type>        
-					</Properties>
-				</Variable>
-				<Variable Class="CollectionVariable">
-					<Id>1731494551886</Id>
-					<Name><![CDATA[listRankedOrder]]></Name>
-					<X>-1020</X><Y>120</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" AccessType="protected" StaticVariable="false">
-						<CollectionClass><![CDATA[ArrayList]]></CollectionClass>
-						<ElementClass><![CDATA[Order]]></ElementClass>
-						<ValueElementClass><![CDATA[OrderPosition]]></ValueElementClass>
-					</Properties>
-
-				</Variable>
-			</Variables>
 			<Functions>
-				<Function AccessType="public" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1731494581685</Id>
-					<Name><![CDATA[addNextOrder]]></Name>
-					<X>-750</X><Y>140</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Parameter>
-						<Name><![CDATA[order]]></Name>
-						<Type><![CDATA[Order]]></Type>
-					</Parameter>
-					<Body><![CDATA[listRankedOrder.add(order);
-currentWeightInKg += order.getWeightInKg();
-currentScheduleLoc = order.getCustomer();]]></Body>
-				</Function>
-				<Function AccessType="public" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1731494630669</Id>
-					<Name><![CDATA[startRouting]]></Name>
-					<X>-750</X><Y>290</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[root.logger.addToLogRoute(this);
-setNextOrder();]]></Body>
-				</Function>
-				<Function AccessType="private" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1731494730987</Id>
-					<Name><![CDATA[setNextOrder]]></Name>
-					<X>-740</X><Y>310</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[if (!listRankedOrder.isEmpty()) {
-	nextOrder = listRankedOrder.get(0);
-	targetLocation = nextOrder.getCustomer();
-	listRankedOrder.remove(nextOrder);
-	moveTo(targetLocation);
-	
-	Customer customer = (Customer) nextOrder.getCustomer();
-	customer.store.setVisible(true); 
-	
-} else {
-	deleteSelf();
-}]]></Body>
-				</Function>
-				<Function AccessType="public" StaticFunction="false">
-					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[AbstractLocation]]></ReturnType>
-					<Id>1731500341615</Id>
-					<Name><![CDATA[getCurrentScheduleLoc]]></Name>
-					<X>-750</X><Y>160</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return currentScheduleLoc;]]></Body>
-				</Function>
 				<Function AccessType="protected" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1731503287379</Id>
-					<Name><![CDATA[setup]]></Name>
-					<X>-250</X><Y>90</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[super.setup();
-currentScheduleLoc = initLocation;]]></Body>
-				</Function>
-				<Function AccessType="public" StaticFunction="false">
-					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[boolean]]></ReturnType>
-					<Id>1731505717828</Id>
-					<Name><![CDATA[canTakeOrder]]></Name>
-					<X>-750</X><Y>330</Y>
+					<Id>1731684717927</Id>
+					<Name><![CDATA[setVisible]]></Name>
+					<X>-250</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Parameter>
-						<Name><![CDATA[order]]></Name>
-						<Type><![CDATA[Order]]></Type>
+						<Name><![CDATA[visible]]></Name>
+						<Type><![CDATA[boolean]]></Type>
 					</Parameter>
-					<Body><![CDATA[return true;]]></Body>
-				</Function>
-				<Function AccessType="public" StaticFunction="false">
-					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[ArrayList<Order>]]></ReturnType>
-					<Id>1731509041075</Id>
-					<Name><![CDATA[getListRankedOrder]]></Name>
-					<X>-750</X><Y>120</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return listRankedOrder;]]></Body>
+					<Body><![CDATA[lorry.setVisible(visible && Par.visualize());]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -2927,18 +3177,18 @@ closed = false;]]></Body>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Parameter>
-						<Name><![CDATA[lkw]]></Name>
-						<Type><![CDATA[LKW]]></Type>
+						<Name><![CDATA[vehicle]]></Name>
+						<Type><![CDATA[AbstractVehicle]]></Type>
 					</Parameter>
 					<Body><![CDATA[if ( logData() ) {	
 	int i = 1;
-	for (Order order : lkw.getListRankedOrder()) {		
+	for (Order order : vehicle.getListScheduledOrder()) {		
 		logRoute.println(
 			String.format("%s;%s;%s;%d;%d", 
 			date(),
-			lkw.initLocation.id,
+			vehicle.lager.id,
 			order.getID(),
-			lkw.id,
+			vehicle.id,
 			i
 		));	
 		i++;
@@ -3044,6 +3294,7 @@ closed = true;]]></Body>
 				<ContainerLink>
 					<Id>1731509373373</Id>
 					<Name><![CDATA[main]]></Name>
+					<ExcludeFromBuild>true</ExcludeFromBuild>
 					<X>50</X><Y>-100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -3263,6 +3514,7 @@ closed = true;]]></Body>
 		<ActiveObjectClass>
 			<Id>1731592959171</Id>
 			<Name><![CDATA[AbstractLocation]]></Name>
+			<StartupCode><![CDATA[setup();]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1731592959166</Id>
@@ -3353,18 +3605,6 @@ closed = true;]]></Body>
 			<CurrentLevel>1731592959187</CurrentLevel>
 			<ConnectionsId>1731592959236</ConnectionsId>
 			<Variables>
-				<Variable Class="PlainVariable">
-					<Id>1731592959185</Id>
-					<Name><![CDATA[distToLocation]]></Name>
-					<X>-520</X><Y>290</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="private" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-					</Properties>
-				</Variable>
 				<Variable Class="Parameter">
 					<Id>1731592959226</Id>
 					<Name><![CDATA[id]]></Name>
@@ -3452,11 +3692,62 @@ closed = true;]]></Body>
 			</Variables>
 			<Functions>
 				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731592959179</Id>
+					<Name><![CDATA[startDay]]></Name>
+					<X>-250</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[setVisible(true);]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731592959181</Id>
+					<Name><![CDATA[endDay]]></Name>
+					<X>-250</X><Y>510</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[setVisible(false);]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731592959183</Id>
+					<Name><![CDATA[setVisible]]></Name>
+					<X>-250</X><Y>290</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[visible]]></Name>
+						<Type><![CDATA[boolean]]></Type>
+					</Parameter>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731662817323</Id>
+					<Name><![CDATA[setup]]></Name>
+					<X>-250</X><Y>90</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[setVisible(false);]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[AbstractLocation]]></ReturnType>
-					<Id>1731592959173</Id>
+					<Id>1731663761002</Id>
 					<Name><![CDATA[getClosestLocByGIS]]></Name>
-					<X>-250</X><Y>280</Y>
+					<X>-250</X><Y>310</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3485,9 +3776,9 @@ return location;]]></Body>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[AbstractLocation]]></ReturnType>
-					<Id>1731592959175</Id>
+					<Id>1731663761005</Id>
 					<Name><![CDATA[getClosestLocByRoute]]></Name>
-					<X>-250</X><Y>300</Y>
+					<X>-250</X><Y>330</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3512,57 +3803,6 @@ for (AbstractLocation loc : list) {
 }
 
 return location;]]></Body>
-				</Function>
-				<Function AccessType="public" StaticFunction="false">
-					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1731592959177</Id>
-					<Name><![CDATA[getLastCalcDistToLoc]]></Name>
-					<X>-250</X><Y>320</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return distToLocation;]]></Body>
-				</Function>
-				<Function AccessType="public" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1731592959179</Id>
-					<Name><![CDATA[startDay]]></Name>
-					<X>-750</X><Y>290</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[setVisible(true);]]></Body>
-				</Function>
-				<Function AccessType="public" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1731592959181</Id>
-					<Name><![CDATA[endDay]]></Name>
-					<X>-750</X><Y>310</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[setVisible(false);]]></Body>
-				</Function>
-				<Function AccessType="protected" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1731592959183</Id>
-					<Name><![CDATA[setVisible]]></Name>
-					<X>-250</X><Y>350</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Parameter>
-						<Name><![CDATA[visible]]></Name>
-						<Type><![CDATA[boolean]]></Type>
-					</Parameter>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -3835,7 +4075,7 @@ return location;]]></Body>
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-16777216</Color>
-					<Text><![CDATA[Simulation]]></Text>
+					<Text><![CDATA[Variable]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>18</Size>
@@ -3877,7 +4117,7 @@ return location;]]></Body>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
 					<Width>490</Width>
-					<Height>190</Height>
+					<Height>250</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
@@ -3938,7 +4178,7 @@ return location;]]></Body>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
 					<Width>490</Width>
-					<Height>190</Height>
+					<Height>250</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
@@ -3957,7 +4197,7 @@ return location;]]></Body>
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-16777216</Color>
-					<Text><![CDATA[Parameter]]></Text>
+					<Text><![CDATA[Simulation]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>18</Size>
@@ -4085,44 +4325,8 @@ return location;]]></Body>
 			<Variables>
 				<Variable Class="PlainVariable">
 					<Id>1731593255921</Id>
-					<Name><![CDATA[start]]></Name>
-					<X>-520</X><Y>290</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1731593255923</Id>
-					<Name><![CDATA[end]]></Name>
-					<X>-520</X><Y>310</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1731593255925</Id>
-					<Name><![CDATA[targetLocation]]></Name>
-					<X>-520</X><Y>330</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[AbstractLocation]]></Type>        
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1731593255927</Id>
-					<Name><![CDATA[currentWeightInKg]]></Name>
-					<X>-520</X><Y>350</Y>
+					<Name><![CDATA[startMoving]]></Name>
+					<X>-1020</X><Y>310</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4131,10 +4335,109 @@ return location;]]></Body>
 						<Type><![CDATA[double]]></Type>        
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1731593255923</Id>
+					<Name><![CDATA[endMoving]]></Name>
+					<X>-1020</X><Y>330</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="protected" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1731593255925</Id>
+					<Name><![CDATA[target]]></Name>
+					<X>-1020</X><Y>390</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="protected" StaticVariable="false">
+						<Type><![CDATA[Order]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1731593255927</Id>
+					<Name><![CDATA[loadedWeightInKg]]></Name>
+					<X>-1020</X><Y>350</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="protected" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1731651089602</Id>
+					<Name><![CDATA[currentScheduleLoc]]></Name>
+					<X>-1020</X><Y>540</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="protected" StaticVariable="false">
+						<Type><![CDATA[AbstractLocation]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1731652445052</Id>
+					<Name><![CDATA[startLoading]]></Name>
+					<X>-1020</X><Y>410</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="protected" StaticVariable="false">
+						<Type><![CDATA[boolean]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1731674777037</Id>
+					<Name><![CDATA[scheduledTotDurInHour]]></Name>
+					<X>-1020</X><Y>370</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="private" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1731683846493</Id>
+					<Name><![CDATA[currentLocation]]></Name>
+					<X>-1020</X><Y>430</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="protected" StaticVariable="false">
+						<Type><![CDATA[AbstractLocation]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1731686635638</Id>
+					<Name><![CDATA[active]]></Name>
+					<X>-1020</X><Y>290</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="protected" StaticVariable="false">
+						<Type><![CDATA[boolean]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[false]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 				<Variable Class="Parameter">
 					<Id>1731593255956</Id>
 					<Name><![CDATA[id]]></Name>
-					<X>-520</X><Y>90</Y>
+					<X>-1020</X><Y>90</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4153,15 +4456,36 @@ return location;]]></Body>
 					</Properties>                 
 				</Variable>
 				<Variable Class="Parameter">
-					<Id>1731593255959</Id>
-					<Name><![CDATA[initLocation]]></Name>
-					<X>-520</X><Y>110</Y>
+					<Id>1731664661575</Id>
+					<Name><![CDATA[fzgTyp]]></Name>
+					<X>-1020</X><Y>110</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[AbstractLocation]]></Type>
+						<Type><![CDATA[Fahrzeugtyp]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1731664661573</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1731593255959</Id>
+					<Name><![CDATA[lager]]></Name>
+					<X>-1020</X><Y>130</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[Lager]]></Type>
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<ParameterEditor>
@@ -4174,30 +4498,9 @@ return location;]]></Body>
 					</Properties>                 
 				</Variable>
 				<Variable Class="Parameter">
-					<Id>1731593255962</Id>
-					<Name><![CDATA[capacityInKg]]></Name>
-					<X>-520</X><Y>130</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[double]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<ParameterEditor>
-							<Id>1731593255960</Id>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
-				</Variable>
-				<Variable Class="Parameter">
 					<Id>1731596543886</Id>
 					<Name><![CDATA[root]]></Name>
-					<X>-520</X><Y>150</Y>
+					<X>-1020</X><Y>150</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4216,21 +4519,433 @@ return location;]]></Body>
 					</Properties>                 
 				</Variable>
 				<Variable Class="CollectionVariable">
-					<Id>1731593255917</Id>
-					<Name><![CDATA[mapOrder]]></Name>
-					<X>-1020</X><Y>90</Y>
+					<Id>1731651089593</Id>
+					<Name><![CDATA[mapScheduledOrder]]></Name>
+					<X>-1020</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" AccessType="public" StaticVariable="false">
-						<CollectionClass><![CDATA[ArrayList]]></CollectionClass>
-						<ElementClass><![CDATA[Object]]></ElementClass>
-						<ValueElementClass><![CDATA[String]]></ValueElementClass>
+					<Properties SaveInSnapshot="true" AccessType="protected" StaticVariable="false">
+						<CollectionClass><![CDATA[LinkedHashMap]]></CollectionClass>
+						<ElementClass><![CDATA[Order]]></ElementClass>
+						<ValueElementClass><![CDATA[Double]]></ValueElementClass>
 					</Properties>
 
 				</Variable>
 			</Variables>
+			<StatechartElements>
+				<StatechartElement Class="State" ParentState="ROOT_NODE">
+					<Id>1731686470071</Id>
+					<Name><![CDATA[stateActive]]></Name>
+					<X>260</X><Y>100</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties Width="490" Height="450">
+						<FillColor/>
+					</Properties>
+				</StatechartElement>
+				<StatechartElement Class="State" ParentState="stateActive" ParentStateId="1731686470071">
+					<Id>1731652979149</Id>
+					<Name><![CDATA[stateFinishing]]></Name>
+					<X>585</X><Y>270</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties Width="150" Height="50">
+						<EntryAction><![CDATA[moveToLocation(lager);]]></EntryAction>
+						<FillColor/>
+					</Properties>
+				</StatechartElement>
+				<StatechartElement Class="Branch" ParentState="stateActive" ParentStateId="1731686470071">
+					<Id>1731651919056</Id>
+					<Name><![CDATA[branch]]></Name>
+					<X>660</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties>	
+					</Properties>	
+				</StatechartElement>
+				<StatechartElement Class="State" ParentState="stateActive" ParentStateId="1731686470071">
+					<Id>1731651873266</Id>
+					<Name><![CDATA[stateUnloading]]></Name>
+					<X>360</X><Y>470</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties Width="150" Height="50">
+						<EntryAction><![CDATA[currentLocation = target.getCustomer();]]></EntryAction>
+						<FillColor/>
+					</Properties>
+				</StatechartElement>
+				<StatechartElement Class="State" ParentState="stateActive" ParentStateId="1731686470071">
+					<Id>1731651852456</Id>
+					<Name><![CDATA[stateLoading]]></Name>
+					<X>360</X><Y>270</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties Width="150" Height="50">
+						<FillColor/>
+					</Properties>
+				</StatechartElement>
+				<StatechartElement Class="State" ParentState="stateActive" ParentStateId="1731686470071">
+					<Id>1731651822131</Id>
+					<Name><![CDATA[stateDriving]]></Name>
+					<X>360</X><Y>370</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties Width="150" Height="50">
+						<EntryAction><![CDATA[setNextTarget();
+moveToLocation(target.getCustomer());]]></EntryAction>
+						<FillColor/>
+					</Properties>
+				</StatechartElement>
+				<StatechartElement Class="State" ParentState="stateActive" ParentStateId="1731686470071">
+					<Id>1731651724852</Id>
+					<Name><![CDATA[stateWaiting]]></Name>
+					<X>360</X><Y>170</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties Width="150" Height="50">
+						<EntryAction><![CDATA[currentLocation = lager;
+root.logger.addToLogRoute(this);
+setStartLoading();]]></EntryAction>
+						<FillColor/>
+					</Properties>
+				</StatechartElement>
+				<StatechartElement Class="State" ParentState="ROOT_NODE">
+					<Id>1731686535874</Id>
+					<Name><![CDATA[stateInactive]]></Name>
+					<X>50</X><Y>150</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties Width="150" Height="50">
+						<EntryAction><![CDATA[currentLocation = lager;]]></EntryAction>
+						<FillColor/>
+					</Properties>
+				</StatechartElement>
+				<StatechartElement Class="EntryPoint" ParentState="ROOT_NODE">
+					<Id>1731651719408</Id>
+					<Name><![CDATA[statechart]]></Name>
+					<X>120</X><Y>110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>0</X><Y>40</Y></Point>
+					</Points>
+					<Properties Target="1731686535874">
+					</Properties>	
+				</StatechartElement>
+				<StatechartElement Class="Transition" ParentState="stateActive" ParentStateId="1731686470071">
+					<Id>1731651895966</Id>
+					<Name><![CDATA[transition]]></Name>
+					<X>430</X><Y>220</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>0</X><Y>50</Y></Point>
+					</Points>
+					<IconOffset>20.0</IconOffset>
+					<Properties Source="1731651724852" Target="1731651852456" Trigger="condition">
+						<Action><![CDATA[startLoading = false;]]></Action>
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
+						</Timeout>
+						<Condition><![CDATA[startLoading;]]></Condition>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_HOUR]]></Unit>
+						</Rate>
+						<MessageType><![CDATA[Object]]></MessageType>
+						<DefaultTransition>true</DefaultTransition>
+						<FilterType><![CDATA[unconditionally]]></FilterType>
+						<EqualsExpression><![CDATA["text"]]></EqualsExpression>
+						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
+					</Properties>	
+				</StatechartElement>
+				<StatechartElement Class="Transition" ParentState="stateActive" ParentStateId="1731686470071">
+					<Id>1731651907400</Id>
+					<Name><![CDATA[transition1]]></Name>
+					<X>430</X><Y>320</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>0</X><Y>50</Y></Point>
+					</Points>
+					<IconOffset>20.0</IconOffset>
+					<Properties Source="1731651852456" Target="1731651822131" Trigger="timeout">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[getLoadingTime()]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
+						</Timeout>
+						<Condition><![CDATA[true]]></Condition>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_HOUR]]></Unit>
+						</Rate>
+						<MessageType><![CDATA[Object]]></MessageType>
+						<DefaultTransition>true</DefaultTransition>
+						<FilterType><![CDATA[unconditionally]]></FilterType>
+						<EqualsExpression><![CDATA["text"]]></EqualsExpression>
+						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
+					</Properties>	
+				</StatechartElement>
+				<StatechartElement Class="Transition" ParentState="stateActive" ParentStateId="1731686470071">
+					<Id>1731651912132</Id>
+					<Name><![CDATA[transition2]]></Name>
+					<X>430</X><Y>420</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>0</X><Y>50</Y></Point>
+					</Points>
+					<IconOffset>20.0</IconOffset>
+					<Properties Source="1731651822131" Target="1731651873266" Trigger="timeout">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[getDrivingTime(target)]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
+						</Timeout>
+						<Condition><![CDATA[true]]></Condition>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_HOUR]]></Unit>
+						</Rate>
+						<MessageType><![CDATA[Object]]></MessageType>
+						<DefaultTransition>true</DefaultTransition>
+						<FilterType><![CDATA[unconditionally]]></FilterType>
+						<EqualsExpression><![CDATA["text"]]></EqualsExpression>
+						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
+					</Properties>	
+				</StatechartElement>
+				<StatechartElement Class="Transition" ParentState="stateActive" ParentStateId="1731686470071">
+					<Id>1731651937794</Id>
+					<Name><![CDATA[transition3]]></Name>
+					<X>510</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>138</X><Y>0</Y></Point>
+					</Points>
+					<IconOffset>20.0</IconOffset>
+					<Properties Source="1731651873266" Target="1731651919056" Trigger="timeout">
+						<Action><![CDATA[unloadOrder(target);]]></Action>
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[getUnloadingTime(target)]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
+						</Timeout>
+						<Condition><![CDATA[true]]></Condition>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_HOUR]]></Unit>
+						</Rate>
+						<MessageType><![CDATA[Object]]></MessageType>
+						<DefaultTransition>true</DefaultTransition>
+						<FilterType><![CDATA[unconditionally]]></FilterType>
+						<EqualsExpression><![CDATA["text"]]></EqualsExpression>
+						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
+					</Properties>	
+				</StatechartElement>
+				<StatechartElement Class="Transition" ParentState="stateActive" ParentStateId="1731686470071">
+					<Id>1731651967184</Id>
+					<Name><![CDATA[transition4]]></Name>
+					<X>660</X><Y>480</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>0</X><Y>-90</Y></Point>
+						<Point><X>-85</X><Y>-90</Y></Point>
+						<Point><X>-150</X><Y>-90</Y></Point>
+					</Points>
+					<IconOffset>20.0</IconOffset>
+					<Properties Source="1731651919056" Target="1731651822131" Trigger="timeout">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
+						</Timeout>
+						<Condition><![CDATA[hasOrdersToDeliver()]]></Condition>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_HOUR]]></Unit>
+						</Rate>
+						<MessageType><![CDATA[Object]]></MessageType>
+						<DefaultTransition>false</DefaultTransition>
+						<FilterType><![CDATA[unconditionally]]></FilterType>
+						<EqualsExpression><![CDATA["text"]]></EqualsExpression>
+						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
+					</Properties>	
+				</StatechartElement>
+				<StatechartElement Class="Transition" ParentState="stateActive" ParentStateId="1731686470071">
+					<Id>1731651995202</Id>
+					<Name><![CDATA[transition5]]></Name>
+					<X>660</X><Y>480</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>0</X><Y>-160</Y></Point>
+					</Points>
+					<IconOffset>20.0</IconOffset>
+					<Properties Source="1731651919056" Target="1731652979149" Trigger="timeout">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
+						</Timeout>
+						<Condition><![CDATA[true]]></Condition>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_HOUR]]></Unit>
+						</Rate>
+						<MessageType><![CDATA[Object]]></MessageType>
+						<DefaultTransition>true</DefaultTransition>
+						<FilterType><![CDATA[unconditionally]]></FilterType>
+						<EqualsExpression><![CDATA["text"]]></EqualsExpression>
+						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
+					</Properties>	
+				</StatechartElement>
+				<StatechartElement Class="Transition" ParentState="stateActive" ParentStateId="1731686470071">
+					<Id>1731653031205</Id>
+					<Name><![CDATA[transition6]]></Name>
+					<X>660</X><Y>270</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>0</X><Y>-80</Y></Point>
+						<Point><X>-150</X><Y>-80</Y></Point>
+					</Points>
+					<IconOffset>30.0</IconOffset>
+					<Properties Source="1731652979149" Target="1731651724852" Trigger="timeout">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[getDrivingTime(lager)]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
+						</Timeout>
+						<Condition><![CDATA[true]]></Condition>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_HOUR]]></Unit>
+						</Rate>
+						<MessageType><![CDATA[Object]]></MessageType>
+						<DefaultTransition>true</DefaultTransition>
+						<FilterType><![CDATA[unconditionally]]></FilterType>
+						<EqualsExpression><![CDATA["text"]]></EqualsExpression>
+						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
+					</Properties>	
+				</StatechartElement>
+				<StatechartElement Class="InitialStatePointer" ParentState="stateActive" ParentStateId="1731686470071">
+					<Id>1731686514038</Id>
+					<Name><![CDATA[initialState]]></Name>
+					<X>430</X><Y>130</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>0</X><Y>40</Y></Point>
+					</Points>
+					<Properties Target="1731651724852">
+					</Properties>	
+				</StatechartElement>
+				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
+					<Id>1731686593287</Id>
+					<Name><![CDATA[transition7]]></Name>
+					<X>200</X><Y>160</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>60</X><Y>0</Y></Point>
+					</Points>
+					<IconOffset>20.0</IconOffset>
+					<Properties Source="1731686535874" Target="1731686470071" Trigger="condition">
+						<Action><![CDATA[setVisible(true);]]></Action>
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
+						</Timeout>
+						<Condition><![CDATA[active]]></Condition>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_HOUR]]></Unit>
+						</Rate>
+						<MessageType><![CDATA[Object]]></MessageType>
+						<DefaultTransition>true</DefaultTransition>
+						<FilterType><![CDATA[unconditionally]]></FilterType>
+						<EqualsExpression><![CDATA["text"]]></EqualsExpression>
+						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
+					</Properties>	
+				</StatechartElement>
+				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
+					<Id>1731686613954</Id>
+					<Name><![CDATA[transition8]]></Name>
+					<X>260</X><Y>180</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>-60</X><Y>0</Y></Point>
+					</Points>
+					<IconOffset>20.0</IconOffset>
+					<Properties Source="1731686470071" Target="1731686535874" Trigger="condition">
+						<Action><![CDATA[jumpToLocation(lager);]]></Action>
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
+						</Timeout>
+						<Condition><![CDATA[!active]]></Condition>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_HOUR]]></Unit>
+						</Rate>
+						<MessageType><![CDATA[Object]]></MessageType>
+						<DefaultTransition>true</DefaultTransition>
+						<FilterType><![CDATA[unconditionally]]></FilterType>
+						<EqualsExpression><![CDATA["text"]]></EqualsExpression>
+						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
+					</Properties>	
+				</StatechartElement>
+			</StatechartElements>
 			<Functions>
 				<Function AccessType="protected" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
@@ -4242,7 +4957,293 @@ return location;]]></Body>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[currentWeightInKg = 0.0;]]></Body>
+					<Body><![CDATA[setVisible(false);
+loadedWeightInKg = 0.0;
+currentScheduleLoc = lager;]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731651089596</Id>
+					<Name><![CDATA[addNextOrder]]></Name>
+					<X>-750</X><Y>530</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[order]]></Name>
+						<Type><![CDATA[Order]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[durationInHour]]></Name>
+						<Type><![CDATA[double]]></Type>
+					</Parameter>
+					<Body><![CDATA[mapScheduledOrder.put(order, durationInHour);
+loadedWeightInKg += order.getWeightInKg();
+scheduledTotDurInHour += durationInHour + getUnloadingTime(order);
+currentScheduleLoc = order.getCustomer();]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[AbstractLocation]]></ReturnType>
+					<Id>1731651089598</Id>
+					<Name><![CDATA[getCurrentScheduleLoc]]></Name>
+					<X>-750</X><Y>550</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return currentScheduleLoc;]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[ArrayList<Order>]]></ReturnType>
+					<Id>1731651089600</Id>
+					<Name><![CDATA[getListScheduledOrder]]></Name>
+					<X>-750</X><Y>510</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return new ArrayList<>(mapScheduledOrder.keySet());]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731651488062</Id>
+					<Name><![CDATA[startDay]]></Name>
+					<X>-250</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[active = true;
+onChange();]]></Body>
+				</Function>
+				<Function AccessType="private" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731651488064</Id>
+					<Name><![CDATA[setNextTarget]]></Name>
+					<X>-250</X><Y>560</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[target = mapScheduledOrder.keySet().iterator().next();]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731651488066</Id>
+					<Name><![CDATA[moveToLocation]]></Name>
+					<X>-250</X><Y>610</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[location]]></Name>
+						<Type><![CDATA[AbstractLocation]]></Type>
+					</Parameter>
+					<Body><![CDATA[if (Par.visualize()) {
+	moveTo(location);
+}]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731652505633</Id>
+					<Name><![CDATA[setStartLoading]]></Name>
+					<X>-240</X><Y>510</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[startLoading = hasOrdersToDeliver();
+onChange();]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731652552190</Id>
+					<Name><![CDATA[getLoadingTime]]></Name>
+					<X>-250</X><Y>330</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return lager.loadingTimeInHour;]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731652714750</Id>
+					<Name><![CDATA[getDrivingTime]]></Name>
+					<X>-250</X><Y>370</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[location]]></Name>
+						<Type><![CDATA[AbstractLocation]]></Type>
+					</Parameter>
+					<Body><![CDATA[double distanceInKm = currentLocation.address.getDistByGIS(root.map, location.address);
+return Calc.calcDrivingDuration(distanceInKm);]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731652781526</Id>
+					<Name><![CDATA[getUnloadingTime]]></Name>
+					<X>-250</X><Y>390</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[order]]></Name>
+						<Type><![CDATA[Order]]></Type>
+					</Parameter>
+					<Body><![CDATA[return 0;]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1731652841481</Id>
+					<Name><![CDATA[hasOrdersToDeliver]]></Name>
+					<X>-250</X><Y>310</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return !mapScheduledOrder.isEmpty();]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731653208838</Id>
+					<Name><![CDATA[unloadOrder]]></Name>
+					<X>-250</X><Y>580</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[order]]></Name>
+						<Type><![CDATA[Order]]></Type>
+					</Parameter>
+					<Body><![CDATA[mapScheduledOrder.remove(order);
+loadedWeightInKg -= order.getWeightInKg();]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1731674130130</Id>
+					<Name><![CDATA[canTakeOrder]]></Name>
+					<X>-250</X><Y>410</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[order]]></Name>
+						<Type><![CDATA[Order]]></Type>
+					</Parameter>
+					<Body><![CDATA[boolean hasWeightCapacity = (loadedWeightInKg + order.getWeightInKg()) <= fzgTyp.getMaxWeightInKg();
+
+if (hasWeightCapacity) {
+
+	Address currentAddress = currentScheduleLoc.address;	
+	Address targetAddress = order.getCustomer().address;
+	double distToCustomerInKm = currentAddress.getDistByGIS(root.map, targetAddress);
+	double durToCustomerInHour = Calc.calcDrivingDuration(distToCustomerInKm);
+	double distToLagerInHour = targetAddress.getDistByGIS(root.map, lager.address);
+	double durToLagerInHour = Calc.calcDrivingDuration(distToLagerInHour);
+	
+	boolean hasTimeCapacity = (durToCustomerInHour + getUnloadingTime(order) + durToLagerInHour) <= lager.workTimeInHour;
+	
+	return hasTimeCapacity;
+}	
+
+return false;]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[LinkedHashMap<Order,Double>]]></ReturnType>
+					<Id>1731674210803</Id>
+					<Name><![CDATA[getMapScheduledOrder]]></Name>
+					<X>-750</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return mapScheduledOrder;]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731674307569</Id>
+					<Name><![CDATA[getDrivingTime]]></Name>
+					<X>-250</X><Y>350</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[order]]></Name>
+						<Type><![CDATA[Order]]></Type>
+					</Parameter>
+					<Body><![CDATA[return mapScheduledOrder.get(order);]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731684670690</Id>
+					<Name><![CDATA[setVisible]]></Name>
+					<X>-250</X><Y>290</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[visible]]></Name>
+						<Type><![CDATA[boolean]]></Type>
+					</Parameter>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731686374706</Id>
+					<Name><![CDATA[endDay]]></Name>
+					<X>-250</X><Y>530</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[active = false;
+onChange();]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731686925469</Id>
+					<Name><![CDATA[jumpToLocation]]></Name>
+					<X>-250</X><Y>630</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[location]]></Name>
+						<Type><![CDATA[AbstractLocation]]></Type>
+					</Parameter>
+					<Body><![CDATA[currentLocation = location;
+if (Par.visualize()) {
+	moveToInTime(location, 0.0);
+}]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -4258,6 +5259,11 @@ return location;]]></Body>
 					<AgentLinkType>COLLECTION_OF_LINKS</AgentLinkType>
 					<AgentLinkBidirectional>true</AgentLinkBidirectional>
 					<MessageType><![CDATA[Object]]></MessageType>
+					<StatechartReference>
+						<PackageName><![CDATA[da_tourplanning]]></PackageName>
+						<ClassName><![CDATA[AbstractVehicle]]></ClassName>
+						<ItemName><![CDATA[statechart]]></ItemName>
+					</StatechartReference>
 					<LineStyle>SOLID</LineStyle>
 					<LineWidth>1</LineWidth>
 					<LineColor>-16777216</LineColor>
@@ -4283,7 +5289,68 @@ return location;]]></Body>
 
 			<Presentation>
 				<Group>
-					<Id>1731593255931</Id>
+					<Id>1731650788691</Id>
+					<Name><![CDATA[group]]></Name>
+					<X>-770</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731650788693</Id>
+					<Name><![CDATA[roundRectangle14]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731650788695</Id>
+					<Name><![CDATA[text17]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Parameter]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731650788697</Id>
 					<Name><![CDATA[group1]]></Name>
 					<X>-270</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -4297,7 +5364,7 @@ return location;]]></Body>
 
 			<Presentation>
 				<RoundedRectangle>
-					<Id>1731593255933</Id>
+					<Id>1731650788699</Id>
 					<Name><![CDATA[roundRectangle15]]></Name>
 					<X>-270</X><Y>-50</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -4320,7 +5387,7 @@ return location;]]></Body>
 					<ArcRadius>10</ArcRadius>
 				</RoundedRectangle>
 				<Text>
-					<Id>1731593255935</Id>
+					<Id>1731650788701</Id>
 					<Name><![CDATA[text18]]></Name>
 					<X>-260</X><Y>-50</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -4344,7 +5411,7 @@ return location;]]></Body>
 
 				</Group>
 				<Group>
-					<Id>1731593255937</Id>
+					<Id>1731650788703</Id>
 					<Name><![CDATA[group2]]></Name>
 					<X>-270</X><Y>300</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -4358,7 +5425,7 @@ return location;]]></Body>
 
 			<Presentation>
 				<RoundedRectangle>
-					<Id>1731593255939</Id>
+					<Id>1731650788705</Id>
 					<Name><![CDATA[roundRectangle16]]></Name>
 					<X>-270</X><Y>-50</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -4381,7 +5448,7 @@ return location;]]></Body>
 					<ArcRadius>10</ArcRadius>
 				</RoundedRectangle>
 				<Text>
-					<Id>1731593255941</Id>
+					<Id>1731650788707</Id>
 					<Name><![CDATA[text19]]></Name>
 					<X>-260</X><Y>-50</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -4393,7 +5460,7 @@ return location;]]></Body>
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-16777216</Color>
-					<Text><![CDATA[Parameters]]></Text>
+					<Text><![CDATA[Function]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>18</Size>
@@ -4405,9 +5472,9 @@ return location;]]></Body>
 
 				</Group>
 				<Group>
-					<Id>1731593255943</Id>
+					<Id>1731650788709</Id>
 					<Name><![CDATA[group3]]></Name>
-					<X>-770</X><Y>100</Y>
+					<X>-770</X><Y>300</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4419,7 +5486,7 @@ return location;]]></Body>
 
 			<Presentation>
 				<RoundedRectangle>
-					<Id>1731593255945</Id>
+					<Id>1731650788711</Id>
 					<Name><![CDATA[roundRectangle17]]></Name>
 					<X>-270</X><Y>-50</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -4442,7 +5509,7 @@ return location;]]></Body>
 					<ArcRadius>10</ArcRadius>
 				</RoundedRectangle>
 				<Text>
-					<Id>1731593255947</Id>
+					<Id>1731650788713</Id>
 					<Name><![CDATA[text20]]></Name>
 					<X>-260</X><Y>-50</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -4454,7 +5521,7 @@ return location;]]></Body>
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-16777216</Color>
-					<Text><![CDATA[Data]]></Text>
+					<Text><![CDATA[Variable]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>18</Size>
@@ -4466,9 +5533,9 @@ return location;]]></Body>
 
 				</Group>
 				<Group>
-					<Id>1731593255949</Id>
+					<Id>1731650788715</Id>
 					<Name><![CDATA[group4]]></Name>
-					<X>-770</X><Y>300</Y>
+					<X>-770</X><Y>500</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4480,7 +5547,7 @@ return location;]]></Body>
 
 			<Presentation>
 				<RoundedRectangle>
-					<Id>1731593255951</Id>
+					<Id>1731650788717</Id>
 					<Name><![CDATA[roundRectangle18]]></Name>
 					<X>-270</X><Y>-50</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -4503,8 +5570,69 @@ return location;]]></Body>
 					<ArcRadius>10</ArcRadius>
 				</RoundedRectangle>
 				<Text>
-					<Id>1731593255953</Id>
+					<Id>1731650788719</Id>
 					<Name><![CDATA[text21]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Data]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731650788721</Id>
+					<Name><![CDATA[group5]]></Name>
+					<X>-270</X><Y>500</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731650788723</Id>
+					<Name><![CDATA[roundRectangle19]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731650788725</Id>
+					<Name><![CDATA[text22]]></Name>
 					<X>-260</X><Y>-50</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -4629,7 +5757,7 @@ return location;]]></Body>
 				<Variable Class="Parameter">
 					<Id>1731594031484</Id>
 					<Name><![CDATA[deliveryDate]]></Name>
-					<X>-520</X><Y>90</Y>
+					<X>-1020</X><Y>90</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4650,7 +5778,7 @@ return location;]]></Body>
 				<Variable Class="Parameter">
 					<Id>1731598720183</Id>
 					<Name><![CDATA[root]]></Name>
-					<X>-520</X><Y>110</Y>
+					<X>-1020</X><Y>110</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4671,7 +5799,7 @@ return location;]]></Body>
 				<Variable Class="CollectionVariable">
 					<Id>1731594031439</Id>
 					<Name><![CDATA[mapOrder]]></Name>
-					<X>-1020</X><Y>90</Y>
+					<X>-1020</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4685,8 +5813,8 @@ return location;]]></Body>
 				</Variable>
 				<Variable Class="CollectionVariable">
 					<Id>1731594031441</Id>
-					<Name><![CDATA[mapLocation]]></Name>
-					<X>-1020</X><Y>160</Y>
+					<Name><![CDATA[mapLager]]></Name>
+					<X>-1020</X><Y>560</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4694,7 +5822,22 @@ return location;]]></Body>
 					<Properties SaveInSnapshot="true" AccessType="protected" StaticVariable="false">
 						<CollectionClass><![CDATA[LinkedHashMap]]></CollectionClass>
 						<ElementClass><![CDATA[String]]></ElementClass>
-						<ValueElementClass><![CDATA[AbstractLocation]]></ValueElementClass>
+						<ValueElementClass><![CDATA[Lager]]></ValueElementClass>
+					</Properties>
+
+				</Variable>
+				<Variable Class="CollectionVariable">
+					<Id>1731654302306</Id>
+					<Name><![CDATA[mapCustomer]]></Name>
+					<X>-1020</X><Y>600</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" AccessType="protected" StaticVariable="false">
+						<CollectionClass><![CDATA[LinkedHashMap]]></CollectionClass>
+						<ElementClass><![CDATA[String]]></ElementClass>
+						<ValueElementClass><![CDATA[Customer]]></ValueElementClass>
 					</Properties>
 
 				</Variable>
@@ -4703,7 +5846,7 @@ return location;]]></Body>
 				<Event>
 					<Id>1731594050983</Id>
 					<Name><![CDATA[evtEndDay]]></Name>
-					<X>-1020</X><Y>290</Y>
+					<X>-520</X><Y>530</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4729,6 +5872,7 @@ return location;]]></Body>
 						</RecurrenceCode>
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
+					<Action><![CDATA[endDay();]]></Action>
 				</Event>
 			</Events>
 			<Functions>
@@ -4737,7 +5881,7 @@ return location;]]></Body>
 					<ReturnType><![CDATA[ArrayList<Order>]]></ReturnType>
 					<Id>1731594031443</Id>
 					<Name><![CDATA[getListOrder]]></Name>
-					<X>-750</X><Y>110</Y>
+					<X>-750</X><Y>510</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4749,7 +5893,7 @@ return location;]]></Body>
 					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
 					<Id>1731594031445</Id>
 					<Name><![CDATA[addOrder]]></Name>
-					<X>-750</X><Y>130</Y>
+					<X>-750</X><Y>530</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4765,7 +5909,7 @@ return location;]]></Body>
 					<ReturnType><![CDATA[String]]></ReturnType>
 					<Id>1731594031447</Id>
 					<Name><![CDATA[toString]]></Name>
-					<X>-250</X><Y>90</Y>
+					<X>-260</X><Y>80</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4777,7 +5921,7 @@ return location;]]></Body>
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1731594031449</Id>
 					<Name><![CDATA[equals]]></Name>
-					<X>-250</X><Y>110</Y>
+					<X>-260</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4802,7 +5946,7 @@ return deliveryDate.equals( other.deliveryDate );]]></Body>
 					<ReturnType><![CDATA[LinkedHashMap<String, Order>]]></ReturnType>
 					<Id>1731594031451</Id>
 					<Name><![CDATA[getMapOrder]]></Name>
-					<X>-750</X><Y>90</Y>
+					<X>-750</X><Y>490</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4813,39 +5957,38 @@ return deliveryDate.equals( other.deliveryDate );]]></Body>
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
 					<Id>1731594031453</Id>
-					<Name><![CDATA[addLocation]]></Name>
-					<X>-750</X><Y>180</Y>
+					<Name><![CDATA[addLager]]></Name>
+					<X>-750</X><Y>580</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Parameter>
-						<Name><![CDATA[location]]></Name>
-						<Type><![CDATA[AbstractLocation]]></Type>
+						<Name><![CDATA[lager]]></Name>
+						<Type><![CDATA[Lager]]></Type>
 					</Parameter>
-					<Body><![CDATA[if (!mapLocation.containsKey(location.id)) {
-	mapLocation.put(location.id, location);
-	location.startDay();
+					<Body><![CDATA[if (!mapLager.containsKey(lager.id)) {
+	mapLager.put(lager.id, lager);
 }]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[LinkedHashMap<String, AbstractLocation>]]></ReturnType>
+					<ReturnType><![CDATA[LinkedHashMap<String, Lager>]]></ReturnType>
 					<Id>1731594031455</Id>
-					<Name><![CDATA[getMapLocation]]></Name>
-					<X>-750</X><Y>160</Y>
+					<Name><![CDATA[getMapLager]]></Name>
+					<X>-750</X><Y>560</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return mapLocation;]]></Body>
+					<Body><![CDATA[return mapLager;]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[DeliveryDay]]></ReturnType>
 					<Id>1731594050974</Id>
 					<Name><![CDATA[copy]]></Name>
-					<X>-250</X><Y>130</Y>
+					<X>-260</X><Y>120</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4861,50 +6004,101 @@ return deliveryDate.equals( other.deliveryDate );]]></Body>
 					<Body><![CDATA[this.root = main;
 this.deliveryDate = deliveryDay.deliveryDate;
 
-for (Order order : deliveryDay.getListOrder()) {
-	Customer customer = root.getCustomer(order.getCustomer().id);
+for (Order o : deliveryDay.getListOrder()) {
+	Customer customer = root.getCustomer(o.getCustomer().id);
 	if (customer != null) {
-		order.setCustomer(customer);
+		Order order = new Order(o, customer);
 		mapOrder.put(order.getID(), order);
+		addCustomer(customer);
 	}
 }
 
-setup();
 return this;]]></Body>
-				</Function>
-				<Function AccessType="private" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1731594050978</Id>
-					<Name><![CDATA[setup]]></Name>
-					<X>-240</X><Y>150</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[for (Order order : getListOrder()) {
-	
-	Customer customer = (Customer) order.getCustomer();
-	Lager Lager = customer.getLager();
-	Lager.addOrder(order);
-	addLocation(customer);
-	addLocation(Lager);
-}
-
-evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 				</Function>
 				<Function AccessType="private" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1731594050980</Id>
 					<Name><![CDATA[endDay]]></Name>
-					<X>-750</X><Y>290</Y>
+					<X>-250</X><Y>530</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[for (AbstractLocation location : mapLocation.values()) {
-	location.endDay();
+					<Body><![CDATA[for (Lager lager : mapLager.values()) {
+	lager.endDay();
+}
+
+for (Customer customer : mapCustomer.values()) {
+	customer.endDay();
+}]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731654198932</Id>
+					<Name><![CDATA[startDay]]></Name>
+					<X>-250</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[setupOrder();
+
+for (Customer customer : mapCustomer.values()) {
+	customer.startDay();
+}
+
+for (Lager lager : mapLager.values()) {
+	lager.startDay();
+}
+
+evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
+				</Function>
+				<Function AccessType="protected" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[ArrayList<OrderPosition>]]></ReturnType>
+					<Id>1731654302310</Id>
+					<Name><![CDATA[addCustomer]]></Name>
+					<X>-750</X><Y>620</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[customer]]></Name>
+						<Type><![CDATA[Customer]]></Type>
+					</Parameter>
+					<Body><![CDATA[if (!mapCustomer.containsKey(customer.id)) {
+	mapCustomer.put(customer.id, customer);
+}]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[LinkedHashMap<String, Customer>]]></ReturnType>
+					<Id>1731654302312</Id>
+					<Name><![CDATA[getMapCustomer]]></Name>
+					<X>-750</X><Y>600</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return mapCustomer;]]></Body>
+				</Function>
+				<Function AccessType="private" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1731662567322</Id>
+					<Name><![CDATA[setupOrder]]></Name>
+					<X>-240</X><Y>510</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[for (Order order : getListOrder()) {
+	Lager lager = (Lager) order.getCustomer().getClosestLocByGIS(root.map, root.getListLager(order));
+	lager.addOrder(order);
+	addLager(lager);
 }]]></Body>
 				</Function>
 			</Functions>
@@ -4930,6 +6124,21 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 				</AgentLink>
 			</AgentLinks>
 
+			<ContainerLinks>
+				<ContainerLink>
+					<Id>1731650532965</Id>
+					<Name><![CDATA[main]]></Name>
+					<X>50</X><Y>-100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[da_tourplanning]]></PackageName>
+						<ClassName><![CDATA[Main]]></ClassName>
+					</ActiveObjectClass>
+				</ContainerLink>
+			</ContainerLinks>
 
 			<Presentation>
 				<Level>
@@ -4946,8 +6155,8 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 
 			<Presentation>
 				<Group>
-					<Id>1731594031459</Id>
-					<Name><![CDATA[group3]]></Name>
+					<Id>1731654568184</Id>
+					<Name><![CDATA[group]]></Name>
 					<X>-770</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
@@ -4960,8 +6169,8 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 
 			<Presentation>
 				<RoundedRectangle>
-					<Id>1731594031461</Id>
-					<Name><![CDATA[roundRectangle17]]></Name>
+					<Id>1731654568186</Id>
+					<Name><![CDATA[roundRectangle14]]></Name>
 					<X>-270</X><Y>-50</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -4983,8 +6192,8 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 					<ArcRadius>10</ArcRadius>
 				</RoundedRectangle>
 				<Text>
-					<Id>1731594031463</Id>
-					<Name><![CDATA[text20]]></Name>
+					<Id>1731654568188</Id>
+					<Name><![CDATA[text17]]></Name>
 					<X>-260</X><Y>-50</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -4995,7 +6204,7 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-16777216</Color>
-					<Text><![CDATA[Data]]></Text>
+					<Text><![CDATA[Parameter]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>18</Size>
@@ -5007,8 +6216,8 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 
 				</Group>
 				<Group>
-					<Id>1731594031465</Id>
-					<Name><![CDATA[group1]]></Name>
+					<Id>1731654568190</Id>
+					<Name><![CDATA[group5]]></Name>
 					<X>-270</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
@@ -5021,8 +6230,8 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 
 			<Presentation>
 				<RoundedRectangle>
-					<Id>1731594031467</Id>
-					<Name><![CDATA[roundRectangle15]]></Name>
+					<Id>1731654568192</Id>
+					<Name><![CDATA[roundRectangle19]]></Name>
 					<X>-270</X><Y>-50</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -5044,8 +6253,8 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 					<ArcRadius>10</ArcRadius>
 				</RoundedRectangle>
 				<Text>
-					<Id>1731594031469</Id>
-					<Name><![CDATA[text18]]></Name>
+					<Id>1731654568194</Id>
+					<Name><![CDATA[text22]]></Name>
 					<X>-260</X><Y>-50</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -5068,8 +6277,8 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 
 				</Group>
 				<Group>
-					<Id>1731594031471</Id>
-					<Name><![CDATA[group2]]></Name>
+					<Id>1731654568196</Id>
+					<Name><![CDATA[group6]]></Name>
 					<X>-270</X><Y>300</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
@@ -5082,8 +6291,8 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 
 			<Presentation>
 				<RoundedRectangle>
-					<Id>1731594031473</Id>
-					<Name><![CDATA[roundRectangle16]]></Name>
+					<Id>1731654568198</Id>
+					<Name><![CDATA[roundRectangle20]]></Name>
 					<X>-270</X><Y>-50</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -5105,8 +6314,8 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 					<ArcRadius>10</ArcRadius>
 				</RoundedRectangle>
 				<Text>
-					<Id>1731594031475</Id>
-					<Name><![CDATA[text19]]></Name>
+					<Id>1731654568200</Id>
+					<Name><![CDATA[text23]]></Name>
 					<X>-260</X><Y>-50</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -5129,8 +6338,8 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 
 				</Group>
 				<Group>
-					<Id>1731594031477</Id>
-					<Name><![CDATA[group4]]></Name>
+					<Id>1731654568202</Id>
+					<Name><![CDATA[group7]]></Name>
 					<X>-770</X><Y>300</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
@@ -5143,8 +6352,8 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 
 			<Presentation>
 				<RoundedRectangle>
-					<Id>1731594031479</Id>
-					<Name><![CDATA[roundRectangle18]]></Name>
+					<Id>1731654568204</Id>
+					<Name><![CDATA[roundRectangle21]]></Name>
 					<X>-270</X><Y>-50</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -5166,8 +6375,130 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 					<ArcRadius>10</ArcRadius>
 				</RoundedRectangle>
 				<Text>
-					<Id>1731594031481</Id>
-					<Name><![CDATA[text21]]></Name>
+					<Id>1731654568206</Id>
+					<Name><![CDATA[text24]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Variable]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731654568208</Id>
+					<Name><![CDATA[group8]]></Name>
+					<X>-770</X><Y>500</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731654568210</Id>
+					<Name><![CDATA[roundRectangle22]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731654568212</Id>
+					<Name><![CDATA[text25]]></Name>
+					<X>-260</X><Y>-50</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Data]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1731654568214</Id>
+					<Name><![CDATA[group9]]></Name>
+					<X>-270</X><Y>500</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<RoundedRectangle>
+					<Id>1731654568216</Id>
+					<Name><![CDATA[roundRectangle23]]></Name>
+					<X>-270</X><Y>-50</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>490</Width>
+					<Height>190</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-1</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<ArcRadius>10</ArcRadius>
+				</RoundedRectangle>
+				<Text>
+					<Id>1731654568218</Id>
+					<Name><![CDATA[text26]]></Name>
 					<X>-260</X><Y>-50</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -5289,7 +6620,8 @@ evtEndDay.restart(23.99, TimeUnits.HOUR);]]></Body>
 	String path = "C:\\Users\\TimoHarlacher\\Developer\\AnyLogic\\DA-Logistik\\Data\\DataIn\\241112_InputData_OneDay.xlsx";	
 	data.readDataAdditionalInfo(path);
 	
-	path = "C:\\Users\\TimoHarlacher\\Developer\\AnyLogic\\DA-Logistik\\Data\\DataIn\\241111_Lieferpositionen_OneDay_100.xlsx";
+	//path = "C:\\Users\\TimoHarlacher\\Developer\\AnyLogic\\DA-Logistik\\Data\\DataIn\\241111_Lieferpositionen_OneDay_100.xlsx";
+	path = "C:\\Users\\TimoHarlacher\\OneDrive - ProSim GmbH\\2_Projekt\\1_Laufend\\00340_Debrunner\\5_Programm\\1_Daten\\lieferposition_01.2023.csv";
 	data.readDataOrder(path);
 	
 	getEngine().setStartDate( data.getStartDate() );
@@ -5639,9 +6971,13 @@ public class DataAdditionalInfo extends Data {
 	private InputData data;
 	
 	private DataAddress_Sheet dataAddress;
-	private DataWerk_Sheet dataWerk;
-	private DataArtikel_Sheet dataArtikel;
-	private DataVehicle_Sheet dataVehicle;
+	private DataWHG_Sheet dataWHG;
+	private DataLager_Sheet dataLager;
+	private DataFzgTyp_Sheet dataFzgTyp;
+	private DataMatClass_Sheet dataMatClass;
+	private DataWhgToLager_Sheet dataWhgToLager;
+	private DataWhgToFzgTyp_Sheet dataWhgToFzgTyp;
+	private DataFzgTypToLager_Sheet dataFzgTypToLager;
 	
 /*  Constructor
 ***********************************************************************************************************************/
@@ -5653,10 +6989,14 @@ public class DataAdditionalInfo extends Data {
 	}
 	
 	protected void readData() {
+		dataLager = new DataLager_Sheet(this, "Lager");
 		dataAddress = new DataAddress_Sheet(this, "Addresse");
-		dataWerk = new DataWerk_Sheet(this, "Werk");
-		dataArtikel = new DataArtikel_Sheet(this, "Artikel");
-		dataVehicle = new DataVehicle_Sheet(this, "Fahrzeug");
+		dataWHG = new DataWHG_Sheet(this, "Warenhauptgruppe");
+		dataFzgTyp = new DataFzgTyp_Sheet(this, "Fahrzeugtyp");
+		dataMatClass = new DataMatClass_Sheet(this, "Materialklassifizierung");
+		dataWhgToLager = new DataWhgToLager_Sheet(this, "Lager_WHG");
+		dataWhgToFzgTyp = new DataWhgToFzgTyp_Sheet(this, "FzgTyp_WHG");
+		dataFzgTypToLager = new DataFzgTypToLager_Sheet(this, "Lager_FzgTyp");
 		
 	}
 	
@@ -5717,11 +7057,12 @@ public class DataOrder_Row extends DataRow {
 ***********************************************************************************************************************/
 
 	private String orderId;
-	private int orderPos;
 	private Date deliveryDate;
+	private String route;
 	private Material material;
-	private Lager lager;
-	private Address clientAddress;
+	private MaterialKlassifizierung matClass;
+	private Warenhauptgruppe whg;
+	private Address customerAddress;
 	private Customer customer;
 	
 	private double bruttoWeight;
@@ -5739,76 +7080,48 @@ public class DataOrder_Row extends DataRow {
 	protected void readData() {
 
 		int i = 0;
+		
+		// Order
 		orderId = getStrValueFromData(i);i++;
-		orderPos = getIntValueFromData(i);i++;
-		String lieferartName = getStrValueFromData(i);i++;
-		i++; //Lieferart
 		deliveryDate = Assure.strToDate(getStrValueFromData(i));i++;
-		String positionTypeName = getStrValueFromData(i);i++;
-		i++; //positionType
-		i++; // Angelegt von
-		i++; // Uhrzeit
-		i++; // Angelegt am
-		String routeName = getStrValueFromData(i);i++;
-		i++; //route
+		route = getStrValueFromData(i);i++;
+		
+		// Material
 		String materialId = getStrValueFromData(i);i++;
 		String materialName = getStrValueFromData(i);i++;
 		material = ((DataOrder) getDataSheet().getData()).getData().setMaterial(materialId, materialName);
-		String werkId = getStrValueFromData(i);i++;
-		lager = ((DataOrder) getDataSheet().getData()).getData().getLager(werkId);
-		i++; // Lagerort
-		i++; // Nettopreis
-		i++; // Währung
-		i++; // Warengruppe
-		i++; // Produkthierachie
-		i++; // Liefermenge
-		i++; // Basismengeneinheit
-		i++; // Verkaufsmengeneinheit
-		i++; // Nettogewicht
-		bruttoWeight = getDoubleValueFromData(i);i++;
+		
+		// Material Klassifizierung
+		String matClassId = getStrValueFromData(i);i++;
+		matClass = ((DataOrder) getDataSheet().getData()).getData().getMatClass(matClassId);
+		
+		// Lager
+		String lagerID = getStrValueFromData(i);i++;
+		
+		// Warenhauptgruppe
+		String whgId = getStrValueFromData(i);i++;
+		whg = ((DataOrder) getDataSheet().getData()).getData().getWHG(whgId);
+		
+		// Order Infos
+		int deliveryAmount = getIntValueFromData(i);i++;
 		String strWeightUnit = getStrValueFromData(i);i++;
+		bruttoWeight = getDoubleValueFromData(i);i++;
 		weightUnit = Assure.strToWeightUnit(strWeightUnit);
 		bruttoWeight = ((weightUnit != null) ? weightUnit.toKilograms(bruttoWeight) : bruttoWeight);
-		i++; // Volumen
-		i++; // Volumeneinheit
-		i++; // Überlieferung
-		i++; // Unterlieferung
-		i++; // Material Bereitstellungs Datum
-		i++; // Ist Menge in Lager
-		i++; // Vorlagebeleg
-		i++; // Vorlage Gesch. Pos.
-		i++; // Verkaufsbüro
-		i++; // Verkäufergruppe
-		i++; // Vertriebsweg
-		i++; // Auftraggeber
-		String clientId = getStrValueFromData(i);i++;
-		String clientName = getStrValueFromData(i);i++;
-		String clientStreet = getStrValueFromData(i);i++;
-		int clientPLZ = getIntValueFromData(i);i++;
-		String clientCity = getStrValueFromData(i);i++;
+
+		// Customer
+		String customerId = getStrValueFromData(i);i++;
+		String customerName = getStrValueFromData(i);i++;
+		String customerStreet = getStrValueFromData(i);i++;
+		int customerPlz = getIntValueFromData(i);i++;
+		String customerCity = getStrValueFromData(i);i++;
 		String country = "Switzerland";
-		clientAddress = ((DataOrder) getDataSheet().getData()).getData().setAddress(clientStreet, clientPLZ, clientCity, country);
-		customer = ((DataOrder) getDataSheet().getData()).getData().setCustomer(clientId, clientName, clientAddress);
-		i++; // Übergeordnete Position
-		i++; // Ladegruppe
-		i++; // Transportgruppe
-		i++; // Bewegungsart
-		i++; // Bewegungsart
-		i++; // Materialart
-		i++; // Verfügbarkeitsprüfung
-		i++; // Verkaufsbüro
-		i++; // Verkäufergruppe
-		i++; // Vertriebsweg
-		i++; // Sparte
-		i++; // Sonderbestand
-		i++; // Geändert am
-		i++; // EAN/UPC Code
-		i++; // Sammelfaktur
-		i++; // Sonderbestandsnummer
-		i++; // Komm. Bereich
-		
-		order = new Order(orderId, deliveryDate, customer);
-		OrderPos orderPos = new OrderPos(order, material, bruttoWeight);
+		customerAddress = ((DataOrder) getDataSheet().getData()).getData().setAddress(customerStreet, customerPlz, customerCity, country);
+		customer = ((DataOrder) getDataSheet().getData()).getData().setCustomer(customerId, customerName, customerAddress);
+
+		// Setup Order
+		order = new Order(orderId, deliveryDate, customer, matClass, whg);
+		OrderPos orderPos = new OrderPos(order, material, deliveryAmount, bruttoWeight);
 		order.addOrderPos(orderPos);
 		((DataOrder) getDataSheet().getData()).getData().addOrder(order);
 	}
@@ -5823,11 +7136,11 @@ public class DataOrder_Row extends DataRow {
 		<!--   =========   Java Class   ========  -->
 		<JavaClass>
 			<Id>1731340703150</Id>
-			<Name><![CDATA[DataWerk_Sheet]]></Name>
+			<Name><![CDATA[DataLager_Sheet]]></Name>
 			<Text><![CDATA[//IMPORT
 import lib_xls.DataSheet;
 
-public class DataWerk_Sheet extends DataSheet {
+public class DataLager_Sheet extends DataSheet {
 
 /*  Variable
 ***********************************************************************************************************************/
@@ -5835,14 +7148,14 @@ public class DataWerk_Sheet extends DataSheet {
 /*  Constructor
 ***********************************************************************************************************************/
 	
-	public DataWerk_Sheet( Data data, String sheetName ) {
+	public DataLager_Sheet( Data data, String sheetName ) {
 		super(data, sheetName);	
 	
 	}  
 	
-	protected DataWerk_Row initDataRow( String strRow, int rowIdx ) {
+	protected DataLager_Row initDataRow( String strRow, int rowIdx ) {
 		
-		return new DataWerk_Row( this, rowIdx, strRow );
+		return new DataLager_Row( this, rowIdx, strRow );
 	
 	}
 	
@@ -5854,11 +7167,11 @@ public class DataWerk_Sheet extends DataSheet {
 		<!--   =========   Java Class   ========  -->
 		<JavaClass>
 			<Id>1731340726486</Id>
-			<Name><![CDATA[DataWerk_Row]]></Name>
+			<Name><![CDATA[DataLager_Row]]></Name>
 			<Text><![CDATA[//IMPORT
 import lib_xls.DataRow;
 
-public class DataWerk_Row extends DataRow {
+public class DataLager_Row extends DataRow {
 	
 /*  Variable
 ***********************************************************************************************************************/
@@ -5869,7 +7182,7 @@ public class DataWerk_Row extends DataRow {
 /*  Constructor
 ***********************************************************************************************************************/		
 	
-	public DataWerk_Row( DataSheet data, int idx, String strRow ) {
+	public DataLager_Row( DataSheet data, int idx, String strRow ) {
 		super(data, idx, strRow);
 	}
 
@@ -5878,137 +7191,20 @@ public class DataWerk_Row extends DataRow {
 		int i = 0;
 		String werkId = getStrValueFromData(i);i++;
 		String werkName = getStrValueFromData(i);i++;
-		int addressId = getIntValueFromData(i);i++;
-		address = ((DataAdditionalInfo) getDataSheet().getData()).getData().getAddress(addressId);
-		lager = ((DataAdditionalInfo) getDataSheet().getData()).getData().setLager(werkId, werkName, address);
+		String street = getStrValueFromData(i);i++;
+		int plz = getIntValueFromData(i);i++;
+		String city = getStrValueFromData(i);i++;
+		String country = "Switzerland";
+		double latitude = getDoubleValueFromData(i);i++;
+		double longitude = getDoubleValueFromData(i);i++;
+		double loadingTimeInHour = getDoubleValueFromData(i) / 60.0;i++;
+		double workTimeInHour = getDoubleValueFromData(i);i++;
+		boolean active = getBoolValueFromData(i);i++;
 		
-	}
-
-/*  Methode
-***********************************************************************************************************************/
-	
-}
-]]></Text>
-		</JavaClass>
-		<!--   =========   Java Class   ========  -->
-		<JavaClass>
-			<Id>1731340747471</Id>
-			<Name><![CDATA[DataArtikel_Sheet]]></Name>
-			<Text><![CDATA[//IMPORT
-import lib_xls.DataSheet;
-
-public class DataArtikel_Sheet extends DataSheet {
-
-/*  Variable
-***********************************************************************************************************************/
-
-/*  Constructor
-***********************************************************************************************************************/
-	
-	public DataArtikel_Sheet( Data data, String sheetName ) {
-		super(data, sheetName);	
-	
-	}  
-	
-	protected DataArtikel_Row initDataRow( String strRow, int rowIdx ) {
-		
-		return new DataArtikel_Row( this, rowIdx, strRow );
-	
-	}
-	
-/*  Methode
-***********************************************************************************************************************/
-	
-}]]></Text>
-		</JavaClass>
-		<!--   =========   Java Class   ========  -->
-		<JavaClass>
-			<Id>1731340759680</Id>
-			<Name><![CDATA[DataArtikel_Row]]></Name>
-			<Text><![CDATA[//IMPORT
-import lib_xls.DataRow;
-
-public class DataArtikel_Row extends DataRow {
-	
-/*  Variable
-***********************************************************************************************************************/
-
-	
-/*  Constructor
-***********************************************************************************************************************/		
-	
-	public DataArtikel_Row( DataSheet data, int idx, String strRow ) {
-		super(data, idx, strRow);
-	}
-
-	protected void readData() {
-		
-		int i = 0;
-
-		
-	}
-
-/*  Methode
-***********************************************************************************************************************/
-	
-}
-]]></Text>
-		</JavaClass>
-		<!--   =========   Java Class   ========  -->
-		<JavaClass>
-			<Id>1731340777989</Id>
-			<Name><![CDATA[DataVehicle_Sheet]]></Name>
-			<Text><![CDATA[//IMPORT
-import lib_xls.DataSheet;
-
-public class DataVehicle_Sheet extends DataSheet {
-
-/*  Variable
-***********************************************************************************************************************/
-
-/*  Constructor
-***********************************************************************************************************************/
-	
-	public DataVehicle_Sheet( Data data, String sheetName ) {
-		super(data, sheetName);	
-	
-	}  
-	
-	protected DataVehicle_Row initDataRow( String strRow, int rowIdx ) {
-		
-		return new DataVehicle_Row( this, rowIdx, strRow );
-	
-	}
-	
-/*  Methode
-***********************************************************************************************************************/
-	
-}]]></Text>
-		</JavaClass>
-		<!--   =========   Java Class   ========  -->
-		<JavaClass>
-			<Id>1731340787731</Id>
-			<Name><![CDATA[DataVehicle_Row]]></Name>
-			<Text><![CDATA[//IMPORT
-import lib_xls.DataRow;
-
-public class DataVehicle_Row extends DataRow {
-	
-/*  Variable
-***********************************************************************************************************************/
-
-	
-/*  Constructor
-***********************************************************************************************************************/		
-	
-	public DataVehicle_Row( DataSheet data, int idx, String strRow ) {
-		super(data, idx, strRow);
-	}
-
-	protected void readData() {
-		
-		int i = 0;
-
+		if (active) {
+			address = ((DataAdditionalInfo) getDataSheet().getData()).getData().setAddress(street, plz, city, country, latitude, longitude);
+			lager = ((DataAdditionalInfo) getDataSheet().getData()).getData().setLager(werkId, werkName, loadingTimeInHour, workTimeInHour,address);
+		}
 		
 	}
 
@@ -6105,9 +7301,9 @@ public class DataAddress_Row extends DataRow {
 		if ( getArrRowValue().length > 6 ) {
 			double latitude = getDoubleValueFromData(i);i++;
 			double longitude = getDoubleValueFromData(i);i++;
-			address = ((DataAdditionalInfo) getDataSheet().getData()).getData().setAddress(id, street, plz, city, country, latitude, longitude);
+			address = ((DataAdditionalInfo) getDataSheet().getData()).getData().setAddress(street, plz, city, country, latitude, longitude);
 		} else {
-			address = ((DataAdditionalInfo) getDataSheet().getData()).getData().setAddress(id, street, plz, city, country);
+			address = ((DataAdditionalInfo) getDataSheet().getData()).getData().setAddress(street, plz, city, country);
 		}
 		
 	}
@@ -6123,6 +7319,7 @@ public class DataAddress_Row extends DataRow {
 			<Id>1731407035617</Id>
 			<Name><![CDATA[InputData]]></Name>
 			<Text><![CDATA[//IMPORT
+import java.util.NoSuchElementException;
 
 public class InputData {
 
@@ -6131,13 +7328,16 @@ public class InputData {
 
 	private DataAdditionalInfo dataAdditionalInfo;
 	private DataOrder dataOrder;
+	private DataOrder_Csv dataOrderCsv;
 	
 	private Date startDate;
 	private Date endDate;
 	
-	private HashMap<Integer, Address> mapAddressKeyID;
-	private HashMap<String, Address> mapAddressKeyAddress;
+	private HashMap<String, Address> mapAddress;
 	private HashMap<String, Material> mapMaterial;
+	private HashMap<String, Warenhauptgruppe> mapWHG;
+	private HashMap<String, Fahrzeugtyp> mapFzgTyp;
+	private HashMap<String, MaterialKlassifizierung> mapMatClass;
 	private HashMap<String, Lager> mapLager;
 	private HashMap<String, Customer> mapCustomer;
 	private HashMap<Date, DeliveryDay> mapDeliveryDay;
@@ -6153,8 +7353,10 @@ public class InputData {
 		startDate = null;
 		endDate = null;
 		mapMaterial = new HashMap();
-		mapAddressKeyID = new HashMap();
-		mapAddressKeyAddress = new HashMap();
+		mapAddress = new HashMap();
+		mapWHG = new HashMap();
+		mapFzgTyp = new HashMap();
+		mapMatClass = new HashMap();
 		mapLager = new HashMap();
 		mapCustomer = new HashMap();
 		mapDeliveryDay = new HashMap();
@@ -6165,7 +7367,8 @@ public class InputData {
 	}
 	
 	public void readDataOrder(String path) {
-		dataOrder = new DataOrder(this, path);
+		//dataOrder = new DataOrder(this, path);
+		dataOrderCsv = new DataOrder_Csv(this, path);
 	}
 	
 	public void writeData() {
@@ -6185,7 +7388,7 @@ public class InputData {
 	public HashMap<Date, DeliveryDay> getMapDeliveryDay() { return mapDeliveryDay; }
 	
 	public ArrayList<DeliveryDay> getListDeliveryDay() { return new ArrayList<>(mapDeliveryDay.values()); }
-	public ArrayList<Address> getListAddress() { return new ArrayList<>(mapAddressKeyID.values()); }
+	public ArrayList<Address> getListAddress() { return new ArrayList<>(mapAddress.values()); }
 	public ArrayList<Lager> getListLager() { return new ArrayList<>(mapLager.values()); }
 	public ArrayList<Customer> getListCustomer() { return new ArrayList<>(mapCustomer.values()); }
 	
@@ -6197,22 +7400,78 @@ public class InputData {
 		mapMaterial.put(id, material);
 		return material;
 	}
-	
-	public Lager setLager(String id, String name, Address address) {
-		if(mapLager.containsKey(id)) {
-			return mapLager.get(id);
-		}
-		Lager werk = new Lager(id, "-", address, null);
-		mapLager.put(id, werk);
-		return werk;
-	}
-	
+
 	public Lager getLager(String id) {
 		if(mapLager.containsKey(id)) {
 			return mapLager.get(id);
 		}
+		String msg = String.format("Lager [%s] not defined", id);
+		//throw new NoSuchElementException(msg);
+		traceln(msg);
 		return null;
-		//throw new RuntimeException(String.format("Werk [%s] not defined", id));
+	}
+	
+	public Lager setLager(String id, String name, double loadingTimeInMin, double workTimeInHour, Address address) {
+		if(mapLager.containsKey(id)) {
+			return mapLager.get(id);
+		}
+		Lager werk = new Lager(id, "-", address, null, loadingTimeInMin, workTimeInHour);
+		mapLager.put(id, werk);
+		return werk;
+	}
+	
+	public Warenhauptgruppe getWHG(String id) {
+		if(mapWHG.containsKey(id)) {
+			return mapWHG.get(id);
+		}
+		String msg = String.format("Warenhauptgruppe [%s] not defined", id);
+		//throw new NoSuchElementException(msg);
+		return null;
+	}
+	
+	public Warenhauptgruppe setWHG(String id, String name) {
+		if(mapWHG.containsKey(id)) {
+			return mapWHG.get(id);
+		}
+		Warenhauptgruppe whg = new Warenhauptgruppe(id, name);
+		mapWHG.put(id, whg);
+		return whg;
+	}
+	
+	public Fahrzeugtyp getFzgTyp(String id) {
+		if(mapFzgTyp.containsKey(id)) {
+			return mapFzgTyp.get(id);
+		}
+		String msg = String.format("Fahrzeugtyp [%s] not defined", id);
+		//throw new NoSuchElementException(msg);
+		return null;
+	}
+	
+	public Fahrzeugtyp setFzgTyp(String id, String name, double maxWeightInKg) {
+		if(mapFzgTyp.containsKey(id)) {
+			return mapFzgTyp.get(id);
+		}
+		Fahrzeugtyp fzgTyp = new Fahrzeugtyp(id, name, maxWeightInKg);
+		mapFzgTyp.put(id, fzgTyp);
+		return fzgTyp;
+	}
+
+	public MaterialKlassifizierung getMatClass(String id) {
+		if(mapMatClass.containsKey(id)) {
+			return mapMatClass.get(id);
+		}
+		String msg = String.format("Materialklassifizierung [%s] not defined", id);
+		//throw new NoSuchElementException(msg);
+		return null;
+	}
+	
+	public MaterialKlassifizierung setMatClass(String id, String name, int priority) {
+		if(mapMatClass.containsKey(id)) {
+			return mapMatClass.get(id);
+		}
+		MaterialKlassifizierung matClass = new MaterialKlassifizierung(id, name, priority);
+		mapMatClass.put(id, matClass);
+		return matClass;
 	}
 	
 	public Customer setCustomer(String id, String name, Address address) {
@@ -6223,39 +7482,26 @@ public class InputData {
 		mapCustomer.put(id, client);
 		return client;
 	}
-
-	public Address setAddress(int id, String street, int plz, String city, String country) {
-		return setAddress(id, street, plz, city, country, Double.NaN, Double.NaN);
-	}
 	
-	public Address setAddress(int id, String street, int plz, String city, String country, double latitude, double longitude) {
-		if(mapAddressKeyID.containsKey(id)) {
-			return mapAddressKeyID.get(id);
+	public Address setAddress(String street, int plz, String city, String country, double latitude, double longitude) {
+		String key = Address.setLongAddress(street, plz, city, country);
+		if(mapAddress.containsKey(key)) {
+			return mapAddress.get(key);
 		}
-		Address address = new Address(id, street, plz, city, country, latitude, longitude);
-		mapAddressKeyID.put(id, address);
-		mapAddressKeyAddress.put(address.getLongAddress(), address);
+		Address address = new Address(street, plz, city, country, latitude, longitude);
+		mapAddress.put(key, address);
 		return address;
 	}
 	
 	public Address setAddress(String street, int plz, String city, String country) {
 		String key = Address.setLongAddress(street, plz, city, country);
-		if(mapAddressKeyAddress.containsKey(key)) {
-			return mapAddressKeyAddress.get(key);
+		if(mapAddress.containsKey(key)) {
+			return mapAddress.get(key);
 		}
 		Address address = new Address(street, plz, city, country);
-		mapAddressKeyID.put(address.getID(), address);
-		mapAddressKeyAddress.put(address.getLongAddress(), address);
+		mapAddress.put(address.getID(), address);
 		return address;
 	}
-	
-	public Address getAddress(int id) {
-		if(mapAddressKeyID.containsKey(id)) {
-			return mapAddressKeyID.get(id);
-		}
-		//throw new RuntimeException(String.format("Address [%s] not defined", id));
-		return null;
-	} 
 	
 	public void addOrder(Order order) {
 		addOrderToDay(order);
@@ -6320,17 +7566,16 @@ public class AlgScheduler implements Serializable {
 /*  Variable
 ***********************************************************************************************************************/
 	
-	protected Main main;
+	protected Main root;
 	protected Lager lager;
 	
 	protected ArrayList<Order> listToDo;
-	protected ArrayList<LKW> listLKW;
 	
 /*  Constructor
 ***********************************************************************************************************************/
 	
-	public AlgScheduler(Main main, Lager lager) {
-		this.main = main;
+	public AlgScheduler(Main root, Lager lager) {
+		this.root = root;
 		this.lager = lager;
 	}
 	
@@ -6339,8 +7584,7 @@ public class AlgScheduler implements Serializable {
 
 	public Lager getLager() { return lager; }	
 	
-	public void startRouting() {
-		listLKW = new ArrayList();
+	public void setupRoute() {
 		listToDo = new ArrayList<>(lager.getListOrder());
 	}
 	
@@ -6348,8 +7592,8 @@ public class AlgScheduler implements Serializable {
         Collections.sort(listToDo, new Comparator<Order>() {
             @Override
             public int compare(Order op1, Order op2) {
-                double distance1 = lager.address.getDistByGIS(main.map, op1.getCustomer().address);
-                double distance2 = lager.address.getDistByGIS(main.map, op2.getCustomer().address);
+                double distance1 = lager.address.getDistByGIS(root.map, op1.getCustomer().address);
+                double distance2 = lager.address.getDistByGIS(root.map, op2.getCustomer().address);
                 return Double.compare(distance1, distance2);
             }
         });
@@ -6370,61 +7614,54 @@ public class AlgNearestNeighbour extends AlgScheduler {
 /*  Constructor
 ***********************************************************************************************************************/
 	
-	public AlgNearestNeighbour(Main main, Lager lager) {
-		super(main, lager);
+	public AlgNearestNeighbour(Main root, Lager lager) {
+		super(root, lager);
 	}
 	
 /*  Methode
 ***********************************************************************************************************************/
 	
-	public void startRouting() {
-		super.startRouting();
+	public void setupRoute() {
+		super.setupRoute();
 		sortOrderPosByGISDist();
-
+		
 		while (!listToDo.isEmpty()) {
 			
-			LKW nextLKW = null;
-			Order nextOrder = listToDo.get(0);
-			double distance = lager.address.getDistByGIS(main.map, nextOrder.getCustomer().address);
-
-			for (LKW lkw : listLKW) {
-				Order next = getNextOrder(lkw, listToDo, distance);
-				if (next != null) {
-					nextLKW = lkw;
-					nextOrder = next;
-					distance = lkw.getCurrentScheduleLoc().address.getDistByGIS(main.map, next.getCustomer().address);
-				}
+			Order next = getNextOrder(lager.getListVehicle(), listToDo);
+			if (next != null) {
+				AbstractVehicle vehicle = next.getVehicle();
+				listToDo.remove(next);
+			} else {
+				throw new RuntimeException("tbd: nicht alle Orders konnten zugeordnet werden");
 			}
-			
-			if (nextLKW == null) {
-				nextLKW = main.addNewLKW(lager);
-				listLKW.add(nextLKW);
-			}
-			
-			nextLKW.addNextOrder(nextOrder);
-			listToDo.remove(nextOrder);
-		}
-		
-		for (LKW lkw : listLKW) {
-			lkw.startRouting();
 		}
 	}
 	
-	private Order getNextOrder(LKW lkw, ArrayList<Order> list, double distance) {
-		Order next = null;
-		Address currentAddress = lkw.getCurrentScheduleLoc().address;
-
-		for (Order pos : list) {
-			if (lkw.canTakeOrder(pos)) {
-				double dist = currentAddress.getDistByGIS(main.map, pos.getCustomer().address);
-				if (dist < distance) {
-					next = pos;
-					distance = dist;
-				}	
+	private Order getNextOrder(ArrayList<AbstractVehicle> listVehicle, ArrayList<Order> listOrder) {
+		AbstractVehicle nextVehicle = null;
+		Order nextOrder = null;
+		double distance = -1.0;
+		
+		for (AbstractVehicle vehicle : listVehicle) {
+			Address currentAddress = vehicle.getCurrentScheduleLoc().address;
+	
+			for (Order order : listOrder) {
+				if (vehicle.canTakeOrder(order)) {
+					double dist = currentAddress.getDistByGIS(root.map, order.getCustomer().address);
+					if (dist < distance) {
+						nextVehicle = vehicle;
+						nextOrder = order;
+						distance = dist;
+					}	
+				}
 			}
 		}
-
-		return next;
+		
+		if (nextOrder != null) {
+			nextOrder.setVehicle(nextVehicle);
+			nextVehicle.addNextOrder(nextOrder, Calc.calcDrivingDuration(distance));
+		}
+		return nextOrder;
 	}
 	
 }]]></Text>
@@ -6470,9 +7707,6 @@ public class Address implements Serializable {
 /*  Variable
 ***********************************************************************************************************************/
 	
-	private static int _id = 1;
-	
-	private int id;
 	private String street;
 	private int plz;
 	private String city;
@@ -6490,9 +7724,7 @@ public class Address implements Serializable {
 /*  Constructor
 ***********************************************************************************************************************/
 
-	public Address(int id, String street, int plz, String city, String country, double latitude, double longitude) {
-		this.id = id;
-		_id = Math.max(_id, id);
+	public Address(String street, int plz, String city, String country, double latitude, double longitude) {
 		this.street = street;
 		this.plz = plz;
 		this.city = city;
@@ -6506,7 +7738,6 @@ public class Address implements Serializable {
 	}
 	
 	public Address(String street, int plz, String city, String country) {
-		this.id = _id++;
 		this.street = street;
 		this.plz = plz;
 		this.city = city;
@@ -6520,7 +7751,7 @@ public class Address implements Serializable {
 /*  Methode
 ***********************************************************************************************************************/
 
-	public int getID() { return id; }
+	public String getID() { return getLongAddress(); }
 	public String getStreet() { return street; }
 	public int getPlz() { return plz; }
 	public String getCity() { return city; }
@@ -6659,7 +7890,7 @@ public class Address implements Serializable {
 		}
 
 		final Address other = (Address) obj;
-		return longAddress.equals( other.getLongAddress() );
+		return getID().equals( other.getID() );
 	 }
 }
 
@@ -6677,15 +7908,25 @@ public class OrderPos implements Serializable {
 	
 	private Order order;
 	private Material  material;
+	private MaterialKlassifizierung matClass;
 	
+	private int amount;
 	private double weightInKg;
 	
 /*  Constructor
 ***********************************************************************************************************************/
 	
-	public OrderPos(Order order, Material material, double weight) {
+	public OrderPos(Order order, Material material, int amount, double weight) {
+		this.order = order;
 		this.material = material;
+		this.amount = amount;
 		this.weightInKg = weight;
+	}
+	
+	public OrderPos(Order order, OrderPos orderPos) {
+		this.order = order;
+		this.material = orderPos.getMaterial();
+		this.weightInKg = orderPos.getWeightInKg();
 	}
 	
 /*  Methode
@@ -6693,7 +7934,9 @@ public class OrderPos implements Serializable {
 
 	public Order getOrder() { return order; }
 	public Material getMaterial() { return material; }
+	public MaterialKlassifizierung getMatClass() { return matClass; }
 	
+	public int getAmount() { return amount; }
 	public double getWeightInKg() { return weightInKg; }
 			
 	@Override
@@ -6740,14 +7983,14 @@ public class Material implements Serializable {
 /*  Methode
 ***********************************************************************************************************************/
 
-	public String getId() { return id; }
-	protected void setId(String id) { this.id = id; }
+	public String getID() { return id; }
+	protected void setID(String id) { this.id = id; }
 	
 	public String getName() { return name; }
 	protected void setName(String name) { this.name = name; }
 	
 	@Override
-	public String toString() { return String.format("%s - %s", getId(), getName()); }
+	public String toString() { return String.format("%s - %s", getID(), getName()); }
 	
 	 @Override
     public boolean equals(Object obj) {
@@ -6760,7 +8003,7 @@ public class Material implements Serializable {
 		}
 
 		final Material other = (Material) obj;
-		return getId().equals( other.getId() );
+		return getID().equals( other.getID() );
     }
 	
 }]]></Text>
@@ -6778,22 +8021,42 @@ public class Order implements Serializable {
 	private String id;
 	private Date deliveryDate;
 	private Customer customer;
+	private MaterialKlassifizierung matClass;
+	private Warenhauptgruppe whg;
 	
 	private double weightInKg;
 	
 	private Lager lager;
+	private AbstractVehicle vehicle;
 	
 	private ArrayList<OrderPos> listOrderPos;
 	
 /*  Constructor
 ***********************************************************************************************************************/
 	
-	public Order(String id, Date date, Customer customer) {
+	public Order(String id, Date date, Customer customer, MaterialKlassifizierung matClass, Warenhauptgruppe whg) {
 		this.id = id;
 		this.deliveryDate = date;
 		this.customer = customer;
+		this.matClass = matClass;
+		this.whg = whg;
 		this.weightInKg = 0.0;
 		this.listOrderPos = new ArrayList();
+	}
+	
+	public Order(Order order, Customer customer) {
+		this.id = order.getID();
+		this.deliveryDate = order.getDeliveryDate();
+		this.customer = customer;
+		this.weightInKg = 0.0;
+		this.listOrderPos = new ArrayList();
+		copy(order);
+	}
+	
+	private void copy(Order order) {
+		for (OrderPos orderPos : order.getListOrderPos()) {
+			addOrderPos(new OrderPos(this, orderPos));
+		}
 	}
 	
 /*  Methode
@@ -6803,6 +8066,8 @@ public class Order implements Serializable {
 	public Date getDeliveryDate() { return deliveryDate; }
 	
 	public Customer getCustomer() { return customer; }
+	public MaterialKlassifizierung getMatClass() { return matClass; }
+	public Warenhauptgruppe getWHG() { return whg; }
 	
 	public double getWeightInKg() { return weightInKg; }
 	
@@ -6813,9 +8078,12 @@ public class Order implements Serializable {
 		weightInKg += orderPos.getWeightInKg();
 	}
 	
-	public void setLager(Lager lager) { this.lager = lager; }
 	public Lager getLager() { return lager; }
+	public void setLager(Lager lager) {	this.lager = lager; }
 	
+	public AbstractVehicle getVehicle() { return vehicle; }
+	public void setVehicle(AbstractVehicle vehicle) {	this.vehicle = vehicle; }
+		
 	@Override
 	public String toString() { return String.format("%s", getID()); }
 	
@@ -6843,6 +8111,9 @@ public class Order implements Serializable {
 			<Text><![CDATA[//IMPORTS
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Assure implements Serializable {
 	
@@ -6886,23 +8157,35 @@ public class Assure implements Serializable {
 		return Double.NaN;
 	}
 	
-	public static Date strToDate( String strValue ) {
-		Date date = null;
-		
-		if (!strValue.isEmpty()) {
-			try {
+	public static Date strToDate(String strValue) {
+	    Date date = null;
+	    
+	    if (!strValue.isEmpty()) {
+	        try {
+	            // Prüfen, ob der String dem Format "yyyy-MM-dd" entspricht
+	            if (strValue.matches("\\d{4}-\\d{2}-\\d{2}")) {
+	                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+	                formatter.setLenient(false); // Striktere Überprüfung der Eingabe
+	                date = formatter.parse(strValue);
+	                return date;
+	            }
+	            
+	            // Falls es sich um einen numerischen Wert handelt, als Excel-Datum behandeln
+	            double dDate = Double.valueOf(strValue);    
+	            date = getDateFromNum(dDate);    
+	            return date;
 
-				double dDate = Double.valueOf(strValue);	
-				date = getDateFromNum(dDate);	
-				return date;
-				
-			} catch(Exception exc) {
-				traceln(exc);
-				throw new RuntimeException(String.format("[%s] ist kein Datum.", strValue));
-			}
-		}
-		throw new RuntimeException(String.format("[%s] ist kein Datum.", strValue));
+	        } catch (ParseException e) {
+	            traceln(e);
+	            throw new RuntimeException(String.format("[%s] ist kein gültiges Datum im Format yyyy-MM-dd.", strValue));
+	        } catch (Exception exc) {
+	            traceln(exc);
+	            throw new RuntimeException(String.format("[%s] ist kein gültiges Datum.", strValue));
+	        }
+	    }
+	    throw new RuntimeException(String.format("[%s] ist kein Datum.", strValue));
 	}
+
 	
 	private static Date getDateFromNum( double dDate ) {
 
@@ -6928,6 +8211,729 @@ public class Assure implements Serializable {
 	private static final long serialVersionUID = 1L;
 }
 ]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731656210772</Id>
+			<Name><![CDATA[Warenhauptgruppe]]></Name>
+			<Text><![CDATA[
+public class Warenhauptgruppe implements Serializable {
+
+/*  Variable
+***********************************************************************************************************************/
+
+	protected String id;
+	protected String name;
+	
+	private ArrayList<Lager> listLager;
+	
+/*  Constructor
+***********************************************************************************************************************/
+	
+	public Warenhauptgruppe(String id, String name) {
+		this.id = id;
+		this.name = name;
+		this.listLager = new ArrayList();
+	}
+	
+/*  Methode
+***********************************************************************************************************************/
+
+	public String getID() { return id; }
+	public String getName() { return name; }
+	
+	public void addLager(Lager lager) { listLager.add(lager); }
+	public ArrayList<Lager> getListLager() { return listLager; }
+	
+	@Override
+	public String toString() { return String.format("%s - %s", getID(), getName()); }
+	
+	 @Override
+    public boolean equals(Object obj) {
+		if ( obj == null ) {
+			return false;
+		}
+
+		if ( obj.getClass() != getClass() ) {
+			return false;
+		}
+
+		final Warenhauptgruppe other = (Warenhauptgruppe) obj;
+		return getID().equals( other.getID() );
+    }
+	
+}]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731656289869</Id>
+			<Name><![CDATA[DataWHG_Sheet]]></Name>
+			<Text><![CDATA[//IMPORT
+import lib_xls.DataSheet;
+
+public class DataWHG_Sheet extends DataSheet {
+
+/*  Variable
+***********************************************************************************************************************/
+
+/*  Constructor
+***********************************************************************************************************************/
+	
+	public DataWHG_Sheet( Data data, String sheetName ) {
+		super(data, sheetName);	
+	
+	}  
+	
+	protected DataWHG_Row initDataRow( String strRow, int rowIdx ) {
+		
+		return new DataWHG_Row( this, rowIdx, strRow );
+	
+	}
+	
+/*  Methode
+***********************************************************************************************************************/
+	
+}]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731656320837</Id>
+			<Name><![CDATA[DataWHG_Row]]></Name>
+			<Text><![CDATA[//IMPORT
+import lib_xls.DataRow;
+
+public class DataWHG_Row extends DataRow {
+	
+/*  Variable
+***********************************************************************************************************************/
+	
+	private Warenhauptgruppe whg;
+	
+/*  Constructor
+***********************************************************************************************************************/		
+	
+	public DataWHG_Row( DataSheet data, int idx, String strRow ) {
+		super(data, idx, strRow);
+	}
+
+	protected void readData() {
+		int i = 0;
+		String id = getStrValueFromData(i);i++;
+		String name = getStrValueFromData(i);i++;
+		whg = ((DataAdditionalInfo) getDataSheet().getData()).getData().setWHG(id, name);
+		
+	}
+
+/*  Methode
+***********************************************************************************************************************/
+	
+}
+]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731656573848</Id>
+			<Name><![CDATA[DataFzgTyp_Row]]></Name>
+			<Text><![CDATA[//IMPORT
+import lib_xls.DataRow;
+
+public class DataFzgTyp_Row extends DataRow {
+	
+/*  Variable
+***********************************************************************************************************************/
+	
+	private Fahrzeugtyp fzgTyp;
+	
+/*  Constructor
+***********************************************************************************************************************/		
+	
+	public DataFzgTyp_Row( DataSheet data, int idx, String strRow ) {
+		super(data, idx, strRow);
+	}
+
+	protected void readData() {
+		int i = 0;
+		String id = getStrValueFromData(i);i++;
+		String name = getStrValueFromData(i);i++;
+		double maxWeightInKg = getDoubleValueFromData(i);i++;
+		fzgTyp = ((DataAdditionalInfo) getDataSheet().getData()).getData().setFzgTyp(id, name, maxWeightInKg);
+		
+	}
+
+/*  Methode
+***********************************************************************************************************************/
+	
+}
+]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731656599573</Id>
+			<Name><![CDATA[DataFzgTyp_Sheet]]></Name>
+			<Text><![CDATA[//IMPORT
+import lib_xls.DataSheet;
+
+public class DataFzgTyp_Sheet extends DataSheet {
+
+/*  Variable
+***********************************************************************************************************************/
+
+/*  Constructor
+***********************************************************************************************************************/
+	
+	public DataFzgTyp_Sheet( Data data, String sheetName ) {
+		super(data, sheetName);	
+	
+	}  
+	
+	protected DataFzgTyp_Row initDataRow( String strRow, int rowIdx ) {
+		
+		return new DataFzgTyp_Row( this, rowIdx, strRow );
+	
+	}
+	
+/*  Methode
+***********************************************************************************************************************/
+	
+}]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731656636796</Id>
+			<Name><![CDATA[Fahrzeugtyp]]></Name>
+			<Text><![CDATA[
+public class Fahrzeugtyp implements Serializable {
+
+/*  Variable
+***********************************************************************************************************************/
+
+	protected String id;
+	protected String name;
+	protected double maxWeightInKg;
+	
+	protected HashMap<String, Warenhauptgruppe> mapWHG;
+	
+/*  Constructor
+***********************************************************************************************************************/
+	
+	public Fahrzeugtyp(String id, String name, double maxWeightInKg) {
+		this.id = id;
+		this.name = name;
+		this.maxWeightInKg = maxWeightInKg;
+		this.mapWHG = new HashMap();
+	}
+	
+/*  Methode
+***********************************************************************************************************************/
+
+	public String getID() { return id; }
+	public String getName() { return name; }
+	public double getMaxWeightInKg() { return maxWeightInKg; }
+	
+	public HashMap<String, Warenhauptgruppe> getMapWHG() { return mapWHG; }
+	public ArrayList<Warenhauptgruppe> getListWHG() { return new ArrayList<>(mapWHG.values()); }
+	public void addWHG(Warenhauptgruppe whg) { mapWHG.put(whg.getID(), whg); }
+	
+	@Override
+	public String toString() { return String.format("%s - %s", getID(), getName()); }
+	
+	 @Override
+    public boolean equals(Object obj) {
+		if ( obj == null ) {
+			return false;
+		}
+
+		if ( obj.getClass() != getClass() ) {
+			return false;
+		}
+
+		final Fahrzeugtyp other = (Fahrzeugtyp) obj;
+		return getID().equals( other.getID() );
+    }
+	
+}]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731656990677</Id>
+			<Name><![CDATA[MaterialKlassifizierung]]></Name>
+			<Text><![CDATA[import java.io.Serializable;
+
+public class MaterialKlassifizierung implements Serializable, Comparable<MaterialKlassifizierung> {
+
+    /*  Variable
+    ***********************************************************************************************************************/
+
+    protected String id;
+    protected String name;
+    protected int priority;
+
+    /*  Constructor
+    ***********************************************************************************************************************/
+
+    public MaterialKlassifizierung(String id, String name, int priority) {
+        this.id = id;
+        this.name = name;
+        this.priority = priority;
+    }
+
+    /*  Methoden
+    ***********************************************************************************************************************/
+
+    public String getID() { return id; }
+    public String getName() { return name; }
+    public int getPriority() { return priority; }
+
+    @Override
+    public String toString() { return String.format("%s - %s", getID(), getName()); }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+
+        final MaterialKlassifizierung other = (MaterialKlassifizierung) obj;
+        return getID().equals(other.getID());
+    }
+
+    @Override
+    public int compareTo(MaterialKlassifizierung other) {
+        return Integer.compare(getPriority(), other.getPriority());
+    }
+}
+]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731657072092</Id>
+			<Name><![CDATA[DataMatClass_Row]]></Name>
+			<Text><![CDATA[//IMPORT
+import lib_xls.DataRow;
+
+public class DataMatClass_Row extends DataRow {
+	
+/*  Variable
+***********************************************************************************************************************/
+	
+	private MaterialKlassifizierung matClass;
+	
+/*  Constructor
+***********************************************************************************************************************/		
+	
+	public DataMatClass_Row( DataSheet data, int idx, String strRow ) {
+		super(data, idx, strRow);
+	}
+
+	protected void readData() {
+		int i = 0;
+		String id = getStrValueFromData(i);i++;
+		String name = getStrValueFromData(i);i++;
+		int priority = getIntValueFromData(i);i++;
+		matClass = ((DataAdditionalInfo) getDataSheet().getData()).getData().setMatClass(id, name, priority);
+		
+	}
+
+/*  Methode
+***********************************************************************************************************************/
+	
+}
+]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731657139180</Id>
+			<Name><![CDATA[DataMatClass_Sheet]]></Name>
+			<Text><![CDATA[//IMPORT
+import lib_xls.DataSheet;
+
+public class DataMatClass_Sheet extends DataSheet {
+
+/*  Variable
+***********************************************************************************************************************/
+
+/*  Constructor
+***********************************************************************************************************************/
+	
+	public DataMatClass_Sheet( Data data, String sheetName ) {
+		super(data, sheetName);	
+	
+	}  
+	
+	protected DataMatClass_Row initDataRow( String strRow, int rowIdx ) {
+		
+		return new DataMatClass_Row( this, rowIdx, strRow );
+	
+	}
+	
+/*  Methode
+***********************************************************************************************************************/
+	
+}]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731657542738</Id>
+			<Name><![CDATA[DataWhgToLager_Sheet]]></Name>
+			<Text><![CDATA[//IMPORT
+import lib_xls.DataSheet;
+
+public class DataWhgToLager_Sheet extends DataSheet {
+
+/*  Variable
+***********************************************************************************************************************/
+
+/*  Constructor
+***********************************************************************************************************************/
+	
+	public DataWhgToLager_Sheet( Data data, String sheetName ) {
+		super(data, sheetName);	
+	
+	}  
+	
+	protected DataWhgToLager_Row initDataRow( String strRow, int rowIdx ) {
+		
+		return new DataWhgToLager_Row( this, rowIdx, strRow );
+	
+	}
+	
+/*  Methode
+***********************************************************************************************************************/
+	
+}]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731657630930</Id>
+			<Name><![CDATA[DataWhgToLager_Row]]></Name>
+			<Text><![CDATA[//IMPORT
+import lib_xls.DataRow;
+
+public class DataWhgToLager_Row extends DataRow {
+	
+/*  Variable
+***********************************************************************************************************************/
+	
+	private Lager lager;
+	private Warenhauptgruppe whg;
+	
+/*  Constructor
+***********************************************************************************************************************/		
+	
+	public DataWhgToLager_Row( DataSheet data, int idx, String strRow ) {
+		super(data, idx, strRow);
+	}
+
+	protected void readData() {
+		int i = 0;
+		String lagerID = getStrValueFromData(i);i++;
+		String whgID = getStrValueFromData(i);i++;
+		lager = ((DataAdditionalInfo) getDataSheet().getData()).getData().getLager(lagerID);
+		whg = ((DataAdditionalInfo) getDataSheet().getData()).getData().getWHG(whgID);
+		lager.addWHG(whg);
+		
+	}
+
+/*  Methode
+***********************************************************************************************************************/
+	
+}
+]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731658161613</Id>
+			<Name><![CDATA[DataWhgToFzgTyp_Row]]></Name>
+			<Text><![CDATA[//IMPORT
+import lib_xls.DataRow;
+
+public class DataWhgToFzgTyp_Row extends DataRow {
+	
+/*  Variable
+***********************************************************************************************************************/
+	
+	private Fahrzeugtyp fzgTyp;
+	private Warenhauptgruppe whg;
+	
+/*  Constructor
+***********************************************************************************************************************/		
+	
+	public DataWhgToFzgTyp_Row( DataSheet data, int idx, String strRow ) {
+		super(data, idx, strRow);
+	}
+
+	protected void readData() {
+		int i = 0;
+		String fzgTypID = getStrValueFromData(i);i++;
+		String whgID = getStrValueFromData(i);i++;
+		fzgTyp = ((DataAdditionalInfo) getDataSheet().getData()).getData().getFzgTyp(fzgTypID);
+		whg = ((DataAdditionalInfo) getDataSheet().getData()).getData().getWHG(whgID);
+		fzgTyp.addWHG(whg);
+		
+	}
+
+/*  Methode
+***********************************************************************************************************************/
+	
+}
+]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731658235256</Id>
+			<Name><![CDATA[DataWhgToFzgTyp_Sheet]]></Name>
+			<Text><![CDATA[//IMPORT
+import lib_xls.DataSheet;
+
+public class DataWhgToFzgTyp_Sheet extends DataSheet {
+
+/*  Variable
+***********************************************************************************************************************/
+
+/*  Constructor
+***********************************************************************************************************************/
+	
+	public DataWhgToFzgTyp_Sheet( Data data, String sheetName ) {
+		super(data, sheetName);	
+	
+	}  
+	
+	protected DataWhgToFzgTyp_Row initDataRow( String strRow, int rowIdx ) {
+		
+		return new DataWhgToFzgTyp_Row( this, rowIdx, strRow );
+	
+	}
+	
+/*  Methode
+***********************************************************************************************************************/
+	
+}]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731658325644</Id>
+			<Name><![CDATA[DataFzgTypToLager_Row]]></Name>
+			<Text><![CDATA[//IMPORT
+import lib_xls.DataRow;
+
+public class DataFzgTypToLager_Row extends DataRow {
+	
+/*  Variable
+***********************************************************************************************************************/
+	
+	private Lager lager;
+	private Fahrzeugtyp fzgTyp;
+	
+/*  Constructor
+***********************************************************************************************************************/		
+	
+	public DataFzgTypToLager_Row( DataSheet data, int idx, String strRow ) {
+		super(data, idx, strRow);
+	}
+
+	protected void readData() {
+		int i = 0;
+		String lagerID = getStrValueFromData(i);i++;
+		String fzgTypID = getStrValueFromData(i);i++;
+		int numFzg = getIntValueFromData(i);i++;
+		lager = ((DataAdditionalInfo) getDataSheet().getData()).getData().getLager(lagerID);
+		fzgTyp = ((DataAdditionalInfo) getDataSheet().getData()).getData().getFzgTyp(fzgTypID);
+		lager.addFzgTyp(fzgTyp, numFzg);
+		
+	}
+
+/*  Methode
+***********************************************************************************************************************/
+	
+}
+]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731658328469</Id>
+			<Name><![CDATA[DataFzgTypToLager_Sheet]]></Name>
+			<Text><![CDATA[//IMPORT
+import lib_xls.DataSheet;
+
+public class DataFzgTypToLager_Sheet extends DataSheet {
+
+/*  Variable
+***********************************************************************************************************************/
+
+/*  Constructor
+***********************************************************************************************************************/
+	
+	public DataFzgTypToLager_Sheet( Data data, String sheetName ) {
+		super(data, sheetName);	
+	
+	}  
+	
+	protected DataFzgTypToLager_Row initDataRow( String strRow, int rowIdx ) {
+		
+		return new DataFzgTypToLager_Row( this, rowIdx, strRow );
+	
+	}
+	
+/*  Methode
+***********************************************************************************************************************/
+	
+}]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731674543454</Id>
+			<Name><![CDATA[Calc]]></Name>
+			<Text><![CDATA[
+public class Calc implements Serializable {
+
+/*  Variable
+***********************************************************************************************************************/
+	
+	
+	
+/*  Methode
+***********************************************************************************************************************/
+
+	public static double calcDrivingDuration(double distanceInKm) { return distanceInKm / Par.getMeanKmPerHour(); }
+	
+}
+	
+]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731674550769</Id>
+			<Name><![CDATA[Par]]></Name>
+			<Text><![CDATA[
+public class Par implements Serializable {
+
+/*  Variable
+***********************************************************************************************************************/
+	
+	private static boolean visualize = true;
+	
+	private static double meanKmPerHour = 60.0;
+	
+	
+/*  Methode
+***********************************************************************************************************************/
+
+	public static boolean visualize() { return visualize; }
+	
+	public static double getMeanKmPerHour() { return meanKmPerHour; }
+	
+}
+	
+]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1731687823070</Id>
+			<Name><![CDATA[DataOrder_Csv]]></Name>
+			<Text><![CDATA[// IMPORT
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Date;
+
+public class DataOrder_Csv {
+
+/* Variable ****************************************************************************************************/
+
+	private InputData data;
+	
+    private String csvFilePath;
+
+/* Constructor **************************************************************************************************/
+
+    public DataOrder_Csv(InputData data, String csvFilePath) {
+        this.csvFilePath = csvFilePath;
+        this.data = data;
+        readCsv();
+    }
+
+/* Methode ******************************************************************************************************/
+
+    private void readCsv() {
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFilePath))) {
+            String line;
+            int rowIndex = 0;
+
+            while ((line = br.readLine()) != null) {
+                // Überspringe die Header-Zeile
+                if (rowIndex == 0) {
+                    rowIndex++;
+                    continue;
+                }
+
+                // CSV-Zeile in einzelne Werte splitten
+                String[] arr = line.split(";");
+
+                // Spaltenzuweisung
+                int i = 0;
+
+                // Order
+                String orderId = arr[i++].trim();
+                traceln(orderId);
+                Date deliveryDate = Assure.strToDate(arr[i++].trim());
+                String route1 = arr[i++].trim();
+                String route2 = arr[i++].trim();
+
+                // Material
+                String materialId = arr[i++].trim();
+                String materialName = arr[i++].trim();
+                Material material = data.setMaterial(materialId, materialName);
+
+                // Material Klassifizierung
+                String matClassId = arr[i++].trim();
+                MaterialKlassifizierung matClass = data.getMatClass(matClassId);
+
+                // Lager
+                String lagerID = arr[i++].trim();
+
+                // Warenhauptgruppe
+                String whgId = arr[i++].trim();
+                Warenhauptgruppe whg = data.getWHG(whgId);
+
+                // Order Infos
+                int deliveryAmount = Assure.strToInt(arr[i++].trim());
+                String strAmountUnit = arr[i++].trim();
+                
+                double bruttoWeight = Assure.strToDouble(arr[i++].trim());
+                String strWeightUnit = arr[i++].trim();
+                WeightUnit weightUnit = Assure.strToWeightUnit(strWeightUnit);
+                bruttoWeight = (weightUnit != null) ? weightUnit.toKilograms(bruttoWeight) : bruttoWeight;
+
+                // Customer
+                String customerId = arr[i++].trim();
+                String customerName = arr[i++].trim();
+                String customerStreet = arr[i++].trim();
+                int customerPlz = Assure.strToInt(arr[i++].trim());
+                String customerCity = arr[i++].trim();
+                String country = "Switzerland";
+                Address customerAddress = data.setAddress(customerStreet, customerPlz, customerCity, country);
+                Customer customer = data.setCustomer(customerId, customerName, customerAddress);
+
+                // Setup Order
+                if (material != null && whg != null && matClass != null && customer != null && customerAddress != null) {
+	                Order order = new Order(orderId, deliveryDate, customer, matClass, whg);
+	                OrderPos orderPos = new OrderPos(order, material, deliveryAmount, bruttoWeight);
+	                order.addOrderPos(orderPos);
+	                data.addOrder(order);
+                }
+
+                rowIndex++;
+            }
+
+        } catch (IOException e) {
+            System.err.println("Fehler beim Lesen der CSV-Datei: " + e.getMessage());
+        }
+    }
+}]]></Text>
 		</JavaClass>
 	</JavaClasses>
 	<ModelResources>
